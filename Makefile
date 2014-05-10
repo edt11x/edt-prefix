@@ -49,7 +49,11 @@ define SOURCEWGET
 endef
 
 define CPLIB
-	cd /usr/local/lib; for FILE in echo $1; do test -f /lib/$$FILE || test -L /lib/$$FILE || /usr/bin/sudo ln -s /usr/local/lib/$$FILE /lib/. ; done
+	cd /usr/local/lib; for FILE in $1; do if test -e /usr/local/lib/$$FILE ; then test -f /lib/$$FILE || test -L /lib/$$FILE || /usr/bin/sudo ln -s /usr/local/lib/$$FILE /lib/. ; fi ; done
+endef
+
+define RENEXE
+	cd /usr/local/bin; for FILE in $1; do if test -e /usr/local/bin/$$FILE; then export n=0; while test -e /usr/local/bin/$$FILE.old.$$n ; do export n=$$((n+1)); done ; sudo mv $$FILE $$FILE.old.$$n ; fi ; done
 endef
 
 define PKGINSTALLTO
@@ -77,8 +81,8 @@ define PKGINSTALLBUILD
 endef
 
 .PHONY: all
-all: make gzip texinfo binutils coreutils grep findutils diffutils which \
-     m4 gmp mpfr mpc libelf flex gawk libtool sed \
+all: make gzip tar xz texinfo binutils coreutils grep findutils diffutils which \
+     symlinks m4 gmp mpfr mpc libelf flex gawk libtool sed \
      zlib bzip sqlite aftersqlite
 
 .PHONY: target_test
@@ -91,7 +95,7 @@ aftersqlite: gcc aftergcc
 # db needs C++
 # lzma needs C++
 .PHONY: aftergcc
-aftergcc: db lzma gdbm xz gettext libiconv gettext tar \
+aftergcc: db lzma gdbm gettext libiconv gettext \
      Python afterpython
 
 .PHONY: afterpython
@@ -126,6 +130,10 @@ afterscons: serf protobuf mosh \
 # the shared libraries are being used for the install
 # Use the stock compiler to install them into /usr/local
 oldcompiler: attr acl
+
+.PHONY: foo
+foo:
+	$(call RENEXE,autossh)
 
 # Standard build with separate build directory
 .PHONY: gawk
@@ -178,8 +186,8 @@ apr autoconf automake diffutils findutils grep libffi libgcrypt libgpg-error lib
 	cd $@/$@-build/; make
 	cd $@/$@-build/; make test || make check
 	$(call PKGINSTALLBUILD,$@)
-	$(call CPLIB,lib$@.*)
-	$(call CPLIB,$@.*)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
 
 # Post tar rule, no build directory
 .PHONY: jnettop libxml2 check file protobuf
@@ -189,8 +197,8 @@ jnettop libxml2 check file protobuf:
 	cd $@/`cat $@/untar.dir`/; make
 	cd $@/`cat $@/untar.dir`/; make test || make check
 	$(call PKGINSTALL,$@)
-	$(call CPLIB,lib$@.*)
-	$(call CPLIB,$@.*)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
 
 # Post tar rule, no build directory, no make test || make check
 # we should have a good version of tar that automatically detects file type
@@ -200,9 +208,11 @@ curl gnupg srm wipe mosh autossh socat screen:
 	$(call SOURCEDIR,$@,xf)
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/; make
+	# autossh may be in use
+	$(call RENEXE,autossh)
 	$(call PKGINSTALL,$@)
-	$(call CPLIB,lib$@.*)
-	$(call CPLIB,$@.*)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
 
 # No make test || make check
 # bison fails the glibc version test, we have too old of a GLIBC
@@ -228,7 +238,8 @@ make libpcap sqlite gettext lzma bison libunistring autogen tcpdump:
 # No configure and no make test || make check
 .PHONY: bcrypt
 .PHONY: bzip
-bcrypt bzip:
+.PHONY: symlinks
+bcrypt bzip symlinks:
 	$(call SOURCEDIR,$@,xfz)
 	cd $@/`cat $@/untar.dir`/; make
 	$(call PKGINSTALL,$@)
@@ -270,6 +281,7 @@ acl:
 	cd $@/`cat $@/untar.dir`/; INSTALL_USER=root INSTALL_GROUP=root ./configure --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/; make
 	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo make install install-dev install-lib
+	$(call CPLIB,lib$@*)
 	@echo "======= Build of $@ Successful ======="
 
 .PHONY: apr-util
@@ -285,16 +297,7 @@ apr-util:
 	$(call PKGINSTALLBUILD,$@)
 	$(call LNBIN,apr-1-config)
 	$(call LNBIN,apu-1-config)
-	$(call LNLIB,libapr-1.a)
-	$(call LNLIB,libapr-1.la)
-	$(call LNLIB,libapr-1.so)
-	$(call LNLIB,libapr-1.so.0)
-	$(call LNLIB,libapr-1.so.0.4.8)
-	$(call LNLIB,libaprutil-1.a)
-	$(call LNLIB,libaprutil-1.la)
-	$(call LNLIB,libaprutil-1.so)
-	$(call LNLIB,libaprutil-1.so.0)
-	$(call LNLIB,libaprutil-1.so.0.5.3)
+	$(call CPLIB,lib$@*)
 
 # Need to do attr with the old tools or it gets messed up trying to replace itself
 .PHONY: attr
@@ -304,7 +307,7 @@ attr:
 	cd $@/`cat $@/untar.dir`/; make
 	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo make install install-dev install-lib
 	/bin/rm /lib/libattr.la
-	$(call CPLIB,libattr.la)
+	$(call CPLIB,lib$@*)
 	@echo "======= Build of $@ Successful ======="
 
 .PHONY: bash
@@ -409,7 +412,7 @@ fuse:
 	cd $@/`cat $@/untar.dir`/; make
 	# No test suite for fuse
 	$(call PKGINSTALL,$@)
-	$(call CPLIB,lib$@.*)
+	$(call CPLIB,lib$@*)
 
 
 .PHONY: httpd
@@ -452,7 +455,7 @@ gcc:
 	-cd $@/$@-build/; C_INCLUDE_PATH=/usr/local/include LIBRARY_PATH=/usr/local/lib make check
 	-ln -s /usr/local/bin/gcc /usr/local/bin/cc
 	$(call PKGINSTALLBUILD,$@)
-	$(call CPLIB,libssp.*)
+	$(call CPLIB,libssp*)
 	$(call CPLIB,libstdc*)
 	@echo "======= Build of $@ Successful ======="
 
@@ -494,7 +497,7 @@ libtool:
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/; make
 	$(call PKGINSTALL,$@)
-	$(call CPLIB,libltdl.*)
+	$(call CPLIB,libltdl*)
 
 .PHONY: lua
 lua:
@@ -576,7 +579,7 @@ guile:
 	# 3 out of 38860 tests failed
 	# cd $@/$@-build/; make test || make check
 	$(call PKGINSTALLBUILD,$@)
-	$(call CPLIB,lib$@.*)
+	$(call CPLIB,lib$@*)
 
 .PHONY: libelf
 libelf:
@@ -655,6 +658,7 @@ ncurses:
 	cd $@/$@-build/; make
 	cd $@/$@-build/; make test || make check
 	$(call PKGINSTALLBUILD,$@)
+	$(call CPLIB,lib$@*)
 
 .PHONY: ntfs-3g
 ntfs-3g:
@@ -783,11 +787,7 @@ util-linux-ng:
 	# cd $@/`cat $@/untar.dir`/; make CFLAGS=-DO_CLOEXEC=0
 	cd $@/`cat $@/untar.dir`/; make
 	$(call PKGINSTALL,$@)
-	$(call LNLIB,libuuid.a)
-	$(call LNLIB,libuuid.la)
-	$(call LNLIB,libuuid.so)
-	$(call LNLIB,libuuid.so.1)
-	$(call LNLIB,libuuid.so.1.3.0)
+	$(call CPLIB,libuuid*)
 
 .PHONY: vim
 vim:
@@ -817,7 +817,7 @@ wget-all: wget-apr wget-apr-util wget-autossh wget-bcrypt \
     wget-openssl \
     wget-pcre wget-protobuf wget-mosh wget-ntfs-3g \
     wget-ncurses wget-scons wget-serf wget-socat \
-    wget-ncurses wget-scrypt wget-srm wget-util-linux \
+    wget-scrypt wget-srm wget-util-linux \
     wget-util-linux-ng wget-which wget-wipe
 
 .PHONY: wget-apr
@@ -950,6 +950,10 @@ wget-scrypt:
 wget-serf:
 	$(call SOURCEWGET, "serf", "http://serf.googlecode.com/svn/src_releases/serf-1.3.5.tar.bz2")
 
+.PHONY: wget-symlinks
+wget-symlinks:
+	$(call SOURCEWGET,"symlinks","http://pkgs.fedoraproject.org/repo/pkgs/symlinks/symlinks-1.4.tar.gz/c38ef760574c25c8a06fd2b5b141307d/symlinks-1.4.tar.gz")
+
 .PHONY: wget-socat
 wget-socat:
 	$(call SOURCEWGET, "socat", "http://www.dest-unreach.org/socat/download/socat-1.7.2.2.tar.bz2")
@@ -961,6 +965,10 @@ wget-srm:
 .PHONY: wget-swig
 wget-swig:
 	$(call SOURCEWGET,"swig","http://downloads.sourceforge.net/swig/swig-2.0.11.tar.gz")
+
+.PHONY: wget-tar
+wget-tar:
+	$(call SOURCEWGET,"tar","http://ftp.gnu.org/gnu/tar/tar-1.27.tar.gz")
 
 .PHONY: wget-tcpdump
 wget-tcpdump:
@@ -983,4 +991,8 @@ wget-wipe:
 	$(call SOURCEWGET,"wipe","http://sourceforge.net/projects/wipe/files/wipe/2.3.1/wipe-2.3.1.tar.bz2")
 # 
 # call SOURCEWGET,"wipe","http://lambda-diode.com/resources/wipe/wipe-0.22.tar.gz"
+
+.PHONY: wget-xz
+wget-xz:
+	$(call SOURCEWGET,"xz","http://tukaani.org/xz/xz-5.0.5.tar.gz")
 
