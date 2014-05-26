@@ -81,8 +81,8 @@ define PKGINSTALLBUILD
 endef
 
 .PHONY: all
-all: make gzip tar xz texinfo binutils coreutils grep findutils diffutils which \
-     symlinks m4 gmp mpfr mpc libelf flex gawk libtool sed \
+all: target_test check_sudo make gzip tar xz texinfo binutils coreutils grep findutils diffutils which \
+     symlinks m4 ecj gmp mpfr mpc libelf flex gawk libtool sed \
      zlib bzip sqlite aftersqlite
 
 .PHONY: target_test
@@ -124,7 +124,8 @@ afterlibxml2: fuse ntfs-3g check file \
 
 .PHONY: afterscons
 afterscons: serf protobuf mosh \
-    llvm socat screen autossh swig gdb
+    llvm socat screen autossh inetutils \
+    subversion autoconf automake swig gdb
 
 # These will mess themselves up in the build process when they try to install, because
 # the shared libraries are being used for the install
@@ -135,7 +136,13 @@ oldcompiler: attr acl
 foo:
 	$(call RENEXE,autossh)
 
+.PHONY: check_sudo
+check_sudo:
+	/usr/bin/sudo echo sudo check
+
 # Standard build with separate build directory
+# make check is automatically built by automake
+# so we will try that target first
 .PHONY: gawk
 .PHONY: gzip
 .PHONY: m4
@@ -151,7 +158,7 @@ texinfo gawk m4 sed gzip xz tar pth:
 	-cd $@/`cat $@/untar.dir`/; sed -i -e '/gets is a security/d' lib/stdio.in.h
 	cd $@/$@-build/; ../`cat ../untar.dir`/configure --prefix=/usr/local
 	cd $@/$@-build/; make
-	cd $@/$@-build/; make test || make check
+	cd $@/$@-build/; make check || make test
 	$(call PKGINSTALLBUILD,$@)
 
 # Standard build in the source directory
@@ -162,7 +169,7 @@ scrypt swig zlib:
 	$(call SOURCEDIR,$@,xfz)
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/; make
-	cd $@/`cat $@/untar.dir`/; make test || make check
+	cd $@/`cat $@/untar.dir`/; make check || make test
 	$(call PKGINSTALL,$@)
 
 # Post tar rule, we should have a good version of tar that automatically detects file type
@@ -184,7 +191,7 @@ apr autoconf automake diffutils findutils grep libffi libgcrypt libgpg-error lib
 	cd $@/$@-build/; readlink -f . | grep $@-build
 	cd $@/$@-build/; ../`cat ../untar.dir`/configure --prefix=/usr/local
 	cd $@/$@-build/; make
-	cd $@/$@-build/; make test || make check
+	cd $@/$@-build/; make check || make test
 	$(call PKGINSTALLBUILD,$@)
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
@@ -195,12 +202,12 @@ jnettop libxml2 check file protobuf:
 	$(call SOURCEDIR,$@,xf)
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/; make
-	cd $@/`cat $@/untar.dir`/; make test || make check
+	cd $@/`cat $@/untar.dir`/; make check || make test
 	$(call PKGINSTALL,$@)
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
 
-# Post tar rule, no build directory, no make test || make check
+# Post tar rule, no build directory, no make check || make test
 # we should have a good version of tar that automatically detects file type
 # gnupg does not have instructions for testing
 .PHONY: curl gnupg mosh srm wipe autossh socat screen
@@ -214,7 +221,7 @@ curl gnupg srm wipe mosh autossh socat screen:
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
 
-# No make test || make check
+# No make check || make test
 # bison fails the glibc version test, we have too old of a GLIBC
 # lmza fails the glibc version test, we have too old of a GLIBC
 # libunistring fails one test of 418, that appears to be because we are linking to an old librt in GLIBC
@@ -235,7 +242,7 @@ make libpcap sqlite gettext lzma bison libunistring autogen tcpdump:
 	cd $@/`cat $@/untar.dir`/; make
 	$(call PKGINSTALL,$@)
 
-# No configure and no make test || make check
+# No configure and no make check || make test
 .PHONY: bcrypt
 .PHONY: bzip
 .PHONY: symlinks
@@ -261,15 +268,17 @@ Archive-Zip Digest-SHA1 Scalar-MoreUtils URI HTML-Tagset HTML-Parser IO-Socket-S
 	$(call SOURCEDIR,$@,xfz)
 	cd $@/`cat $@/untar.dir`/; perl Makefile.PL
 	cd $@/`cat $@/untar.dir`/; make
-	cd $@/`cat $@/untar.dir`/; OPENSSL_DIR=/usr/local OPENSSL_PREFIX=/usr/local LD_LIBRARY_PATH=:/usr/local/lib:/usr/lib make test || make check
+	cd $@/`cat $@/untar.dir`/; OPENSSL_DIR=/usr/local OPENSSL_PREFIX=/usr/local LD_LIBRARY_PATH=:/usr/local/lib:/usr/lib make check || make test
 	$(call PKGINSTALL,$@)
 
 # Perl Rule, no test
 # Net-SSLeay seems to be failing because of thread problems
+# PERL_MM_USE_DEFAULT=1 is the way to answer 'no' to 
+# Makefile.PL for external tests question.
 .PHONY: Net-SSLeay
 Net-SSLeay:
 	$(call SOURCEDIR,$@,xfz)
-	cd $@/`cat $@/untar.dir`/; perl Makefile.PL
+	cd $@/`cat $@/untar.dir`/; PERL_MM_USE_DEFAULT=1 perl Makefile.PL
 	cd $@/`cat $@/untar.dir`/; make
 	$(call PKGINSTALL,$@)
 
@@ -293,7 +302,7 @@ apr-util:
 	    --with-apr=/usr/local --with-gdbm=/usr/local --with-openssl=/usr/local \
 	    --with-crypto
 	cd $@/$@-build/; make
-	cd $@/$@-build/; make test || make check
+	cd $@/$@-build/; make check || make test
 	$(call PKGINSTALLBUILD,$@)
 	$(call LNBIN,apr-1-config)
 	$(call LNBIN,apu-1-config)
@@ -317,7 +326,7 @@ bash:
 	cd $@/$@-build/; readlink -f . | grep $@-build
 	cd $@/$@-build/; ../`cat ../untar.dir`/configure --prefix=/usr/local --bindir=/usr/local/bin --htmldir=/usr/local/share/doc/bash-4.2 --without-bash-malloc
 	cd $@/$@-build/; make
-	cd $@/$@-build/; make test || make check
+	cd $@/$@-build/; make check || make test
 	$(call PKGINSTALLBUILD,$@)
 
 # Berkeley DB
@@ -330,6 +339,7 @@ db:
 	cd $@/`cat $@/untar.dir`/build_unix; sudo make install
 	@echo "======= Build of $@ Successful ======="
 
+# binutils check needs more memory
 .PHONY: binutils
 binutils:
 	$(call SOURCEDIR,$@,xfz)
@@ -338,8 +348,18 @@ binutils:
 	cd $@/$@-build/; readlink -f . | grep $@-build
 	cd $@/$@-build/; ../`cat ../untar.dir`/configure --prefix=/usr/local
 	cd $@/$@-build/; make
-	cd $@/$@-build/; make test || make check
+	cd $@/$@-build/; exec make check
 	$(call PKGINSTALLBUILD,$@)
+
+.PHONY: clisp
+clisp:
+	$(call SOURCEDIR,$@,xf)
+	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --ignore-absence-of-libsigsegv
+	cd $@/`cat $@/untar.dir`/src; make
+	-cd $@/`cat $@/untar.dir`/src; make test || make check
+	$(call PKGINSTALLTO,$@,`cat $@/untar.dir`/src)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
 
 .PHONY: coreutils
 coreutils:
@@ -367,11 +387,16 @@ dejagnu:
 	cd $@/`cat $@/untar.dir`/; make
 	cd $@/`cat $@/untar.dir`/; makeinfo --html --no-split -o doc/dejagnu.html doc/dejagnu.texi
 	cd $@/`cat $@/untar.dir`/; makeinfo --plaintext  -o doc/dejagnu.txt doc/dejagnu.texi
-	cd $@/`cat $@/untar.dir`/; make test || make check
+	cd $@/`cat $@/untar.dir`/; make check || make test
 	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo make install
 	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo install -v -dm755 /usr/local/share/doc/dejagnu-1.5.1
 	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo install -v -m644 doc/dejagnu.{html,txt} /usr/local/share/doc/dejagnu-1.5.1
 	$(call PKGINSTALL,$@)
+
+.PHONY: ecj
+ecj:
+	cd $@; sudo mkdir -pv /usr/local/share/java
+	cd $@; sudo cp -v *.jar /usr/local/share/java/ecj.jar
 
 .PHONY: expat
 expat:
@@ -380,7 +405,7 @@ expat:
 	cd $@/$@-build/; readlink -f . | grep $@-build
 	cd $@/$@-build/; ../`cat ../untar.dir`/configure --prefix=/usr/local
 	cd $@/$@-build/; make
-	cd $@/$@-build/; make test || make check
+	cd $@/$@-build/; make check || make test
 	$(call PKGINSTALLBUILD,$@)
 	$(call LNLIB,libexpat.a)
 	$(call LNLIB,libexpat.la)
@@ -393,7 +418,7 @@ expect:
 	$(call SOURCEDIR,$@,xf)
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --with-tcl=/usr/local/lib --with-tclinclude=/usr/local/include
 	cd $@/`cat $@/untar.dir`/; make
-	cd $@/`cat $@/untar.dir`/; make test || make check
+	cd $@/`cat $@/untar.dir`/; make check || make test
 	$(call PKGINSTALL,$@)
 
 .PHONY: flex
@@ -402,7 +427,7 @@ flex:
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/; make
 	# fails because of the old Glibc
-	# cd $@/`cat $@/untar.dir`/; make test || make check
+	# cd $@/`cat $@/untar.dir`/; make check || make test
 	$(call PKGINSTALL,$@)
 
 .PHONY: fuse
@@ -434,7 +459,7 @@ gc:
 	$(call SOURCEDIR,$@,xf)
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --enable-gc-debug --enable-gc-assertions
 	cd $@/`cat $@/untar.dir`/; make
-	cd $@/`cat $@/untar.dir`/; make test || make check
+	cd $@/`cat $@/untar.dir`/; make check || make test
 	$(call PKGINSTALL,$@)
 	$(call CPLIB,lib$@.*)
 
@@ -447,10 +472,13 @@ gcc:
 	cd $@/`cat $@/untar.dir`; ln -sf gmp-* gmp
 	cd $@/`cat $@/untar.dir`; tar xf ../../mpc/mpc*.tar*
 	cd $@/`cat $@/untar.dir`; ln -sf mpc-* mpc
+	cd $@/`cat $@/untar.dir`; cp ../../ecj/ecj*.jar ./ecj.jar
 	cd $@; mkdir $@-build
 	cd $@/$@-build/; readlink -f . | grep $@-build
-	cd $@/$@-build/; ../`cat ../untar.dir`/configure --prefix=/usr/local \
-                    --enable-languages=c,c++,fortran,java,objc,obj-c++ 
+	cd $@/$@-build/; ../`cat ../untar.dir`/configure \
+		    --prefix=/usr/local \
+                    --enable-languages=c,c++,fortran,java,objc,obj-c++ \
+		    --with-ecj-jar=/usr/local/share/java/ecj.jar
 	cd $@/$@-build/; make
 	-cd $@/$@-build/; C_INCLUDE_PATH=/usr/local/include LIBRARY_PATH=/usr/local/lib make check
 	-ln -s /usr/local/bin/gcc /usr/local/bin/cc
@@ -475,8 +503,24 @@ gcc48:
 	cd $@/$@-build/; ../`cat ../untar.dir`/configure --prefix=/usr/local \
                     --enable-languages=c,c++,fortran,java,objc,obj-c++ 
 	cd $@/$@-build/; make
-	cd $@/$@-build/; make test || make check
+	cd $@/$@-build/; make check || make test
 	$(call PKGINSTALLBUILD,$@)
+
+.PHONY: inetutils
+inetutils:
+	$(call SOURCEDIR,$@,xf)
+	cd $@/`cat $@/untar.dir`/; echo '#define PATH_PROCNET_DEV "/proc/net/dev"' >> ifconfig/system/linux.h 
+	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local  \
+	        --localstatedir=/usr/local/var   \
+		--disable-logger       \
+		--disable-syslogd      \
+		--disable-whois        \
+		--disable-servers
+	cd $@/`cat $@/untar.dir`/; make
+	cd $@/`cat $@/untar.dir`/; make test || make check
+	$(call PKGINSTALL,$@)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
 
 .PHONY: libiconv
 libiconv:
@@ -489,7 +533,7 @@ libiconv:
 	$(call LNLIB,libiconv.so.2)
 	$(call LNLIB,libiconv.so.2.5.1)
 
-# No make test || make check
+# No make check || make test
 # libtool is going to fail Fortran checks, we need a new autoconf and automake, these depend on perl
 .PHONY: libtool
 libtool:
@@ -504,7 +548,7 @@ lua:
 	$(call SOURCEDIR,$@,xf)
 	cd $@/`cat $@/untar.dir`/; readlink -f . | grep `cat ../untar.dir`
 	cd $@/`cat $@/untar.dir`/; make linux MYLIBS=-lncurses
-	cd $@/`cat $@/untar.dir`/; make test || make check
+	cd $@/`cat $@/untar.dir`/; make check || make test
 	cd $@/`cat $@/untar.dir`/; sudo make INSTALL_TOP=/usr/local \
 	    TO_LIB="liblua.a" \
 	     INSTALL_DATA="cp -d" INSTALL_MAN=/usr/share/man/man1 install
@@ -525,7 +569,7 @@ origgcc:
                     --enable-clocale=gnu --enable-lto \
                     --enable-languages=c,c++,fortran,java,objc,obj-c++ 
 	cd $@/$@-build/; make
-	cd $@/$@-build/; make test || make check
+	cd $@/$@-build/; make check || make test
 	$(call PKGINSTALLBUILD,$@)
 
 .PHONY: gdb
@@ -536,7 +580,7 @@ gdb:
 	cd $@/$@-build/; ../`cat ../untar.dir`/configure --prefix=/usr/local
 	cd $@/$@-build/; make
 # tests fail, including the test driver
-	# cd $@/$@-build/; make test || make check
+	# cd $@/$@-build/; make check || make test
 	$(call PKGINSTALLBUILD,$@)
 
 .PHONY: glib
@@ -545,7 +589,7 @@ glib:
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --with-internal-glib --with-libiconv=gnu --with-pcre=system
 	cd $@/`cat $@/untar.dir`/; CFLAGS=-I/usr/local/include LDFLAGS="-L/usr/local/lib -liconv -lz" make
 	# Can not run check until desktop-file-utils are installed
-	# cd $@/`cat $@/untar.dir`/; make test || make check
+	# cd $@/`cat $@/untar.dir`/; make check || make test
 	$(call PKGINSTALL,$@)
 
 # CFLAGS="-march=i686 -g -O2 -fno-stack-protector"
@@ -557,7 +601,7 @@ glibc:
 	# cd $@/$@-build/; ../`cat ../untar.dir`/configure --prefix=/usr/local/glibc --disable-profile --enable-kernel=2.6.32 --libexecdir=/usr/local/lib/glibc --with-headers=/usr/local/include CFLAGS="-march=i686 -g -O2 -fno-stack-protector"
 	cd $@/$@-build/; ../`cat ../untar.dir`/configure --prefix=/usr/local/glibc --disable-profile --libexecdir=/usr/local/lib/glibc --with-headers=/usr/local/include CFLAGS="-march=i686 -g -O2 -fno-stack-protector"
 	cd $@/$@-build/; make
-	cd $@/$@-build/; make test || make check
+	cd $@/$@-build/; make check || make test
 	$(call PKGINSTALLBUILD,$@)
 
 .PHONY: gmp
@@ -565,7 +609,7 @@ gmp:
 	$(call SOURCEDIR,$@,xf)
 	cd $@/`cat $@/untar.dir`/; ./configure --disable-shared --enable-static --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/; make
-	# cd $@/`cat $@/untar.dir`/; make test || make check
+	# cd $@/`cat $@/untar.dir`/; make check || make test
 	$(call PKGINSTALL,$@)
 
 # guile is needed by autogen
@@ -577,7 +621,7 @@ guile:
 	cd $@/$@-build/; PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:/usr/lib/pkgconfig ../`cat ../untar.dir`/configure --prefix=/usr/local --enable-error-on-warning=no --with-libgmp-prefix=/usr/local
 	cd $@/$@-build/; make
 	# 3 out of 38860 tests failed
-	# cd $@/$@-build/; make test || make check
+	# cd $@/$@-build/; make check || make test
 	$(call PKGINSTALLBUILD,$@)
 	$(call CPLIB,lib$@*)
 
@@ -586,7 +630,7 @@ libelf:
 	$(call SOURCEDIR,$@,xfz)
 	cd $@/`cat $@/untar.dir`/; ./configure --disable-shared --enable-static --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/; make
-	cd $@/`cat $@/untar.dir`/; make test || make check
+	cd $@/`cat $@/untar.dir`/; make check || make test
 	$(call PKGINSTALL,$@)
 
 .PHONY: linux-2.6.32.61
@@ -613,6 +657,7 @@ linux-3.13.6:
 	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo make ARCH=x86 install
 	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo make ARCH=x86 headers_install INSTALL_HDR_PATH=/usr/include/linux-3.13.6
 	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo make ARCH=x86 headers_install INSTALL_HDR_PATH=/usr/local
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo make ARCH=x86 headers_install
 	@echo "======= Build of $@ Successful ======="
 
 # If the install generates a unable to infer compiler target triple for gcc,
@@ -627,10 +672,11 @@ llvm:
 	cd $@/`cat $@/untar.dir`/projects/compiler-rt/lib/sanitizer_common; patch < ../../../../../../patches/compiler-rt.patch
 	cd $@/`cat $@/untar.dir`/; CC=gcc CXX=g++ ./configure --prefix=/usr/local \
 	    --sysconfdir=/usr/local/etc --enable-libffi --enable-optimized --enable-shared \
+	    --enable-targets=all \
 	    --with-c-include-dirs="/usr/local/include:/usr/include" --with-gcc-toolchain=/usr/local
 	    # --with-c-include-dirs="/usr/include/linux-2.6.32/include:/usr/include:/usr/local/include"
 	cd $@/`cat $@/untar.dir`/; make
-	cd $@/`cat $@/untar.dir`/; make test || make check
+	cd $@/`cat $@/untar.dir`/; make check || make test
 	$(call PKGINSTALL,$@)
 
 .PHONY: mpc
@@ -638,7 +684,7 @@ mpc:
 	$(call SOURCEDIR,$@,xfz)
 	cd $@/`cat $@/untar.dir`/; ./configure --disable-shared --enable-static --prefix=/usr/local --with-gmp=/usr/local --with-mpfr=/usr/local
 	cd $@/`cat $@/untar.dir`/; make
-	cd $@/`cat $@/untar.dir`/; make test || make check
+	cd $@/`cat $@/untar.dir`/; make check || make test
 	$(call PKGINSTALL,$@)
 
 .PHONY: mpfr
@@ -646,7 +692,7 @@ mpfr:
 	$(call SOURCEDIR,$@,xfz)
 	cd $@/`cat $@/untar.dir`/; ./configure --disable-shared --enable-static --prefix=/usr/local --with-gmp=/usr/local
 	cd $@/`cat $@/untar.dir`/; make
-	cd $@/`cat $@/untar.dir`/; make test || make check
+	cd $@/`cat $@/untar.dir`/; make check || make test
 	$(call PKGINSTALL,$@)
 
 .PHONY: ncurses
@@ -656,7 +702,7 @@ ncurses:
 	cd $@/$@-build/; readlink -f . | grep $@-build
 	cd $@/$@-build/; ../`cat ../untar.dir`/configure --prefix=/usr/local --with-shared --enable-widec
 	cd $@/$@-build/; make
-	cd $@/$@-build/; make test || make check
+	cd $@/$@-build/; make check || make test
 	$(call PKGINSTALLBUILD,$@)
 	$(call CPLIB,lib$@*)
 
@@ -673,7 +719,7 @@ openssl:
 	$(call SOURCEDIR,$@,xf)
 	cd $@/`cat $@/untar.dir`/; ./config --prefix=/usr/local --openssldir=/usr/local/etc/ssl --libdir=lib shared zlib-dynamic
 	cd $@/`cat $@/untar.dir`/; make
-	cd $@/`cat $@/untar.dir`/; make test || make check
+	cd $@/`cat $@/untar.dir`/; make check || make test
 	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo make MANDIR=/usr/share/man MANSUFFIX=ssl install
 	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo install -dv -m755 /usr/share/doc/openssl-1.0.1e
 	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo make cp -vfr doc/*     /usr/share/doc/openssl-1.0.1e
@@ -692,7 +738,7 @@ pcre:
 	    --enable-pcre16 --enable-pcre32 --enable-pcregrep-libz --enable-pcregrep-libbz2 \
 	    --enable-pcretest-libreadline
 	cd $@/`cat $@/untar.dir`/; make
-	cd $@/`cat $@/untar.dir`/; make test || make check
+	cd $@/`cat $@/untar.dir`/; make check || make test
 	$(call PKGINSTALL,$@)
 
 .PHONY: Python
@@ -709,7 +755,7 @@ perl:
 	cd $@/`cat $@/untar.dir`/; sh Configure -de
 	cd $@/`cat $@/untar.dir`/; make
 	# Most of the tests succeed, except threading, socket, 3 tests out of 2255
-	# cd $@/`cat $@/untar.dir`/; make test || make check
+	# cd $@/`cat $@/untar.dir`/; make check || make test
 	$(call PKGINSTALL,$@)
 
 .PHONY: pkg-config
@@ -720,7 +766,7 @@ pkg-config:
 	-cd $@/`cat $@/untar.dir`/; sed -i -e '/prctl (PR_SET_NAME, name, 0, 0, 0, 0);/d' ./glib/glib/gthread-posix.c
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --with-internal-glib --with-libiconv=gnu
 	cd $@/`cat $@/untar.dir`/; LDFLAGS="-L/usr/local/lib -liconv" make
-	cd $@/`cat $@/untar.dir`/; make test || make check
+	cd $@/`cat $@/untar.dir`/; make check || make test
 	$(call PKGINSTALL,$@)
 
 .PHONY: ruby
@@ -728,7 +774,7 @@ ruby:
 	$(call SOURCEDIR,$@,xf)
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --enable-shared
 	cd $@/`cat $@/untar.dir`/; LDFLAGS="-L/usr/local/lib -lssp" make
-	cd $@/`cat $@/untar.dir`/; LDFLAGS="-L/usr/local/lib -lssp" make test || make check
+	cd $@/`cat $@/untar.dir`/; LDFLAGS="-L/usr/local/lib -lssp" make check || make test
 	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo make LDFLAGS="-L/usr/local/lib -lssp" install
 	@echo "======= Build of $@ Successful ======="
 
@@ -751,6 +797,16 @@ scons:
 	    --prefix=/usr/local  --standard-lib --optimize=1 --install-data=/usr/share
 	@echo "======= Build of $@ Successful ======="
 
+.PHONY: subversion
+subversion:
+	$(call SOURCEDIR,$@,xf)
+	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local  \
+	        --with-apache-libexecdir
+	cd $@/`cat $@/untar.dir`/; make
+	cd $@/`cat $@/untar.dir`/; make test || make check
+	$(call PKGINSTALL,$@)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
 .PHONY: tcl
 tcl:
 	$(call SOURCEDIR,$@,xf)
@@ -769,7 +825,7 @@ tclx:
 	cd $@/$@-build/; ../`cat ../untar.dir`/configure --prefix=/usr/local
 	cd $@/$@-build/; make
 	# Something fails, I do not expect to need tclX for anything
-	# cd $@/$@-build/; make test || make check
+	# cd $@/$@-build/; make check || make test
 	$(call PKGINSTALLBUILD,$@)
 
 .PHONY: util-linux
@@ -805,19 +861,19 @@ wget:
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --sysconfdir=/usr/local/etc --with-ssl=openssl
 	cd $@/`cat $@/untar.dir`/; make
 	# Uses perl to do the tests and setup a server, there is something failing
-	# cd $@/`cat $@/untar.dir`/; make test || make check
+	# cd $@/`cat $@/untar.dir`/; make check || make test
 	$(call PKGINSTALL,$@)
 
 .PHONY: wget-all
 wget-all: wget-apr wget-apr-util wget-autossh wget-bcrypt \
     wget-binutils \
-    wget-check wget-cppcheck wget-curl \
-    wget-file wget-httpd wget-gdbm wget-jnettop \
+    wget-check wget-clisp wget-cppcheck wget-curl \
+    wget-file wget-httpd wget-inetutils wget-gdbm wget-jnettop \
     wget-libpcap wget-libxml2 wget-lua wget-make \
     wget-openssl \
     wget-pcre wget-protobuf wget-mosh wget-ntfs-3g \
     wget-ncurses wget-scons wget-serf wget-socat \
-    wget-scrypt wget-srm wget-util-linux \
+    wget-scrypt wget-srm wget-subversion wget-util-linux \
     wget-util-linux-ng wget-which wget-wipe
 
 .PHONY: wget-apr
@@ -846,12 +902,12 @@ wget-bcrypt:
 
 .PHONY: wget-binutils
 wget-binutils:
-	# $(call SOURCEWGET,"binutils","http://ftp.gnu.org/gnu/binutils/binutils-2.24.tar.gz")
+	# (call SOURCEWGET,"binutils","http://ftp.gnu.org/gnu/binutils/binutils-2.24.tar.gz")
 	$(call SOURCEWGET,"binutils","http://ftp.gnu.org/gnu/binutils/binutils-2.23.2.tar.gz")
 
 .PHONY: wget-cppcheck
 wget-cppcheck:
-	$(call SOURCEWGET,"cppcheck","http://downloads.sourceforge.net/project/cppcheck/cppcheck/1.64/cppcheck-1.64.tar.bz2")
+	$(call SOURCEWGET,"cppcheck","http://downloads.sourceforge.net/project/cppcheck/cppcheck/1.65/cppcheck-1.65.tar.bz2")
 
 .PHONY: wget-check
 wget-check:
@@ -861,6 +917,10 @@ wget-check:
 wget-clang:
 	$(call SOURCEWGET,"clang","http://llvm.org/releases/3.4/clang-3.4.src.tar.gz")
 
+.PHONY: wget-clisp
+wget-clisp:
+	$(call SOURCEWGET,"clisp","http://ftp.gnu.org/pub/gnu/clisp/latest/clisp-2.49.tar.gz")
+
 .PHONY: wget-compiler-rt
 wget-compiler-rt:
 	$(call SOURCEWGET,"compiler-rt","http://llvm.org/releases/3.4/compiler-rt-3.4.src.tar.gz")
@@ -868,6 +928,10 @@ wget-compiler-rt:
 .PHONY: wget-curl
 wget-curl:
 	$(call SOURCEWGET,"curl","http://curl.haxx.se/download/curl-7.33.0.tar.bz2")
+
+.PHONY: wget-ecj
+wget-ecj:
+	$(call SOURCEWGET,"ecj","ftp://sourceware.org/pub/java/ecj-latest.jar")
 
 .PHONY: wget-file
 wget-file:
@@ -877,13 +941,17 @@ wget-file:
 wget-fuse:
 	$(call SOURCEWGET,"fuse","http://downloads.sourceforge.net/fuse/fuse-2.9.3.tar.gz")
 
+.PHONY: wget-gdbm
+wget-gdbm:
+	$(call SOURCEWGET,"gdbm","ftp://ftp.gnu.org/gnu/gdbm/gdbm-1.10.tar.gz")
+
 .PHONY: wget-httpd
 wget-httpd:
 	$(call SOURCEWGET,"httpd","http://archive.apache.org/dist/httpd/httpd-2.4.7.tar.bz2")
 
-.PHONY: wget-gdbm
-wget-gdbm:
-	$(call SOURCEWGET,"gdbm","ftp://ftp.gnu.org/gnu/gdbm/gdbm-1.10.tar.gz")
+.PHONY: wget-inetutils
+wget-inetutils:
+	$(call SOURCEWGET,"inetutils","http://ftp.gnu.org/gnu/inetutils/inetutils-1.9.tar.gz")
 
 .PHONY: wget-libpcap
 wget-libpcap:
@@ -945,10 +1013,13 @@ wget-screen:
 wget-scrypt:
 	$(call SOURCEWGET, "scrypt","http://www.tarsnap.com/scrypt/scrypt-1.1.6.tgz")
 
-
 .PHONY: wget-serf
 wget-serf:
 	$(call SOURCEWGET, "serf", "http://serf.googlecode.com/svn/src_releases/serf-1.3.5.tar.bz2")
+
+.PHONY: wget-subversion
+wget-subversion:
+	$(call SOURCEWGET,"subversion","http://www.apache.org/dist/subversion/subversion-1.8.9.tar.bz2")
 
 .PHONY: wget-symlinks
 wget-symlinks:
@@ -964,7 +1035,8 @@ wget-srm:
 
 .PHONY: wget-swig
 wget-swig:
-	$(call SOURCEWGET,"swig","http://downloads.sourceforge.net/swig/swig-2.0.11.tar.gz")
+	# (call SOURCEWGET,"swig","http://downloads.sourceforge.net/swig/swig-2.0.11.tar.gz")
+	$(call SOURCEWGET,"swig","http://prdownloads.sourceforge.net/swig/swig-3.0.0.tar.gz")
 
 .PHONY: wget-tar
 wget-tar:
