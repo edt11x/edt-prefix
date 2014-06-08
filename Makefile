@@ -57,6 +57,7 @@ define RENEXE
 endef
 
 define PKGINSTALLTO
+	@echo "======= Start of $1 Successful ======="
 	cd $1/$2/; /usr/bin/sudo make install
 	cd $1/$2/; /usr/bin/sudo /bin/rm -rf /tmp/stage
 	cd $1/$2/; /usr/bin/sudo /bin/mkdir -p /tmp/stage
@@ -69,7 +70,7 @@ define PKGINSTALLTO
 	/bin/cp /tmp/packaged/$1.tar.gz packages
 	cd $1/$2/; /usr/bin/sudo /bin/rm -rf /tmp/stage
 	cd $1/$2/; /usr/bin/sudo /bin/rm -rf /tmp/packaged
-	@echo "======= Build of $1 Successful ======="
+	@echo "======= Install of $1 Successful ======="
 endef
 
 define PKGINSTALL
@@ -80,8 +81,23 @@ define PKGINSTALLBUILD
 	$(call PKGINSTALLTO,$1,$1-build)
 endef
 
+define PKGCHECKFROM
+	@echo "=======    Start check of $1   ======="
+	cd $1/$2/; make check || make test
+	@echo "======= Check of $1 Successful ======="
+endef
+
+define PKGCHECK
+	$(call PKGCHECKFROM,$1,`cat $1/untar.dir`)
+endef
+
+define PKGCHECKBUILD
+	$(call PKGCHECKFROM,$1,$1-build)
+endef
+
 .PHONY: all
-all: target_test check_sudo make gzip tar xz texinfo binutils coreutils grep findutils diffutils which \
+all: target_test check_sudo make gzip tar xz texinfo binutils \
+     coreutils grep findutils diffutils which \
      symlinks m4 ecj gmp mpfr mpc libelf flex gawk libtool sed \
      zlib bzip sqlite aftersqlite
 
@@ -125,7 +141,8 @@ afterlibxml2: fuse ntfs-3g check file \
 .PHONY: afterscons
 afterscons: serf protobuf mosh \
     llvm socat screen autossh inetutils \
-    subversion autoconf automake swig gdb
+    swig httpd subversion glibc \
+    autoconf automake truecrypt gdb
 
 # These will mess themselves up in the build process when they try to install, because
 # the shared libraries are being used for the install
@@ -163,9 +180,8 @@ texinfo gawk m4 sed gzip xz tar pth:
 
 # Standard build in the source directory
 .PHONY: scrypt
-.PHONY: swig
 .PHONY: zlib
-scrypt swig zlib:
+scrypt zlib:
 	$(call SOURCEDIR,$@,xfz)
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/; make
@@ -356,7 +372,7 @@ clisp:
 	$(call SOURCEDIR,$@,xf)
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --ignore-absence-of-libsigsegv
 	cd $@/`cat $@/untar.dir`/src; make
-	-cd $@/`cat $@/untar.dir`/src; make test || make check
+	-cd $@/`cat $@/untar.dir`/src; make check || make test
 	$(call PKGINSTALLTO,$@,`cat $@/untar.dir`/src)
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
@@ -443,7 +459,9 @@ fuse:
 .PHONY: httpd
 httpd:
 	$(call SOURCEDIR,$@,xf)
-	cd $@/`cat $@/untar.dir`/; ./configure --enable-mods-shared="all cgi" \
+	cd $@/`cat $@/untar.dir`/; sed '/dir.*CFG_PREFIX/s@^@#@' -i support/apxs.in
+	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local \
+	        --enable-mods-shared="all cgi" \
 		--enable-mpms-shared=all --with-apr=/usr/local/bin/apr-1-config \
 		--with-apr-util=/usr/local/bin/apu-1-config --enable-suexec=shared \
 		--with-suexec-bin=/usr/lib/httpd/suexec \
@@ -473,6 +491,8 @@ gcc:
 	cd $@/`cat $@/untar.dir`; tar xf ../../mpc/mpc*.tar*
 	cd $@/`cat $@/untar.dir`; ln -sf mpc-* mpc
 	cd $@/`cat $@/untar.dir`; cp ../../ecj/ecj*.jar ./ecj.jar
+	# this will let us build glibc
+	# cd $@/`cat $@/untar.dir`; sed -i '/k prot/agcc_cv_libc_provides_ssp=yes' gcc/configure
 	cd $@; mkdir $@-build
 	cd $@/$@-build/; readlink -f . | grep $@-build
 	cd $@/$@-build/; ../`cat ../untar.dir`/configure \
@@ -517,7 +537,7 @@ inetutils:
 		--disable-whois        \
 		--disable-servers
 	cd $@/`cat $@/untar.dir`/; make
-	cd $@/`cat $@/untar.dir`/; make test || make check
+	cd $@/`cat $@/untar.dir`/; make check || make test
 	$(call PKGINSTALL,$@)
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
@@ -599,9 +619,11 @@ glibc:
 	cd $@; mkdir $@-build
 	cd $@/$@-build/; readlink -f . | grep $@-build
 	# cd $@/$@-build/; ../`cat ../untar.dir`/configure --prefix=/usr/local/glibc --disable-profile --enable-kernel=2.6.32 --libexecdir=/usr/local/lib/glibc --with-headers=/usr/local/include CFLAGS="-march=i686 -g -O2 -fno-stack-protector"
-	cd $@/$@-build/; ../`cat ../untar.dir`/configure --prefix=/usr/local/glibc --disable-profile --libexecdir=/usr/local/lib/glibc --with-headers=/usr/local/include CFLAGS="-march=i686 -g -O2 -fno-stack-protector"
+	cd $@/$@-build/; CFLAGS="-fno-stack-protector -O2" ../`cat ../untar.dir`/configure --prefix=/usr/local/glibc --disable-profile --libexecdir=/usr/local/lib/glibc --with-headers=/usr/local/include -without-selinux CFLAGS="-fno-stack-protector -march=i686 -O2"
 	cd $@/$@-build/; make
-	cd $@/$@-build/; make check || make test
+	-cd $@/$@-build/; make check || make test
+	-sudo mkdir -p /usr/local/glibc/etc
+	sudo touch /usr/local/glibc/etc/ld.so.conf
 	$(call PKGINSTALLBUILD,$@)
 
 .PHONY: gmp
@@ -800,13 +822,29 @@ scons:
 .PHONY: subversion
 subversion:
 	$(call SOURCEDIR,$@,xf)
+	cd $@/`cat $@/untar.dir`/; ./autogen.sh
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local  \
-	        --with-apache-libexecdir
+	    --with-apxs=/usr/local/bin/apxs \
+	    --with-ssl --without-apache
+	    #--with-apache \
+	    #--with-apache-libexecdir=$(/usr/local/bin/apxs -q libexecdir)
 	cd $@/`cat $@/untar.dir`/; make
-	cd $@/`cat $@/untar.dir`/; make test || make check
+	cd $@/`cat $@/untar.dir`/; make check || make test
 	$(call PKGINSTALL,$@)
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
+
+.PHONY: swig
+swig:
+	$(call SOURCEDIR,$@,xfz)
+	cd $@/`cat $@/untar.dir`/; ./configure
+	cd $@/`cat $@/untar.dir`/; make
+	# java can not find a class it is looking for in
+	# the test cases
+	-$(call PKGCHECK,$@)
+	$(call PKGINSTALL,$@)
+
+
 .PHONY: tcl
 tcl:
 	$(call SOURCEDIR,$@,xf)
@@ -827,6 +865,10 @@ tclx:
 	# Something fails, I do not expect to need tclX for anything
 	# cd $@/$@-build/; make check || make test
 	$(call PKGINSTALLBUILD,$@)
+
+.PHONY: truecrypt
+truecrypt:
+	$(call SOURCEDIR,$@,xf)
 
 .PHONY: util-linux
 util-linux:
@@ -868,12 +910,14 @@ wget:
 wget-all: wget-apr wget-apr-util wget-autossh wget-bcrypt \
     wget-binutils \
     wget-check wget-clisp wget-cppcheck wget-curl \
-    wget-file wget-httpd wget-inetutils wget-gdbm wget-jnettop \
+    wget-file wget-glibc wget-httpd wget-inetutils \
+    wget-gdbm wget-jnettop \
     wget-libpcap wget-libxml2 wget-lua wget-make \
     wget-openssl \
     wget-pcre wget-protobuf wget-mosh wget-ntfs-3g \
     wget-ncurses wget-scons wget-serf wget-socat \
-    wget-scrypt wget-srm wget-subversion wget-util-linux \
+    wget-scrypt wget-srm wget-subversion \
+    wget-truecrypt wget-util-linux \
     wget-util-linux-ng wget-which wget-wipe
 
 .PHONY: wget-apr
@@ -944,6 +988,10 @@ wget-fuse:
 .PHONY: wget-gdbm
 wget-gdbm:
 	$(call SOURCEWGET,"gdbm","ftp://ftp.gnu.org/gnu/gdbm/gdbm-1.10.tar.gz")
+
+.PHONY: wget-glibc
+wget-glibc:
+	$(call SOURCEWGET,"glibc","http://ftp.gnu.org/gnu/glibc/glibc-2.19.tar.gz")
 
 .PHONY: wget-httpd
 wget-httpd:
@@ -1031,7 +1079,7 @@ wget-socat:
 
 .PHONY: wget-srm
 wget-srm:
-	$(call SOURCEWGET,"srm","http://sourceforge.net/projects/srm/files/srm/1.2.11/srm-1.2.11.tar.bz2")
+	$(call SOURCEWGET,"srm","http://sourceforge.net/projects/srm/files/1.2.13/srm-1.2.13.tar.gz")
 
 .PHONY: wget-swig
 wget-swig:
@@ -1044,7 +1092,11 @@ wget-tar:
 
 .PHONY: wget-tcpdump
 wget-tcpdump:
-	$(call SOURCEWGET, "tcpdump","http://www.tcpdump.org/release/tcpdump-4.5.1.tar.gz")
+	$(call SOURCEWGET,"tcpdump","http://www.tcpdump.org/release/tcpdump-4.5.1.tar.gz")
+
+.PHONY: wget-truecrypt
+wget-truecrypt:
+	$(call SOURCEWGET,"truecrypt","http://truecrypt.org/download/truecrypt-7.1a-linux-console-x86.tar.gz")
 
 .PHONY: wget-util-linux
 wget-util-linux:
