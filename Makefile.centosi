@@ -179,8 +179,8 @@ texinfo gawk m4 sed gzip xz tar pth:
 	$(call PKGINSTALLBUILD,$@)
 
 # Standard build in the source directory
-.PHONY: scrypt
-scrypt:
+.PHONY: scrypt gettext
+gettext scrypt:
 	$(call SOURCEDIR,$@,xfz)
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/; make
@@ -246,14 +246,13 @@ curl gnupg srm wipe mosh autossh socat screen:
 # tcpdump fails on PPOE
 .PHONY: autogen
 .PHONY: bison
-.PHONY: gettext
 .PHONY: libpcap
 .PHONY: libunistring
 .PHONY: lzma
 .PHONY: make
 .PHONY: sqlite
 .PHONY: tcpdump
-make libpcap sqlite gettext lzma bison libunistring autogen tcpdump:
+make libpcap sqlite lzma bison libunistring autogen tcpdump:
 	$(call SOURCEDIR,$@,xfz)
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/; make
@@ -502,10 +501,10 @@ gcc:
 		    --with-ecj-jar=/usr/local/share/java/ecj.jar
 	cd $@/$@-build/; make
 	-cd $@/$@-build/; C_INCLUDE_PATH=/usr/local/include LIBRARY_PATH=/usr/local/lib make check
-	-ln -s /usr/local/bin/gcc /usr/local/bin/cc
-	$(call PKGINSTALLBUILD,$@)
-	$(call CPLIB,libssp*)
-	$(call CPLIB,libstdc*)
+	test -e /usr/local/bin/cc || ln -s /usr/local/bin/gcc /usr/local/bin/cc
+	# (call PKGINSTALLBUILD,$@)
+	# (call CPLIB,libssp*)
+	# (call CPLIB,libstdc*)
 	@echo "======= Build of $@ Successful ======="
 
 .PHONY: gcc48
@@ -932,7 +931,8 @@ wget:
 wget-all: wget-apr wget-apr-util wget-autossh wget-bcrypt \
     wget-binutils \
     wget-check wget-clisp wget-cppcheck wget-curl \
-    wget-file wget-gzip wget-glibc wget-httpd wget-inetutils \
+    wget-file wget-gettext \
+    wget-gzip wget-glibc wget-httpd wget-inetutils \
     wget-gdbm wget-jnettop \
     wget-libpcap wget-libxml2 wget-lua wget-make \
     wget-openssl \
@@ -940,8 +940,7 @@ wget-all: wget-apr wget-apr-util wget-autossh wget-bcrypt \
     wget-ncurses wget-scons wget-serf wget-socat \
     wget-scrypt wget-srm wget-subversion wget-tar \
     wget-truecrypt wget-util-linux \
-    wget-util-linux-ng wget-which wget-wipe \
-    wget-xz
+    wget-util-linux-ng wget-which wget-wipe
 
 .PHONY: wget-apr
 wget-apr:
@@ -1011,6 +1010,10 @@ wget-fuse:
 .PHONY: wget-gdbm
 wget-gdbm:
 	$(call SOURCEWGET,"gdbm","ftp://ftp.gnu.org/gnu/gdbm/gdbm-1.10.tar.gz")
+
+.PHONY: wget-gettext
+wget-gettext:
+	$(call SOURCEWGET,"gettext","http://ftp.gnu.org/pub/gnu/gettext/gettext-0.19.1.tar.gz")
 
 .PHONY: wget-glibc
 wget-glibc:
