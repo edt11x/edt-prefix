@@ -35,7 +35,7 @@ endef
 define SOURCEDIR
 	$(call MKVRFYDIR,$1)
 	cd $1; find . -maxdepth 1 -type d -name $1\* -print -exec /bin/rm -rf {} \;
-	cd $1; tar $2 $1*.tar* || tar $2 $1*.tgz
+	cd $1; tar $2 $1*.tar* || tar $2 $1*.tgz || tar $2 $1*.tar || tar xf $1*.tar*
 	cd $1; /bin/rm -f untar.dir
 	cd $1; find . -maxdepth 1 -type d -name $1\* -print > untar.dir
 	cd $1/`cat $1/untar.dir`/; readlink -f . | grep `cat ../untar.dir`
@@ -56,25 +56,46 @@ define RENEXE
 	cd /usr/local/bin; for FILE in $1; do if test -e /usr/local/bin/$$FILE; then export n=0; while test -e /usr/local/bin/$$FILE.old.$$n ; do export n=$$((n+1)); done ; sudo mv $$FILE $$FILE.old.$$n ; fi ; done
 endef
 
+define PKGFROMSTAGE
+	cd $1/$2/; /usr/bin/sudo /bin/rm -rf /tmp/packaged
+	cd $1/$2/; /usr/bin/sudo /bin/mkdir -p /tmp/packaged
+	/bin/mkdir -p packages
+	cd $1/$2/; /usr/bin/sudo tar -C /tmp/$3 -czf /tmp/packaged/$1.tar.gz .
+	/bin/rm -f packages/$1.tar.gz
+	/bin/cp /tmp/packaged/$1.tar.gz packages
+	cd $1/$2/; /usr/bin/sudo /bin/rm -rf /tmp/packaged
+endef
+
 define PKGINSTALLTO
 	@echo "======= Start of $1 Successful ======="
 	cd $1/$2/; /usr/bin/sudo make install
 	cd $1/$2/; /usr/bin/sudo /bin/rm -rf /tmp/stage
 	cd $1/$2/; /usr/bin/sudo /bin/mkdir -p /tmp/stage
-	cd $1/$2/; /usr/bin/sudo /bin/rm -rf /tmp/packaged
-	cd $1/$2/; /usr/bin/sudo /bin/mkdir -p /tmp/packaged
 	cd $1/$2/; /usr/bin/sudo make DESTDIR=/tmp/stage install
-	/bin/mkdir -p packages
-	cd $1/$2/; /usr/bin/sudo tar -C /tmp/stage -czf /tmp/packaged/$1.tar.gz .
-	/bin/rm -f packages/$1.tar.gz
-	/bin/cp /tmp/packaged/$1.tar.gz packages
+	$(call PKGFROMSTAGE,$1,$2,stage)
 	cd $1/$2/; /usr/bin/sudo /bin/rm -rf /tmp/stage
-	cd $1/$2/; /usr/bin/sudo /bin/rm -rf /tmp/packaged
+	@echo "======= Install of $1 Successful ======="
+endef
+
+# Some packages do not have configure and depend on the PREFIX
+# and DESTDIR variables to determine where they should install
+define PKGINSTALLTOPREFIX
+	@echo "======= Start of $1 Successful ======="
+	cd $1/$2/; /usr/bin/sudo make PREFIX=/usr/local install
+	cd $1/$2/; /usr/bin/sudo /bin/rm -rf /tmp/stage
+	cd $1/$2/; /usr/bin/sudo /bin/mkdir -p /tmp/stage
+	cd $1/$2/; /usr/bin/sudo make PREFIX=/usr/local DESTDIR=/tmp/stage install
+	$(call PKGFROMSTAGE,$1,$2,stage)
+	cd $1/$2/; /usr/bin/sudo /bin/rm -rf /tmp/stage
 	@echo "======= Install of $1 Successful ======="
 endef
 
 define PKGINSTALL
 	$(call PKGINSTALLTO,$1,`cat $1/untar.dir`)
+endef
+
+define PKGINSTALLPREFIX
+	$(call PKGINSTALLTOPREFIX,$1,`cat $1/untar.dir`)
 endef
 
 define PKGINSTALLBUILD
@@ -95,18 +116,271 @@ define PKGCHECKBUILD
 	$(call PKGCHECKFROM,$1,$1-build)
 endef
 
+#
+# NetPBM really wants to be configured interactively so we just
+# define the answers in a HERE document and handle Makefile.config.in
+# and Makefile.config by copying the answers into Makefile.config.
+# The build instructions ask you to please not automate running configure.
+#
+define NETPBMCONFIG
+####Lines above were copied from Makefile.config.in by 'configure'.
+####Lines below were added by 'configure' based on the GNU platform.
+DEFAULT_TARGET = nonmerge
+NETPBMLIBTYPE=unixstatic
+NETPBMLIBSUFFIX=a
+STATICLIB_TOO=n
+CFLAGS = -O3 -ffast-math  -pedantic -fno-common -Wall -Wno-uninitialized -Wmissing-declarations -Wimplicit -Wwrite-strings -Wmissing-prototypes -Wundef
+CFLAGS_MERGE = -Wno-missing-declarations -Wno-missing-prototypes
+LDRELOC = ld --reloc
+LINKER_CAN_DO_EXPLICIT_LIBRARY=Y
+LINKERISCOMPILER = Y
+CFLAGS_SHLIB += -fPIC
+TIFFLIB = libtiff.so
+JPEGLIB = libjpeg.so
+ZLIB = libz.so
+X11LIB = /usr/X11R6/lib/libX11.so
+NETPBM_DOCURL = http://netpbm.sourceforge.net/doc/
+endef
+
+#
+# Here documents for CA certs
+# 
+define MAKECERT
+#!/usr/bin/perl -w
+
+# Used to generate PEM encoded files from Mozilla certdata.txt.
+# Run as ./make-cert.pl > certificate.crt
+#
+# Parts of this script courtesy of RedHat (mkcabundle.pl)
+#
+# This script modified for use with single file data (tempfile.cer) extracted
+# from certdata.txt, taken from the latest version in the Mozilla NSS source.
+# mozilla/security/nss/lib/ckfw/builtins/certdata.txt
+#
+# Authors: DJ Lucas
+#          Bruce Dubbs
+#
+# Version 20120211
+
+my $$certdata = './tempfile.cer';
+
+open( IN, "cat $$certdata|" )
+    || die "could not open $$certdata";
+
+my $$incert = 0;
+
+while ( <IN> )
+{
+    if ( /^CKA_VALUE MULTILINE_OCTAL/ )
+    {
+        $$incert = 1;
+        open( OUT, "|openssl x509 -text -inform DER -fingerprint" )
+            || die "could not pipe to openssl x509";
+    }
+
+    elsif ( /^END/ && $$incert )
+    {
+        close( OUT );
+        $$incert = 0;
+        print "\n\n";
+    }
+
+    elsif ($$incert)
+    {
+        my @bs = split( /\\/ );
+        foreach my $$b (@bs)
+        {
+            chomp $$b;
+            printf( OUT "%c", oct($$b) ) unless $$b eq '';
+        }
+    }
+}
+endef
+
+define MAKECA
+#!/bin/sh
+# Begin make-ca.sh
+# Script to populate OpenSSL's CApath from a bundle of PEM formatted CAs
+#
+# The file certdata.txt must exist in the local directory
+# Version number is obtained from the version of the data.
+#
+# Authors: DJ Lucas
+#          Bruce Dubbs
+#
+# Version 20120211
+
+certdata="certdata.txt"
+
+if [ ! -r $$certdata ]; then
+  echo "$$certdata must be in the local directory"
+  exit 1
+fi
+
+REVISION=$$(grep CVS_ID $$certdata | cut -f4 -d'$$')
+
+if [ -z "$${REVISION}" ]; then
+  echo "$$certfile has no 'Revision' in CVS_ID"
+  exit 1
+fi
+
+VERSION=$$(echo $$REVISION | cut -f2 -d" ")
+
+TEMPDIR=$$(mktemp -d)
+TRUSTATTRIBUTES="CKA_TRUST_SERVER_AUTH"
+BUNDLE="BLFS-ca-bundle-$${VERSION}.crt"
+CONVERTSCRIPT="./make-cert.pl"
+SSLDIR="/usr/local/etc/ssl"
+
+mkdir "$${TEMPDIR}/certs"
+
+# Get a list of starting lines for each cert
+CERTBEGINLIST=$$(grep -n "^# Certificate" "$${certdata}" | cut -d ":" -f1)
+
+# Get a list of ending lines for each cert
+CERTENDLIST=`grep -n "^CKA_TRUST_STEP_UP_APPROVED" "$${certdata}" | cut -d ":" -f 1`
+
+# Start a loop
+for certbegin in $${CERTBEGINLIST}; do
+  for certend in $${CERTENDLIST}; do
+    if test "$${certend}" -gt "$${certbegin}"; then
+      break
+    fi
+  done
+
+  # Dump to a temp file with the name of the file as the beginning line number
+  sed -n "$${certbegin},$${certend}p" "$${certdata}" > "$${TEMPDIR}/certs/$${certbegin}.tmp"
+done
+
+unset CERTBEGINLIST CERTDATA CERTENDLIST certbegin certend
+
+mkdir -p certs
+rm -f certs/*      # Make sure the directory is clean
+
+for tempfile in $${TEMPDIR}/certs/*.tmp; do
+  # Make sure that the cert is trusted...
+  grep "CKA_TRUST_SERVER_AUTH" "$${tempfile}" | egrep "TRUST_UNKNOWN|NOT_TRUSTED" > /dev/null
+
+  if test "$${?}" = "0"; then
+    # Throw a meaningful error and remove the file
+    cp "$${tempfile}" tempfile.cer
+    perl $${CONVERTSCRIPT} > tempfile.crt
+    keyhash=$$(openssl x509 -noout -in tempfile.crt -hash)
+    echo "Certificate $${keyhash} is not trusted!  Removing..."
+    rm -f tempfile.cer tempfile.crt "$${tempfile}"
+    continue
+  fi
+
+  # If execution made it to here in the loop, the temp cert is trusted
+  # Find the cert data and generate a cert file for it
+
+  cp "$${tempfile}" tempfile.cer
+  perl $${CONVERTSCRIPT} > tempfile.crt
+  keyhash=$$(openssl x509 -noout -in tempfile.crt -hash)
+  mv tempfile.crt "certs/$${keyhash}.pem"
+  rm -f tempfile.cer "$${tempfile}"
+  echo "Created $${keyhash}.pem"
+done
+
+# Remove blacklisted files
+# MD5 Collision Proof of Concept CA
+if test -f certs/8f111d69.pem; then
+  echo "Certificate 8f111d69 is not trusted!  Removing..."
+  rm -f certs/8f111d69.pem
+fi
+
+# Finally, generate the bundle and clean up.
+cat certs/*.pem >  $${BUNDLE}
+rm -r "$${TEMPDIR}"
+endef
+
+define REMOVECA
+#!/bin/sh
+# Begin /usr/bin/remove-expired-certs.sh
+#
+# Version 20120211
+
+# Make sure the date is parsed correctly on all systems
+mydate()
+{
+  local y=$$( echo $$1 | cut -d" " -f4 )
+  local M=$$( echo $$1 | cut -d" " -f1 )
+  local d=$$( echo $$1 | cut -d" " -f2 )
+  local m
+
+  if [ $${d} -lt 10 ]; then d="0$${d}"; fi
+
+  case $$M in
+    Jan) m="01";;
+    Feb) m="02";;
+    Mar) m="03";;
+    Apr) m="04";;
+    May) m="05";;
+    Jun) m="06";;
+    Jul) m="07";;
+    Aug) m="08";;
+    Sep) m="09";;
+    Oct) m="10";;
+    Nov) m="11";;
+    Dec) m="12";;
+  esac
+
+  certdate="$${y}$${m}$${d}"
+}
+
+OPENSSL=/usr/bin/openssl
+SSLDIR=/usr/local/etc/ssl/certs
+
+if [ $$# -gt 0 ]; then
+  SSLDIR="$$1"
+fi
+
+certs=$$( find $${SSLDIR} -type f -name "*.pem" -o -name "*.crt" )
+today=$$( date +%Y%m%d )
+
+for cert in $$certs; do
+  notafter=$$( $$OPENSSL x509 -enddate -in "$${cert}" -noout )
+  date=$$( echo $${notafter} |  sed 's/^notAfter=//' )
+  mydate "$$date"
+
+  if [ $${certdate} -lt $${today} ]; then
+     echo "$${cert} expired on $${certdate}! Removing..."
+     rm -f "$${cert}"
+  fi
+done
+endef
+
 .PHONY: all
-all: target_test check_sudo make gzip tar xz texinfo binutils \
+all: target_test target_dirs \
+     check_sudo make gzip tar xz perl texinfo binutils \
      coreutils grep findutils diffutils which \
      symlinks m4 ecj gmp mpfr mpc libelf flex gawk libtool sed \
-     zlib bzip sqlite aftersqlite
+     zlib bzip sqlite zip unzip aftersqlite
 
 .PHONY: target_test
 target_test:
 	/bin/echo $$LD_LIBRARY_PATH
 
+.PHONY: target_dirs
+target_dirs:
+	sudo mkdir -p /usr/local/bin
+	sudo mkdir -p /usr/local/etc
+	sudo mkdir -p /usr/local/share/man
+	sudo mkdir -p /usr/local/share/man/man1
+	sudo mkdir -p /usr/local/share/man/man2
+	sudo mkdir -p /usr/local/share/man/man3
+	sudo mkdir -p /usr/local/share/man/man4
+	sudo mkdir -p /usr/local/share/man/man5
+	sudo mkdir -p /usr/local/share/man/man6
+	sudo mkdir -p /usr/local/share/man/man7
+	sudo mkdir -p /usr/local/share/man/man8
+	sudo mkdir -p /usr/local/share/man/mann
+	sudo mkdir -p /usr/local/share/man/web
+	sudo mkdir -p /usr/local/sbin
+	test -e /usr/local/man || sudo ln -s /usr/local/share/man /usr/local/man
+
 .PHONY: aftersqlite
-aftersqlite: gcc aftergcc
+aftersqlite: guile gcc aftergcc
 
 # db needs C++
 # lzma needs C++
@@ -114,17 +388,20 @@ aftersqlite: gcc aftergcc
 aftergcc: db lzma gdbm gettext libiconv gettext \
      Python afterpython
 
+# run ca-cert twice. The shell scripts are sloppy. They want to manipulate
+# the previously installed certs
+
 .PHONY: afterpython
-afterpython: perl openssl \
+afterpython: ca-cert ca-cert openssl \
      Archive-Zip Digest-SHA1 Scalar-MoreUtils URI HTML-Tagset HTML-Parser \
      Devel-Symdump Pod-Coverage Test-Pod Test-Pod-Coverage Net-SSLeay \
      IO-Socket-SSL \
      libwww-perl \
-     bison libunistring libffi gc guile afterguile
+     bison libunistring libffi gc afterguile
 
 .PHONY: afterguile
-afterguile: autogen \
-     tcl tclx expect dejagnu wget libgpg-error libgcrypt libassuan libksba \
+afterguile: autogen tcl tclx \
+     expect dejagnu wget libgpg-error libgcrypt libassuan libksba \
      pth gnupg \
      bash expat apr apr-util \
      pcre pkg-config glib lua ruby ncurses vim aftervim
@@ -140,35 +417,35 @@ afterlibxml2: fuse ntfs-3g check file \
 
 .PHONY: afterscons
 afterscons: serf protobuf mosh \
-    llvm socat screen autossh inetutils \
-    swig httpd subversion glibc \
-    autoconf automake truecrypt gdb
+    llvm socat screen libevent tmux autossh inetutils \
+    swig httpd subversion git autoconf glibc \
+    automake truecrypt gdb
 
 # These will mess themselves up in the build process when they try to install, because
 # the shared libraries are being used for the install
 # Use the stock compiler to install them into /usr/local
-oldcompiler: attr acl
+oldcompiler: check_sudo attr acl
 
 .PHONY: foo
 foo:
 	$(call RENEXE,autossh)
 
 .PHONY: check_sudo
-check_sudo:
+.PHONY: sudo
+check_sudo sudo:
 	/usr/bin/sudo echo sudo check
 
 # Standard build with separate build directory
 # make check is automatically built by automake
 # so we will try that target first
 .PHONY: gawk
-.PHONY: gzip
 .PHONY: m4
 .PHONY: pth
 .PHONY: sed
 .PHONY: tar
 .PHONY: texinfo
 .PHONY: xz
-texinfo gawk m4 sed gzip xz tar pth:
+texinfo gawk m4 sed xz tar pth:
 	$(call SOURCEDIR,$@,xfz)
 	cd $@; mkdir $@-build
 	cd $@/$@-build/; readlink -f . | grep $@-build
@@ -179,14 +456,21 @@ texinfo gawk m4 sed gzip xz tar pth:
 	$(call PKGINSTALLBUILD,$@)
 
 # Standard build in the source directory
-.PHONY: scrypt
-.PHONY: zlib
-scrypt zlib:
+#
+# We need to build gettext, then iconv, then gettext again
+# The second time we build it, the tests will work, so
+# we check for the presence of gettext in /usr/local/bin
+# before we try to run the tests
+#
+.PHONY: scrypt gettext
+gettext scrypt:
 	$(call SOURCEDIR,$@,xfz)
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/; make
-	cd $@/`cat $@/untar.dir`/; make check || make test
+	cd $@/`cat $@/untar.dir`/; test ! -e /usr/local/bin/gettext || make check || make test
 	$(call PKGINSTALL,$@)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
 
 # Post tar rule, we should have a good version of tar that automatically detects file type
 .PHONY: apr
@@ -213,21 +497,22 @@ apr autoconf automake diffutils findutils grep libffi libgcrypt libgpg-error lib
 	$(call CPLIB,$@*)
 
 # Post tar rule, no build directory
-.PHONY: jnettop libxml2 check file protobuf
-jnettop libxml2 check file protobuf:
+.PHONY: jnettop libevent libxml2 check file protobuf curl
+curl jnettop libevent libxml2 check file protobuf:
 	$(call SOURCEDIR,$@,xf)
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/; make
 	cd $@/`cat $@/untar.dir`/; make check || make test
 	$(call PKGINSTALL,$@)
+	$(call CPLIB,libproto*)
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
 
-# Post tar rule, no build directory, no make check || make test
+# Post tar rule, no build directory, no make check || make test, no test
 # we should have a good version of tar that automatically detects file type
 # gnupg does not have instructions for testing
-.PHONY: curl gnupg mosh srm wipe autossh socat screen
-curl gnupg srm wipe mosh autossh socat screen:
+.PHONY: gnupg mosh srm wipe autossh socat screen tmux
+gnupg srm wipe mosh autossh socat screen tmux:
 	$(call SOURCEDIR,$@,xf)
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/; make
@@ -237,7 +522,7 @@ curl gnupg srm wipe mosh autossh socat screen:
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
 
-# No make check || make test
+# No make check || make test, no test
 # bison fails the glibc version test, we have too old of a GLIBC
 # lmza fails the glibc version test, we have too old of a GLIBC
 # libunistring fails one test of 418, that appears to be because we are linking to an old librt in GLIBC
@@ -245,14 +530,13 @@ curl gnupg srm wipe mosh autossh socat screen:
 # tcpdump fails on PPOE
 .PHONY: autogen
 .PHONY: bison
-.PHONY: gettext
 .PHONY: libpcap
 .PHONY: libunistring
 .PHONY: lzma
 .PHONY: make
 .PHONY: sqlite
 .PHONY: tcpdump
-make libpcap sqlite gettext lzma bison libunistring autogen tcpdump:
+make libpcap sqlite lzma bison libunistring autogen tcpdump:
 	$(call SOURCEDIR,$@,xfz)
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/; make
@@ -331,7 +615,7 @@ attr:
 	cd $@/`cat $@/untar.dir`/; INSTALL_USER=root INSTALL_GROUP=root ./configure --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/; make
 	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo make install install-dev install-lib
-	/bin/rm /lib/libattr.la
+	/usr/bin/sudo /bin/rm -f /lib/libattr.la
 	$(call CPLIB,lib$@*)
 	@echo "======= Build of $@ Successful ======="
 
@@ -344,6 +628,28 @@ bash:
 	cd $@/$@-build/; make
 	cd $@/$@-build/; make check || make test
 	$(call PKGINSTALLBUILD,$@)
+
+export MAKECERT
+export MAKECA
+export REMOVECA
+.PHONY: ca-cert
+ca-cert:
+	$(call SOURCEDIR,$@,xf)
+	cd $@/`cat $@/untar.dir`/; /bin/rm -f make-cert.pl
+	cd $@/`cat $@/untar.dir`/; echo "$$MAKECERT" >> make-cert.pl
+	cd $@/`cat $@/untar.dir`/; /bin/chmod +x ./make-cert.pl
+	cd $@/`cat $@/untar.dir`/; echo "$$MAKECA" >> make-ca.sh
+	cd $@/`cat $@/untar.dir`/; /bin/chmod +x ./make-ca.sh
+	cd $@/`cat $@/untar.dir`/; echo "$$REMOVECA" >> remove-expired-certs.sh
+	cd $@/`cat $@/untar.dir`/; /bin/chmod +x ./remove-expired-certs.sh
+	cd $@/`cat $@/untar.dir`/; ./make-ca.sh
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo ./remove-expired-certs.sh
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo install -d /usr/local/etc/ssl/certs
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo cp -v certs/*.pem /usr/local/etc/ssl/certs
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo c_rehash
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo install BLFS-ca-bundle*.crt /usr/local/etc/ssl/ca-bundle.crt
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo /bin/rm -f /usr/local/etc/ssl/certs/ca-certificates.crt
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo ln -s /usr/local/etc/ssl/ca-bundle.crt /usr/local/etc/ssl/certs/ca-certificates.crt
 
 # Berkeley DB
 .PHONY: db
@@ -386,7 +692,9 @@ coreutils:
 	cd $@/$@-build/; make
 	# Timeout test failed, I think it is the same forking pthread librt
 	# problem I am getting in other tests
-	# cd $@/$@-build/; make RUN_EXPENSIVE_TESTS=yes check
+	@echo "======= One test will fail ======="
+	-cd $@/$@-build/; make RUN_EXPENSIVE_TESTS=yes check
+	@echo "======= One test will fail ======="
 	$(call PKGINSTALLBUILD,$@)
 
 .PHONY: cppcheck
@@ -501,7 +809,7 @@ gcc:
 		    --with-ecj-jar=/usr/local/share/java/ecj.jar
 	cd $@/$@-build/; make
 	-cd $@/$@-build/; C_INCLUDE_PATH=/usr/local/include LIBRARY_PATH=/usr/local/lib make check
-	-ln -s /usr/local/bin/gcc /usr/local/bin/cc
+	test -e /usr/local/bin/cc || /usr/bin/sudo ln -s /usr/local/bin/gcc /usr/local/bin/cc
 	$(call PKGINSTALLBUILD,$@)
 	$(call CPLIB,libssp*)
 	$(call CPLIB,libstdc*)
@@ -522,6 +830,18 @@ gcc48:
 	cd $@/$@-build/; readlink -f . | grep $@-build
 	cd $@/$@-build/; ../`cat ../untar.dir`/configure --prefix=/usr/local \
                     --enable-languages=c,c++,fortran,java,objc,obj-c++ 
+	cd $@/$@-build/; make
+	cd $@/$@-build/; make check || make test
+	$(call PKGINSTALLBUILD,$@)
+
+# May not have gzip functionality in tar when we try to build gzip
+.PHONY: gzip
+gzip:
+	$(call SOURCEDIR,$@,xf)
+	cd $@; mkdir $@-build
+	cd $@/$@-build/; readlink -f . | grep $@-build
+	-cd $@/`cat $@/untar.dir`/; sed -i -e '/gets is a security/d' lib/stdio.in.h
+	cd $@/$@-build/; ../`cat ../untar.dir`/configure --prefix=/usr/local
 	cd $@/$@-build/; make
 	cd $@/$@-build/; make check || make test
 	$(call PKGINSTALLBUILD,$@)
@@ -548,10 +868,9 @@ libiconv:
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/; make
 	$(call PKGINSTALL,$@)
-	$(call LNLIB,libiconv.la)
-	$(call LNLIB,libiconv.so)
-	$(call LNLIB,libiconv.so.2)
-	$(call LNLIB,libiconv.so.2.5.1)
+	$(call CPLIB,libcharset.*)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
 
 # No make check || make test
 # libtool is going to fail Fortran checks, we need a new autoconf and automake, these depend on perl
@@ -575,6 +894,28 @@ lua:
 	cd $@/`cat $@/untar.dir`/; sudo mkdir -pv /usr/local/share/doc/lua-5.2.3
 	cd $@/`cat $@/untar.dir`/; sudo cp -v doc/*.{html,css,gif,png} /usr/local/share/doc/lua-5.2.3
 	@echo "======= Build of $@ Successful ======="
+
+#
+# NetPBM packages itself in a a non-standard way into /tmp/netpbm, so
+# we can not use our standard package installation script
+#
+export NETPBMCONFIG
+.PHONY: netpbm
+netpbm:
+	sudo /bin/rm -rf /tmp/netpbm
+	$(call SOURCEDIR,$@,xf)
+	cd $@/`cat $@/untar.dir`/; cp Makefile.config.in Makefile.config
+	cd $@/`cat $@/untar.dir`/; echo "$$NETPBMCONFIG" >> Makefile.config
+	cd $@/`cat $@/untar.dir`/; make
+	cd $@/`cat $@/untar.dir`/; make package
+	$(call PKGFROMSTAGE,$@,`cat $@/untar.dir`,netpbm)
+	cd $@/`cat $@/untar.dir`/; sudo mkdir -pv /usr/local/share/netpbm
+	cd $@/`cat $@/untar.dir`/; sudo cp -a -v /tmp/netpbm/bin/* /usr/local/bin/.
+	cd $@/`cat $@/untar.dir`/; sudo cp -a -v /tmp/netpbm/include/* /usr/local/include/.
+	cd $@/`cat $@/untar.dir`/; sudo cp -a -v /tmp/netpbm/link/* /usr/local/lib/.
+	cd $@/`cat $@/untar.dir`/; sudo cp -a -v /tmp/netpbm/man/* /usr/local/man/.
+	cd $@/`cat $@/untar.dir`/; sudo cp -a -v /tmp/netpbm/misc/* /usr/local/share/netpbm/.
+	$(call LNLIB,libnetpbm.a)
 
 .PHONY: origgcc
 origgcc:
@@ -602,6 +943,22 @@ gdb:
 # tests fail, including the test driver
 	# cd $@/$@-build/; make check || make test
 	$(call PKGINSTALLBUILD,$@)
+
+# From the GIT Makefile
+#
+# Define SHELL_PATH to a POSIX shell if your /bin/sh is broken.
+#
+# Define SANE_TOOL_PATH to a colon-separated list of paths to prepend
+# to PATH if your tools in /usr/bin are broken.
+# 
+.PHONY: git
+git:
+	$(call SOURCEDIR,$@,xf)
+	cd $@/`cat $@/untar.dir`/; PYTHON_PATH=/usr/local/bin/python SHELL_PATH=/usr/local/bin/bash SANE_TOOL_PATH="/usr/local/bin:/usr/local/sbin" ./configure --prefix=/usr/local --with-gitconfig=/usr/local/etc/gitconfig --with-libpcre
+	cd $@/`cat $@/untar.dir`/; PYTHON_PATH=/usr/local/bin/python SHELL_PATH=/usr/local/bin/bash SANE_TOOL_PATH="/usr/local/bin:/usr/local/sbin" make
+	cd $@/`cat $@/untar.dir`/; PYTHON_PATH=/usr/local/bin/python SHELL_PATH=/usr/local/bin/bash SANE_TOOL_PATH="/usr/local/bin:/usr/local/sbin" make test
+	$(call PKGINSTALL,$@)
+	$(call CPLIB,libz.*)
 
 .PHONY: glib
 glib:
@@ -762,6 +1119,8 @@ pcre:
 	cd $@/`cat $@/untar.dir`/; make
 	cd $@/`cat $@/untar.dir`/; make check || make test
 	$(call PKGINSTALL,$@)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
 
 .PHONY: Python
 Python:
@@ -819,6 +1178,13 @@ scons:
 	    --prefix=/usr/local  --standard-lib --optimize=1 --install-data=/usr/share
 	@echo "======= Build of $@ Successful ======="
 
+.PHONY: sparse
+sparse:
+	$(call SOURCEDIR,$@,xf)
+	cd $@/`cat $@/untar.dir`/; make
+	cd $@/`cat $@/untar.dir`/; make check || make test
+	$(call PKGINSTALLPREFIX,$@)
+
 .PHONY: subversion
 subversion:
 	$(call SOURCEDIR,$@,xf)
@@ -850,6 +1216,7 @@ tcl:
 	$(call SOURCEDIR,$@,xf)
 	cd $@/`cat $@/untar.dir`/unix; ./configure --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/unix; make
+	cd $@/`cat $@/untar.dir`/unix; make test
 	cd $@/`cat $@/untar.dir`/unix; /usr/bin/sudo make install
 	cd $@/`cat $@/untar.dir`/unix; /usr/bin/sudo make install-private-headers
 	cd $@/`cat $@/untar.dir`/unix; /usr/bin/sudo /bin/rm -f /usr/local/bin/tclsh
@@ -869,6 +1236,15 @@ tclx:
 .PHONY: truecrypt
 truecrypt:
 	$(call SOURCEDIR,$@,xf)
+
+.PHONY: unzip
+unzip:
+	$(call SOURCEDIR,$@,zip)
+	cd $@/`cat $@/untar.dir`/; sed -i -e 's/CFLAGS="-O -Wall/& -DNO_LCHMOD/' unix/Makefile
+	cd $@/`cat $@/untar.dir`/; make -f unix/Makefile linux_noasm
+	cd $@/`cat $@/untar.dir`/; make check || make test
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo make prefix=/usr/local MANDIR=/usr/local/man/man1 -f unix/Makefile install
+	@echo "======= Build of $@ Successful ======="
 
 .PHONY: util-linux
 util-linux:
@@ -896,6 +1272,22 @@ vim:
 	cd $@/`cat $@/untar.dir`/; LANG=C LC_ALL=C make test || LANG=C LC_ALL=C make check
 	$(call PKGINSTALL,$@)
 
+.PHONY: zip
+zip:
+	$(call SOURCEDIR,$@,zip)
+	cd $@/`cat $@/untar.dir`/; make -f unix/Makefile generic_gcc
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo make prefix=/usr/local MANDIR=/usr/local/man/man1 -f unix/Makefile install
+	@echo "======= Build of $@ Successful ======="
+
+.PHONY: zlib
+zlib:
+	$(call SOURCEDIR,$@,xfz)
+	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
+	cd $@/`cat $@/untar.dir`/; make
+	cd $@/`cat $@/untar.dir`/; make check || make test
+	$(call PKGINSTALL,$@)
+	$(call CPLIB,libz.*)
+
 .PHONY: wget
 wget:
 	$(call SOURCEDIR,$@,xf)
@@ -907,18 +1299,31 @@ wget:
 	$(call PKGINSTALL,$@)
 
 .PHONY: wget-all
-wget-all: wget-apr wget-apr-util wget-autossh wget-bcrypt \
+wget-all: wget-apr wget-apr-util wget-autossh \
+    wget-bash wget-bcrypt \
     wget-binutils \
-    wget-check wget-clisp wget-cppcheck wget-curl \
-    wget-file wget-glibc wget-httpd wget-inetutils \
+    wget-ca-cert \
+    wget-check wget-clisp wget-coreutils \
+    wget-cppcheck wget-curl \
+    wget-file wget-gettext wget-git \
+    wget-gzip wget-glibc wget-httpd wget-inetutils \
     wget-gdbm wget-jnettop \
+    wget-libevent \
+    wget-libiconv \
     wget-libpcap wget-libxml2 wget-lua wget-make \
+    wget-netpbm \
     wget-openssl \
     wget-pcre wget-protobuf wget-mosh wget-ntfs-3g \
-    wget-ncurses wget-scons wget-serf wget-socat \
-    wget-scrypt wget-srm wget-subversion \
-    wget-truecrypt wget-util-linux \
-    wget-util-linux-ng wget-which wget-wipe
+    wget-ncurses wget-scons wget-serf \
+    wget-scrypt wget-socat wget-sparse \
+    wget-srm wget-subversion wget-tar \
+    wget-tcl \
+    wget-texinfo wget-tmux \
+    wget-truecrypt wget-unzip wget-util-linux \
+    wget-util-linux-ng wget-vim \
+    wget-which wget-wipe \
+    wget-xz wget-zip \
+    wget-zlib
 
 .PHONY: wget-apr
 wget-apr:
@@ -940,6 +1345,10 @@ wget-automake:
 wget-autossh:
 	$(call SOURCEWGET,"autossh","http://www.harding.motd.ca/autossh/autossh-1.4c.tgz")
 
+.PHONY: wget-bash
+wget-bash:
+	$(call SOURCEWGET,"bash","https://ftp.gnu.org/gnu/bash/bash-4.3.tar.gz")
+
 .PHONY: wget-bcrypt
 wget-bcrypt:
 	$(call SOURCEWGET,"bcrypt","http://bcrypt.sourceforge.net/bcrypt-1.1.tar.gz")
@@ -948,6 +1357,13 @@ wget-bcrypt:
 wget-binutils:
 	# (call SOURCEWGET,"binutils","http://ftp.gnu.org/gnu/binutils/binutils-2.24.tar.gz")
 	$(call SOURCEWGET,"binutils","http://ftp.gnu.org/gnu/binutils/binutils-2.23.2.tar.gz")
+
+.PHONY: wget-ca-cert
+wget-ca-cert:
+	$(call SOURCEWGET,"ca-cert","http://anduin.linuxfromscratch.org/sources/other/certdata.txt")
+	cd ca-cert; mkdir -p ca-cert-1.0
+	cd ca-cert; mv certdata.txt ca-cert-1.0
+	cd ca-cert; tar cfJ ca-cert-1.0.tar.gz ./ca-cert-1.0
 
 .PHONY: wget-cppcheck
 wget-cppcheck:
@@ -969,9 +1385,13 @@ wget-clisp:
 wget-compiler-rt:
 	$(call SOURCEWGET,"compiler-rt","http://llvm.org/releases/3.4/compiler-rt-3.4.src.tar.gz")
 
+.PHONY: wget-coreutils
+wget-coreutils:
+	$(call SOURCEWGET,"coreutils","http://ftp.gnu.org/gnu/coreutils/coreutils-8.22.tar.xz")
+
 .PHONY: wget-curl
 wget-curl:
-	$(call SOURCEWGET,"curl","http://curl.haxx.se/download/curl-7.33.0.tar.bz2")
+	$(call SOURCEWGET,"curl","http://curl.haxx.se/download/curl-7.40.0.tar.bz2")
 
 .PHONY: wget-ecj
 wget-ecj:
@@ -989,9 +1409,21 @@ wget-fuse:
 wget-gdbm:
 	$(call SOURCEWGET,"gdbm","ftp://ftp.gnu.org/gnu/gdbm/gdbm-1.10.tar.gz")
 
+.PHONY: wget-gettext
+wget-gettext:
+	$(call SOURCEWGET,"gettext","http://ftp.gnu.org/pub/gnu/gettext/gettext-0.19.1.tar.gz")
+
+.PHONY: wget-git
+wget-git:
+	$(call SOURCEWGET,"git","http://www.kernel.org/pub/software/scm/git/git-2.2.1.tar.xz")
+
 .PHONY: wget-glibc
 wget-glibc:
 	$(call SOURCEWGET,"glibc","http://ftp.gnu.org/gnu/glibc/glibc-2.19.tar.gz")
+
+.PHONY: wget-gzip
+wget-gzip:
+	$(call SOURCEWGET,"gzip","http://ftp.gnu.org/gnu/gzip/gzip-1.2.4.tar")
 
 .PHONY: wget-httpd
 wget-httpd:
@@ -1000,6 +1432,14 @@ wget-httpd:
 .PHONY: wget-inetutils
 wget-inetutils:
 	$(call SOURCEWGET,"inetutils","http://ftp.gnu.org/gnu/inetutils/inetutils-1.9.tar.gz")
+
+.PHONY: wget-libevent
+wget-libevent:
+	$(call SOURCEWGET,"libevent","https://github.com/downloads/libevent/libevent/libevent-2.0.21-stable.tar.gz")
+
+.PHONY: wget-libiconv
+wget-libiconv:
+	$(call SOURCEWGET,"libiconv","http://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.14.tar.gz")
 
 .PHONY: wget-libpcap
 wget-libpcap:
@@ -1033,17 +1473,21 @@ wget-mosh:
 wget-ncurses:
 	$(call SOURCEWGET,"ncurses","http://ftp.gnu.org/pub/gnu/ncurses/ncurses-5.9.tar.gz")
 
+.PHONY: wget-netpbm
+wget-netpbm:
+	$(call SOURCEWGET,"netpbm","http://downloads.sourceforge.net/project/netpbm/super_stable/10.35.95/netpbm-10.35.95.tgz")
+
 .PHONY: wget-ntfs-3g
 wget-ntfs-3g:
 	$(call SOURCEWGET,"ntfs-3g","http://tuxera.com/opensource/ntfs-3g_ntfsprogs-2013.1.13.tgz")
 
 .PHONY: wget-openssl
 wget-openssl:
-	$(call SOURCEWGET,"openssl","http://www.openssl.org/source/openssl-1.0.1g.tar.gz")
+	$(call SOURCEWGET,"openssl","http://www.openssl.org/source/openssl-1.0.2.tar.gz")
 
 .PHONY: wget-pcre
 wget-pcre:
-	$(call SOURCEWGET,"pcre","https://sourceforge.net/projects/pcre/files/pcre/8.34/pcre-8.34.tar.gz")
+	$(call SOURCEWGET,"pcre","https://sourceforge.net/projects/pcre/files/pcre/8.35/pcre-8.35.tar.gz")
 
 .PHONY: wget-protobuf
 wget-protobuf:
@@ -1077,6 +1521,10 @@ wget-symlinks:
 wget-socat:
 	$(call SOURCEWGET, "socat", "http://www.dest-unreach.org/socat/download/socat-1.7.2.2.tar.bz2")
 
+.PHONY: wget-sparse
+wget-sparse:
+	$(call SOURCEWGET,"sparse","http://www.kernel.org/pub/software/devel/sparse/dist/sparse-0.5.0.tar.gz")
+
 .PHONY: wget-srm
 wget-srm:
 	$(call SOURCEWGET,"srm","http://sourceforge.net/projects/srm/files/1.2.13/srm-1.2.13.tar.gz")
@@ -1086,6 +1534,11 @@ wget-swig:
 	# (call SOURCEWGET,"swig","http://downloads.sourceforge.net/swig/swig-2.0.11.tar.gz")
 	$(call SOURCEWGET,"swig","http://prdownloads.sourceforge.net/swig/swig-3.0.0.tar.gz")
 
+# http://www.tcl.tk/software/tcltk/download.html
+.PHONY: wget-tcl
+wget-tcl:
+	$(call SOURCEWGET,"tcl","http://prdownloads.sourceforge.net/tcl/tcl8.6.3-src.tar.gz")
+
 .PHONY: wget-tar
 wget-tar:
 	$(call SOURCEWGET,"tar","http://ftp.gnu.org/gnu/tar/tar-1.27.tar.gz")
@@ -1093,6 +1546,14 @@ wget-tar:
 .PHONY: wget-tcpdump
 wget-tcpdump:
 	$(call SOURCEWGET,"tcpdump","http://www.tcpdump.org/release/tcpdump-4.5.1.tar.gz")
+
+.PHONY: wget-texinfo
+wget-texinfo:
+	$(call SOURCEWGET,"texinfo","http://ftp.gnu.org/gnu/texinfo/texinfo-5.2.tar.gz")
+
+.PHONY: wget-tmux
+wget-tmux:
+	$(call SOURCEWGET,"tmux","http://downloads.sourceforge.net/tmux/tmux-1.9a.tar.gz")
 
 .PHONY: wget-truecrypt
 wget-truecrypt:
@@ -1105,6 +1566,14 @@ wget-util-linux:
 .PHONY: wget-util-linux-ng
 wget-util-linux-ng:
 	$(call SOURCEWGET,"util-linux-ng","ftp://ftp.kernel.org/pub/linux/utils/util-linux/v2.18/util-linux-ng-2.18.tar.xz")
+
+.PHONY: wget-unzip
+wget-unzip:
+	$(call SOURCEWGET,"unzip","http://downloads.sourceforge.net/infozip/unzip60.tar.gz")
+
+.PHONY: wget-vim
+wget-vim:
+	$(call SOURCEWGET,"vim","ftp://ftp.vim.org/pub/vim/unix/vim-7.4.tar.bz2")
 
 .PHONY: wget-which
 wget-which:
@@ -1119,4 +1588,13 @@ wget-wipe:
 .PHONY: wget-xz
 wget-xz:
 	$(call SOURCEWGET,"xz","http://tukaani.org/xz/xz-5.0.5.tar.gz")
+
+.PHONY: wget-zip
+wget-zip:
+	$(call SOURCEWGET,"zip","http://downloads.sourceforge.net/infozip/zip30.tar.gz")
+
+.PHONY: wget-zlib
+wget-zlib:
+	$(call SOURCEWGET,"zlib","http://zlib.net/zlib-1.2.8.tar.gz")
+
 
