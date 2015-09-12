@@ -2040,7 +2040,7 @@ $(m4-ver):
 	$(call SOURCEWGET,"m4","http://ftp.gnu.org/gnu/m4/m4-1.4.17.tar.gz")
 
 $(mpc-ver):
-	$(call SOURCEWGET,"mpc","ftp://ftp.gnupg.org/pub/gcc/infrastructure/mpc-0.8.1.tar.gz")
+	$(call SOURCEWGET,"mpc","ftp://gcc.gnu.org/pub/gcc/infrastructure/mpc-0.8.1.tar.gz")
 
 $(mpfr-ver):
 	$(call SOURCEWGET,"mpfr","ftp://gcc.gnu.org/pub/gcc/infrastructure/mpfr-2.4.2.tar.bz2")
