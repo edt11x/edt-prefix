@@ -1,0 +1,34 @@
+#!/bin/bash
+# glibc warns that you should not include the current directory in LD_LIBRARY_PATH when
+# building glibc
+# export LD_LIBRARY_PATH="/usr/local/lib:/lib:."
+set -o pipefail
+ulimit -s 16384
+export LD_LIBRARY_PATH="/usr/local/lib:/usr/local/lib64:/lib:/usr/lib:/usr/local/glibc/lib"
+# A few packages have to be built with the old compiler first
+# or they cause too much chaos when we rebuild other packages
+PATH=/usr/sbin:/usr/bin:/bin make SHELL=/bin/bash oldcompiler 2>&1 | /usr/bin/tee oldcompiler.out
+export RETVAL=$?
+echo Look Here XXX XXX XXX - $RETVAL
+if [ $RETVAL -ne 0 ]
+then
+    echo "Old Compiler build failed."
+    exit 1
+fi
+PATH=/usr/sbin:/usr/bin:/bin:/usr/local/sbin:/usr/local/bin make GCC_LANGS="c,c++" SHELL=/bin/bash PHASE1_NOCHECK="echo Not going to -- " phase1 2>&1 | /usr/bin/tee make1.out
+export RETVAL=$?
+echo Look Here XXX XXX XXX - $RETVAL
+if [ $RETVAL -ne 0 ]
+then
+    echo "Phase 1 build failed."
+    exit 1
+fi
+PATH=/usr/local/bin:/usr/local/sbin:/usr/sbin:/usr/bin:/bin /usr/local/bin/make SHELL=/bin/bash all 2>&1 | /usr/bin/tee make2.out
+export RETVAL=$?
+echo Look Here XXX XXX XXX - $RETVAL
+if [ $RETVAL -ne 0 ]
+then
+    echo "Full build failed."
+    exit 1
+fi
+exit 0
