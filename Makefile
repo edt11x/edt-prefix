@@ -83,6 +83,7 @@ endef
 
 define SOURCEWGET
 	$(call SOURCECLEAN,$1,$2)
+	echo wget --no-check-certificate $2
 	cd $1; wget --no-check-certificate $2
 endef
 
@@ -1851,7 +1852,7 @@ $(compiler-rt-ver):
 	$(call SOURCEWGET,"compiler-rt","http://llvm.org/releases/3.4/compiler-rt-3.4.src.tar.gz")
 
 $(coreutils-ver):
-	$(call SOURCEWGET,"coreutils","https://ftp.gnu.org/gnu/"$(corutils-ver))
+	$(call SOURCEWGET,"coreutils","http://ftp.gnu.org/gnu/"$(coreutils-ver))
 
 $(cppcheck-ver):
 	$(call SOURCEWGET,"cppcheck","http://downloads.sourceforge.net/project/cppcheck/cppcheck/1.65/cppcheck-1.65.tar.bz2")
@@ -2042,7 +2043,7 @@ $(mpc-ver):
 	$(call SOURCEWGET,"mpc","ftp://ftp.gnupg.org/pub/gcc/infrastructure/mpc-0.8.1.tar.gz")
 
 $(mpfr-ver):
-	$(call SOURCEWGET,"mpfr","ftp://ftp.gnupg.org/pub/gcc/infrastructure/mpfr-2.4.2.tar.gz")
+	$(call SOURCEWGET,"mpfr","ftp://gcc.gnu.org/pub/gcc/infrastructure/mpfr-2.4.2.tar.bz2")
 
 $(mosh-ver):
 	$(call SOURCEWGET,"mosh","http://mosh.mit.edu/mosh-1.2.4.tar.gz")
