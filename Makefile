@@ -316,6 +316,7 @@ autossh-ver        = autossh/autossh-1.4c.tgz
 bash-ver           = bash/bash-4.3.tar.gz
 bcrypt-ver         = bcrypt/bcrypt-1.1.tar.gz
 binutils-ver       = binutils/binutils-2.24.tar.gz
+bzip-ver           = bzip/bzip2-1.0.6.tar.gz
 ca-cert-ver        = ca-cert/ca-cert-1.0
 cairo-ver          = cairo/cairo-1.14.2.tar.xz
 check-ver          = check/check-0.9.12.tar.gz
@@ -649,7 +650,7 @@ make libpcap sqlite lzma bison autogen tcpdump: $(make-ver) $(libpcap-ver) $(tcp
 .PHONY: bzip
 .PHONY: symlinks
 .PHONY: multitail
-bcrypt bzip multitail symlinks: $(bcrypt-ver) $(multitail-ver) $(symlinks-ver)
+bcrypt bzip multitail symlinks: $(bcrypt-ver) $(bzip-ver) $(multitail-ver) $(symlinks-ver)
 	$(call SOURCEDIR,$@,xfz)
 	cd $@/`cat $@/untar.dir`/; make
 	$(call PKGINSTALL,$@)
@@ -733,6 +734,21 @@ attr: $(attr-ver)
 	/usr/bin/sudo /bin/rm -f /lib/libattr.la
 	$(call CPLIB,lib$@*)
 	@echo "======= Build of $@ Successful ======="
+
+.PHONY: autoconf
+autoconf: $(autoconf-ver)
+	$(call SOURCEDIR,$@,xf)
+	cd $@; mkdir $@-build
+	cd $@/$@-build/; readlink -f . | grep $@-build
+	-cd $@/`cat $@/untar.dir`/; sed -i -e '/gets is a security/d' lib/stdio.in.h
+	cd $@/$@-build/; ../`cat ../untar.dir`/configure --prefix=/usr/local
+	cd $@/$@-build/; make
+	# Perl regular expression brace change
+	# messes up one test
+	-cd $@/$@-build/; $(PHASE1_NOCHECK) make check || $(PHASE1_NOCHECK) make test
+	$(call PKGINSTALLBUILD,$@)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
 
 .PHONY: autossh
 autossh: $(autossh-ver)
@@ -1695,6 +1711,7 @@ wget-all: \
     $(bash-ver) \
     $(binutils-ver) \
     $(bcrypt-ver) \
+    $(bzip-ver) \
     $(ca-cert-ver) \
     $(cairo-ver) \
     $(check-ver) \
@@ -1845,6 +1862,9 @@ $(bcrypt-ver):
 
 $(binutils-ver):
 	$(call SOURCEWGET,"binutils","https://ftp.gnu.org/gnu/"$(binutils-ver))
+
+$(bzip-ver):
+	$(call SOURCEWGET,"bzip","http://www.bzip.org/1.0.6/bzip2-1.0.6.tar.gz")
 
 $(ca-cert-ver):
 	$(call SOURCEWGET,"ca-cert","http://anduin.linuxfromscratch.org/sources/other/certdata.txt")
