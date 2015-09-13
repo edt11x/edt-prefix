@@ -335,6 +335,7 @@ ecj-ver            = ecj/ecj-latest.jar
 expect-ver         = expect/expect5.45.tar.gz
 file-ver           = file/file-5.17.tar.gz
 findutils-ver      = findutils/findutils-4.4.2.tar.gz
+flex-ver           = flex/flex-2.5.39.tar.gz
 fontconfig-ver     = fontconfig/fontconfig-2.11.1.tar.bz2
 freetype-ver       = freetype/freetype-2.5.5.tar.bz2
 fuse-ver           = fuse/fuse-2.9.3.tar.gz
@@ -368,6 +369,7 @@ jnettop-ver        = jnettop/jnettop-0.13.0.tar.gz
 libarchive-ver     = libarchive/libarchive-3.1.2.tar.gz
 libassuan-ver      = libassuan/libassuan-2.2.0.tar.bz2
 libatomic_ops-ver  = libatomic_ops/libatomic_ops-7.4.2.tar.gz
+libelf-ver         = libelf/libelf-0.8.13.tar.gz
 libevent-ver       = libevent/libevent-2.0.21-stable.tar.gz
 libffi-ver         = libffi/libffi-3.2.1.tar.gz
 libgcrypt-ver      = libgcrypt/libgcrypt-1.6.2.tar.bz2
@@ -377,6 +379,7 @@ libksba-ver        = libksba/libksba-1.3.2.tar.bz2
 libpcap-ver        = libpcap/libpcap-1.4.0.tar.gz
 libpng-ver         = libpng/libpng-1.6.16.tar.xz
 libtasn1-ver       = libtasn1/libtasn1-4.2.tar.gz
+libtool-ver        = libtool/libtool-2.4.2.tar.gz
 libunistring-ver   = libunistring/libunistring-0.9.5.tar.xz
 libusb-ver         = libusb/libusb-1.0.19.tar.bz2
 llvm-ver           = llvm/llvm-3.4.src.tar.gz
@@ -926,7 +929,7 @@ expect: $(expect-ver)
 	$(call PKGINSTALL,$@)
 
 .PHONY: flex
-flex:
+flex: $(flex-ver)
 	$(call SOURCEDIR,$@,xfj)
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/; make
@@ -1164,7 +1167,7 @@ libiconv: $(libiconv-ver)
 # No make check || make test
 # libtool is going to fail Fortran checks, we need a new autoconf and automake, these depend on perl
 .PHONY: libtool
-libtool:
+libtool: $(libtool-ver)
 	$(call SOURCEDIR,$@,xfz)
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/; make
@@ -1315,7 +1318,7 @@ guile: $(guile-ver)
 	$(call CPLIB,lib$@*)
 
 .PHONY: libelf
-libelf:
+libelf: $(libelf-ver)
 	$(call SOURCEDIR,$@,xfz)
 	cd $@/`cat $@/untar.dir`/; ./configure --disable-shared --enable-static --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/; make
@@ -1698,6 +1701,7 @@ wget-all: \
     $(expect-ver) \
     $(file-ver) \
     $(findutils-ver) \
+    $(flex-ver) \
     $(fontconfig-ver) \
     $(freetype-ver) \
     $(fuse-ver) \
@@ -1731,6 +1735,7 @@ wget-all: \
     $(libarchive-ver) \
     $(libassuan-ver) \
     $(libatomic_ops-ver) \
+    $(libelf-ver) \
     $(libevent-ver) \
     $(libffi-ver) \
     $(libgcrypt-ver) \
@@ -1740,6 +1745,7 @@ wget-all: \
     $(libpcap-ver) \
     $(libpng-ver) \
     $(libtasn1-ver) \
+    $(libtool-ver) \
     $(libunistring-ver) \
     $(libusb-ver) \
     $(lua-ver) \
@@ -1888,6 +1894,9 @@ $(file-ver):
 $(findutils-ver):
 	$(call SOURCEWGET,"findutils","https://ftp.gnu.org/pub/gnu/"$(findutils-ver))
 
+$(flex-ver):
+	$(call SOURCEWGET,"flex","http://sourceforge.net/projects/flex/files/flex-2.5.39.tar.gz")
+
 $(fontconfig-ver):
 	$(call SOURCEWGET,"fontconfig","http://www.freedesktop.org/software/fontconfig/release/fontconfig-2.11.1.tar.bz2")
 
@@ -1984,6 +1993,9 @@ $(libassuan-ver):
 $(libatomic_ops-ver):
 	$(call SOURCEWGET,"libatomic_ops","http://www.ivmaisoft.com/_bin/atomic_ops/libatomic_ops-7.4.2.tar.gz")
 
+$(libelf-ver):
+	$(call SOURCEWGET,"libelf","http://www.mr511.de/software/libelf-0.8.13.tar.gz")
+
 $(libevent-ver):
 	$(call SOURCEWGET,"libevent","https://github.com/downloads/libevent/"$(libevent-ver))
 
@@ -2010,6 +2022,9 @@ $(libpng-ver):
 
 $(libtasn1-ver):
 	$(call SOURCEWGET,"libtasn1","https://ftp.gnu.org/gnu/libtasn1/libtasn1-4.2.tar.gz")
+
+$(libtool-ver):
+	$(call SOURCEWGET,"libtool","ftp://ftp.gnu.org/"$(libtool-ver))
 
 $(libunistring-ver):
 	$(call SOURCEWGET,"libunistring","https://ftp.gnu.org/gnu/libunistring/libunistring-0.9.5.tar.xz")
