@@ -414,6 +414,7 @@ serf-ver           = serf/serf-1.3.5.tar.bz2
 sharutils-ver      = sharutils/sharutils-4.15.1.tar.xz
 socat-ver          = socat/socat-1.7.2.2.tar.bz2
 sparse-ver         = sparse/sparse-0.5.0.tar.gz
+sqlite-ver         = sqlite/sqlite-autoconf-3071502.tar.gz
 srm-ver            = srm/srm-1.2.13.tar.gz
 subversion-ver     = subversion/subversion-1.8.9.tar.bz2
 swig-ver           = swig/swig-3.0.0.tar.gz
@@ -636,7 +637,7 @@ srm wipe mosh socat screen tmux psmisc libusb htop cairo iptraf-ng hwloc: $(srm-
 .PHONY: make
 .PHONY: sqlite
 .PHONY: tcpdump
-make libpcap sqlite lzma bison autogen tcpdump: $(make-ver) $(libpcap-ver) $(tcpdump-ver)
+make libpcap sqlite lzma bison autogen tcpdump: $(make-ver) $(libpcap-ver) $(tcpdump-ver) $(sqlite-ver)
 	$(call SOURCEDIR,$@,xfz)
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/; make
@@ -1805,6 +1806,7 @@ wget-all: \
     $(sed-ver) \
     $(serf-ver) \
     $(sharutils-ver) \
+    $(sqlite-ver) \
     $(symlinks-ver) \
     $(socat-ver) \
     $(sparse-ver) \
@@ -2179,6 +2181,9 @@ $(socat-ver):
 
 $(sparse-ver):
 	$(call SOURCEWGET,"sparse","http://www.kernel.org/pub/software/devel/sparse/dist/sparse-0.5.0.tar.gz")
+
+$(sqlite-ver):
+	$(call SOURCEWGET,"sqlite","http://www.sqlite.org/"$(notdir $sqlite-ver))
 
 $(srm-ver):
 	$(call SOURCEWGET,"srm","http://sourceforge.net/projects/srm/files/1.2.13/srm-1.2.13.tar.gz")
