@@ -507,11 +507,10 @@ check_sudo sudo:
 # make check is automatically built by automake
 # so we will try that target first
 .PHONY: gawk
-.PHONY: m4
 .PHONY: sed
 .PHONY: tar
 .PHONY: xz
-gawk m4 sed xz tar: $(xz-ver) $(gawk-ver) $(m4-ver) $(sed-ver) $(tar-ver)
+gawk sed xz tar: $(xz-ver) $(gawk-ver) $(sed-ver) $(tar-ver)
 	$(call SOURCEDIR,$@,xfz)
 	cd $@; mkdir $@-build
 	cd $@/$@-build/; readlink -f . | grep $@-build
@@ -1186,6 +1185,20 @@ lua: $(lua-ver)
 	cd $@/`cat $@/untar.dir`/; sudo mkdir -pv /usr/local/share/doc/lua
 	cd $@/`cat $@/untar.dir`/; sudo cp -v doc/*.{html,css,gif,png} /usr/local/share/doc/lua
 	@echo "======= Build of $@ Successful ======="
+
+.PHONY: m4
+m4: $(m4-ver)
+	$(call SOURCEDIR,$@,xfz)
+	cd $@; mkdir $@-build
+	cd $@/$@-build/; readlink -f . | grep $@-build
+	-cd $@/`cat $@/untar.dir`/; sed -i -e '/gets is a security/d' lib/stdio.in.h
+	cd $@/$@-build/; ../`cat ../untar.dir`/configure --prefix=/usr/local
+	cd $@/$@-build/; make
+	# Same perl regex problem with the copyright test
+	-cd $@/$@-build/; make check || make test
+	$(call PKGINSTALLBUILD,$@)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
 
 #
 # NetPBM packages itself in a a non-standard way into /tmp/netpbm, so
@@ -2024,7 +2037,7 @@ $(libtasn1-ver):
 	$(call SOURCEWGET,"libtasn1","https://ftp.gnu.org/gnu/libtasn1/libtasn1-4.2.tar.gz")
 
 $(libtool-ver):
-	$(call SOURCEWGET,"libtool","ftp://ftp.gnu.org/"$(libtool-ver))
+	$(call SOURCEWGET,"libtool","http://ftpmirror.gnu.org/"$(libtool-ver))
 
 $(libunistring-ver):
 	$(call SOURCEWGET,"libunistring","https://ftp.gnu.org/gnu/libunistring/libunistring-0.9.5.tar.xz")
