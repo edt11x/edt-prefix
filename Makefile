@@ -2183,7 +2183,7 @@ $(sparse-ver):
 	$(call SOURCEWGET,"sparse","http://www.kernel.org/pub/software/devel/sparse/dist/sparse-0.5.0.tar.gz")
 
 $(sqlite-ver):
-	$(call SOURCEWGET,"sqlite","http://www.sqlite.org/"$(notdir $sqlite-ver))
+	$(call SOURCEWGET,"sqlite","http://www.sqlite.org/"$(notdir $(sqlite-ver)))
 
 $(srm-ver):
 	$(call SOURCEWGET,"srm","http://sourceforge.net/projects/srm/files/1.2.13/srm-1.2.13.tar.gz")
