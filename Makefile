@@ -570,10 +570,9 @@ apr automake findutils gdbm grep libgcrypt libgpg-error libassuan libksba libpng
 # skip tests for libffi, we may not have a C++ compiler in PHASE1
 # skip tests for texinfo needs a newer version of gzip to pass
 # its tests, it may fail in tests phase1
-.PHONY: autoconf
 .PHONY: libffi
 .PHONY: texinfo
-autoconf libffi texinfo: $(autoconf-ver) $(libffi-ver) $(texinfo-ver)
+libffi texinfo: $(libffi-ver) $(texinfo-ver)
 	$(call SOURCEDIR,$@,xf)
 	cd $@; mkdir $@-build
 	cd $@/$@-build/; readlink -f . | grep $@-build
