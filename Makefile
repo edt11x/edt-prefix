@@ -627,7 +627,8 @@ srm wipe mosh socat screen tmux psmisc libusb htop cairo iptraf-ng hwloc: $(srm-
 # No make check || make test, no test
 # bison fails the glibc version test, we have too old of a GLIBC
 # lmza fails the glibc version test, we have too old of a GLIBC
-# libunistring fails one test of 418, that appears to be because we are linking to an old librt in GLIBC
+# libunistring fails one test of 418, that appears to be because
+#  we are linking to an old librt in GLIBC
 # libpcap does not appear to have any tests
 # tcpdump fails on PPOE
 .PHONY: autogen
@@ -1947,7 +1948,7 @@ $(gc-ver):
 	$(call SOURCEWGET,"gc","http://www.hboehm.info/gc/gc_source/gc-7.4.2.tar.gz")
 
 $(gcc-ver):
-	$(call SOURCEWGET,"gcc","https://ftp.gnu.org/gnu/"$(gcc-ver))
+	$(call SOURCEWGET,"gcc","http://ftp.gnu.org/gnu/gcc/gcc-4.7.3/"$(notdir $(gcc-ver)))
 
 $(gdb-ver):
 	$(call SOURCEWGET,"gdb","https://ftp.gnu.org/gnu/"$(gdb-ver))
