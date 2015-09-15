@@ -353,7 +353,7 @@ gmp-ver            = gmp/gmp-4.3.2.tar.bz2
 go-ver             = go/go1.4.2.src.tar.gz
 gnupg-ver          = gnupg/gnupg-2.0.26.tar.bz2
 gnutls-ver         = gnutls/gnutls-3.3.13.tar.xz
-grep-ver           = grep/grep-2.15.tar.xz
+grep-ver           = grep/grep-2.21.tar.xz
 guile-ver          = guile/guile-2.0.11.tar.xz
 gzip-ver           = gzip/gzip-1.6.tar.gz
 harfbuzz-ver       = harfbuzz/harfbuzz-0.9.38.tar.bz2
@@ -509,10 +509,9 @@ check_sudo sudo:
 # make check is automatically built by automake
 # so we will try that target first
 .PHONY: gawk
-.PHONY: sed
 .PHONY: tar
 .PHONY: xz
-gawk sed xz tar: $(xz-ver) $(gawk-ver) $(sed-ver) $(tar-ver)
+gawk xz tar: $(xz-ver) $(gawk-ver) $(tar-ver)
 	$(call SOURCEDIR,$@,xfz)
 	cd $@; mkdir $@-build
 	cd $@/$@-build/; readlink -f . | grep $@-build
@@ -541,7 +540,8 @@ gettext scrypt: $(gettext-ver) $(scrypt-ver)
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
 
-# Post tar rule, we should have a good version of tar that automatically detects file type
+# Post tar rule, we should have a good version of tar that
+# automatically detects file type
 .PHONY: apr
 .PHONY: automake
 .PHONY: findutils
@@ -560,6 +560,21 @@ apr automake findutils gdbm grep libgcrypt libgpg-error libassuan libksba libpng
 	cd $@/$@-build/; ../`cat ../untar.dir`/configure --prefix=/usr/local
 	cd $@/$@-build/; make
 	cd $@/$@-build/; make check || make test
+	$(call PKGINSTALLBUILD,$@)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
+
+# Post tar rule, we should have a good version of tar that
+# automatically detects file type, with test-update-copyright.sh
+# failure that is in several packages
+.PHONY: diffutils grep
+diffutils grep m4: $(diffutils-ver) $(grep-ver) $(m4-ver)
+	$(call SOURCEDIR,$@,xf)
+	cd $@; mkdir $@-build
+	cd $@/$@-build/; readlink -f . | grep $@-build
+	cd $@/$@-build/; ../`cat ../untar.dir`/configure --prefix=/usr/local
+	cd $@/$@-build/; make
+	-cd $@/$@-build/; make check || make test
 	$(call PKGINSTALLBUILD,$@)
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
@@ -878,20 +893,6 @@ dejagnu: $(dejagnu-ver)
 	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo install -v -m644 doc/dejagnu.{html,txt} /usr/local/share/doc/dejagnu
 	$(call PKGINSTALL,$@)
 
-.PHONY: diffutils
-diffutils: $(diffutils-ver)
-	$(call SOURCEDIR,$@,xf)
-	cd $@; mkdir $@-build
-	cd $@/$@-build/; readlink -f . | grep $@-build
-	cd $@/$@-build/; ../`cat ../untar.dir`/configure --prefix=/usr/local
-	cd $@/$@-build/; make
-	# next release should fix the test-copyright problem
-	# they did not code the perl regular expression correctly
-	-cd $@/$@-build/; make check || make test
-	$(call PKGINSTALLBUILD,$@)
-	$(call CPLIB,lib$@*)
-	$(call CPLIB,$@*)
-
 .PHONY: doxygen
 doxygen: $(doxygen-ver)
 	$(call SOURCEDIR,$@,xf)
@@ -1202,20 +1203,6 @@ lua: $(lua-ver)
 	cd $@/`cat $@/untar.dir`/; sudo mkdir -pv /usr/local/share/doc/lua
 	cd $@/`cat $@/untar.dir`/; sudo cp -v doc/*.{html,css,gif,png} /usr/local/share/doc/lua
 	@echo "======= Build of $@ Successful ======="
-
-.PHONY: m4
-m4: $(m4-ver)
-	$(call SOURCEDIR,$@,xfz)
-	cd $@; mkdir $@-build
-	cd $@/$@-build/; readlink -f . | grep $@-build
-	-cd $@/`cat $@/untar.dir`/; sed -i -e '/gets is a security/d' lib/stdio.in.h
-	cd $@/$@-build/; ../`cat ../untar.dir`/configure --prefix=/usr/local
-	cd $@/$@-build/; make
-	# Same perl regex problem with the copyright test
-	-cd $@/$@-build/; make check || make test
-	$(call PKGINSTALLBUILD,$@)
-	$(call CPLIB,lib$@*)
-	$(call CPLIB,$@*)
 
 #
 # NetPBM packages itself in a a non-standard way into /tmp/netpbm, so
@@ -1552,6 +1539,19 @@ ruby:
 	cd $@/`cat $@/untar.dir`/; LDFLAGS="-L/usr/local/lib -lssp" make check || make test
 	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo make LDFLAGS="-L/usr/local/lib -lssp" install
 	@echo "======= Build of $@ Successful ======="
+
+.PHONY: sed
+sed: $(sed-ver)
+	$(call SOURCEDIR,$@,xfz)
+	cd $@; mkdir $@-build
+	cd $@/$@-build/; readlink -f . | grep $@-build
+	-cd $@/`cat $@/untar.dir`/; sed -i -e '/gets is a security/d' lib/stdio.in.h
+	cd $@/$@-build/; ../`cat ../untar.dir`/configure --prefix=/usr/local --with-included-regex
+	cd $@/$@-build/; make
+	cd $@/$@-build/; make check || make test
+	$(call PKGINSTALLBUILD,$@)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
 
 .PHONY: serf
 serf: $(serf-ver)
