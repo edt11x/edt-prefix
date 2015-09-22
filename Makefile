@@ -1031,17 +1031,18 @@ gcc: $(gcc-ver)
 	cd $@/`cat $@/untar.dir`; ln -sf mpc-* mpc
 	cd $@/`cat $@/untar.dir`; cp ../../ecj/ecj*.jar ./ecj.jar
 	# this will let us build glibc
-	# XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX
-	# XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX
-	# XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX
+	# XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX
+	# XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX
+	# XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX
 	# May have to disable this to build the non-glibc packages
 	# cd $@/`cat $@/untar.dir`; sed -i '/k prot/agcc_cv_libc_provides_ssp=yes' gcc/configure
-	# XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX
-	# XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX
-	# XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX
+	# XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX
+	# XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX
+	# XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX
 	cd $@; mkdir $@-build
 	cd $@/$@-build/; readlink -f . | grep $@-build
 	cd $@/$@-build/; ../`cat ../untar.dir`/configure \
+		    --disable-multilib \
 		    --prefix=/usr/local \
                     --enable-languages=$(GCC_LANGS) \
 		    --with-ecj-jar=/usr/local/share/java/ecj.jar
@@ -1376,6 +1377,10 @@ linux-3.13.6:
 # Enable FUSE file system
 # Enable ext4 encryption
 #
+# You need to be careful, not to directly headers_install without a
+# INSTALL_HDR_PATH. This will delete directories in /usr/include
+# and replace them.
+#
 .PHONY: linux-4.1.tar.xz
 linux-4.1.tar.xz:
 	$(call SOURCEDIR,$@,xf)
@@ -1387,6 +1392,10 @@ linux-4.1.tar.xz:
 	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo make ARCH=x86 headers_install INSTALL_HDR_PATH=/usr/include/linux-3.13.6
 	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo make ARCH=x86 headers_install INSTALL_HDR_PATH=/usr/local
 	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo make ARCH=x86 headers_install
+	# need to put them in /usr/include without deleting everything
+	# else
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo make ARCH=x86 headers_install INSTALL_HDR_PATH=dest
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo cp -rv dest/include/* /usr/include/.
 	@echo "======= Build of $@ Successful ======="
 
 # If the install generates a unable to infer compiler target triple for gcc,
