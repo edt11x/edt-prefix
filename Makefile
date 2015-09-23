@@ -238,10 +238,15 @@ aftergcc: pcre grep db lzma gdbm gettext libiconv gettext \
 #     Net-SSLeay IO-Socket-SSL 
 
 .PHONY: afterpython
-afterpython: ca-cert ca-cert openssl \
-     Archive-Zip Digest-SHA1 Scalar-MoreUtils \
+afterpython: ca-cert ca-cert openssl afteropenssl
+
+.PHONY: afteropenssl
+afteropenssl: \
+     Archive-Zip Digest-SHA1 \
+     Scalar-MoreUtils \
      URI HTML-Tagset HTML-Parser \
-     Devel-Symdump Pod-Coverage Test-Pod Test-Pod-Coverage \
+     Devel-Symdump Pod-Coverage \
+     Test-Pod Test-Pod-Coverage \
      libwww-perl \
      bison afterbison
 
@@ -306,6 +311,19 @@ aftersharutils: \
 # ==============================================================
 # Versions
 # ==============================================================
+Archive-Zip-ver    = Archive-Zip/Archive-Zip-1.51.tar.gz
+Devel-Symdump-ver  = Devel-Symdump/Devel-Symdump-2.15.tar.gz
+Digest-SHA1-ver    = Digest-SHA1/Digest-SHA1-2.13.tar.gz
+HTML-Tagset-ver    = HTML-Tagset/HTML-Tagset-3.20.tar.gz
+HTML-Parser-ver    = HTML-Parser/HTML-Parser-3.71.tar.gz
+IO-Socket-SSL-ver  = IO-Socket-SSL/IO-Socket-SSL-2.012.tar.gz
+List-MoreUtils-ver = List-MoreUtils/List-MoreUtils-0.413.tar.gz
+Pod-Coverage-ver   = Pod-Coverage/Pod-Coverage-0.23.tar.gz
+Python-ver         = Python/Python-2.7.9.tar.xz
+Scalar-MoreUtils-ver = Scalar-MoreUtils/Scalar-MoreUtils-0.02.tar.gz
+Test-Pod-ver       = Test-Pod/Test-Pod-1.49.tar.gz
+Test-Pod-Coverage-ver = Test-Pod-Coverage/Test-Pod-Coverage-1.10.tar.gz
+URI-ver            = URI/URI-1.69.tar.gz
 acl-ver            = acl/acl-2.2.52.src.tar.gz
 apr-util-ver       = apr-util/apr-util-1.5.3.tar.bz2
 apr-ver            = apr/apr-1.4.8.tar.bz2
@@ -328,7 +346,6 @@ coreutils-ver      = coreutils/coreutils-8.22.tar.xz
 cppcheck-ver       = cppcheck/cppcheck-1.65.tar.bz2
 curl-ver           = curl/curl-7.41.0.tar.bz2
 dejagnu-ver        = dejagnu/dejagnu-1.5.2.tar.gz
-Devel-Symdump      = Devel-Symdump/Devel-Symdump-2.14.tar.gz
 diffutils-ver      = diffutils/diffutils-3.3.tar.xz
 doxygen-ver        = doxygen/doxygen-1.8.9.1.src.tar.gz
 e2fsprogs-ver      = e2fsprogs/master.zip
@@ -350,9 +367,9 @@ git-ver            = git/git-2.2.1.tar.xz
 glib-ver           = glib/glib-2.42.1.tar.xz
 glibc-ver          = glibc/glibc-2.21.tar.gz
 gmp-ver            = gmp/gmp-4.3.2.tar.bz2
-go-ver             = go/go1.4.2.src.tar.gz
 gnupg-ver          = gnupg/gnupg-2.0.26.tar.bz2
 gnutls-ver         = gnutls/gnutls-3.3.13.tar.xz
+go-ver             = go/go1.4.2.src.tar.gz
 grep-ver           = grep/grep-2.21.tar.xz
 guile-ver          = guile/guile-2.0.11.tar.xz
 gzip-ver           = gzip/gzip-1.6.tar.gz
@@ -363,7 +380,6 @@ httpd-ver          = httpd/httpd-2.4.12.tar.bz2
 hwloc-ver          = hwloc/hwloc-1.11.0.tar.gz
 icu-ver            = icu/icu4c-54_1-src.tgz
 inetutils-ver      = inetutils/inetutils-1.9.tar.gz
-IO-Socket-SSL-ver  = IO-Socket-SSL/IO-Socket-SSL-2.012.tar.gz
 iptraf-ng-ver      = iptraf-ng/iptraf-ng-1.1.4.tar.gz
 iwyu-ver           = include-what-you-use/include-what-you-use-3.4.src.tar.gz
 jnettop-ver        = jnettop/jnettop-0.13.0.tar.gz
@@ -386,8 +402,8 @@ libusb-ver         = libusb/libusb-1.0.19.tar.bz2
 llvm-ver           = llvm/llvm-3.4.src.tar.gz
 lua-ver            = lua/lua-5.3.0.tar.gz
 lzo-ver            = lzo/lzo-2.08.tar.gz
-make-ver           = make/make-4.1.tar.gz
 m4-ver             = m4/m4-1.4.17.tar.gz
+make-ver           = make/make-4.1.tar.gz
 mosh-ver           = mosh/mosh-1.2.4.tar.gz
 mpc-ver            = mpc/mpc-0.8.1.tar.gz
 mpfr-ver           = mpfr/mpfr-2.4.2.tar.gz
@@ -396,6 +412,7 @@ netpbm-ver         = netpbm/netpbm-10.35.95.tgz
 nettle-ver         = nettle/nettle-2.7.1.tar.gz
 ntfs-3g-ver        = ntfs-3g/ntfs-3g_ntfsprogs-2013.1.13.tgz
 openssl-ver        = openssl/openssl-1.0.2.tar.gz
+p7zip-ver          = p7zip/p7zip_9.38.1_src_all.tar.bz2
 par2cmdline-ver    = par2cmdline/master.zip
 pcre-ver           = pcre/pcre-8.36.tar.bz2
 perl-ver           = perl/perl-5.22.0.tar.gz
@@ -404,8 +421,6 @@ popt-ver           = popt/popt-1.16.tar.gz
 protobuf-ver       = protobuf/protobuf-2.5.0.tar.bz2
 psmisc-ver         = psmisc/psmisc-22.21.tar.gz
 pth-ver            = pth/pth-2.0.7.tar.gz
-Python-ver         = Python/Python-2.7.9.tar.xz
-p7zip-ver          = p7zip/p7zip_9.38.1_src_all.tar.bz2
 scons-ver          = scons/scons-2.3.4.tar.gz
 screen-ver         = screen/screen-4.2.1.tar.gz
 scrypt-ver         = scrypt/scrypt-1.1.6.tgz
@@ -427,8 +442,8 @@ texinfo-ver        = texinfo/texinfo-5.2.tar.gz
 tmux-ver           = tmux/tmux-1.9a.tar.gz
 truecrypt-ver      = truecrypt/truecrypt-7.1a-linux-console-x86.tar.gz
 unzip-ver          = unzip/unzip60.tar.gz
-util-linux-ver     = util-linux/util-linux-2.24.tar.gz
 util-linux-ng-ver  = util-linux-ng/util-linux-ng-2.18.tar.xz
+util-linux-ver     = util-linux/util-linux-2.24.tar.gz
 vim-ver            = vim/vim-7.4.tar.bz2
 which-ver          = which/which-2.20.tar.gz
 wipe-ver           = wipe/wipe-2.3.1.tar.bz2
@@ -546,14 +561,13 @@ gettext scrypt: $(gettext-ver) $(scrypt-ver)
 .PHONY: automake
 .PHONY: findutils
 .PHONY: gdbm
-.PHONY: grep
 .PHONY: libassuan
 .PHONY: libgcrypt
 .PHONY: libgpg-error
 .PHONY: libksba
 .PHONY: libpng
 .PHONY: which
-apr automake findutils gdbm grep libgcrypt libgpg-error libassuan libksba libpng which: $(which-ver) $(libpng-ver) $(libgpg-error-ver) $(libassuan-ver) $(libgcrypt-ver) $(libksba-ver) $(grep-ver) $(apr-ver) $(automake-ver) $(gdbm-ver) $(findutils-ver)
+apr automake findutils gdbm libgcrypt libgpg-error libassuan libksba libpng which: $(which-ver) $(libpng-ver) $(libgpg-error-ver) $(libassuan-ver) $(libgcrypt-ver) $(libksba-ver) $(apr-ver) $(automake-ver) $(gdbm-ver) $(findutils-ver)
 	$(call SOURCEDIR,$@,xf)
 	cd $@; mkdir $@-build
 	cd $@/$@-build/; readlink -f . | grep $@-build
@@ -680,13 +694,14 @@ bcrypt bzip multitail symlinks: $(bcrypt-ver) $(bzip-ver) $(multitail-ver) $(sym
 .PHONY: HTML-Parser
 .PHONY: HTML-Tagset
 .PHONY: IO-Socket-SSL
+.PHONY: List-MoreUtils
 .PHONY: Pod-Coverage
 .PHONY: Scalar-MoreUtils
 .PHONY: Test-Pod
 .PHONY: Test-Pod-Coverage
 .PHONY: URI
 .PHONY: libwww-perl
-Archive-Zip Digest-SHA1 Scalar-MoreUtils URI HTML-Tagset HTML-Parser IO-Socket-SSL Devel-Symdump Pod-Coverage Test-Pod Test-Pod-Coverage libwww-perl: $(Devel-Symdump-ver)
+Archive-Zip Digest-SHA1 Scalar-MoreUtils URI HTML-Tagset HTML-Parser IO-Socket-SSL Devel-Symdump List-MoreUtils Pod-Coverage Test-Pod Test-Pod-Coverage libwww-perl: $(Archive-Zip-ver) $(Digest-SHA1-ver) $(List-MoreUtils-ver) $(Scalar-MoreUtils-ver) $(URI-ver) $(HTML-Tagset-ver) $(HTML-Parser-ver) $(Devel-Symdump-ver) $(Pod-Coverage-ver) $(Test-Pod-ver) $(Test-Pod-Coverage-ver)
 	$(call SOURCEDIR,$@,xfz)
 	cd $@/`cat $@/untar.dir`/; perl Makefile.PL LIBS='-L/usr/local/lib -L/usr/lib -L/lib' INC='-I/usr/local/include -I/usr/include'
 	cd $@/`cat $@/untar.dir`/; make
@@ -1711,16 +1726,29 @@ wget:
 
 .PHONY: wget-all
 wget-all: \
+    $(Archive-Zip-ver) \
+    $(Devel-Symdump-ver) \
+    $(Digest-SHA1-ver) \
+    $(HTML-Tagset-ver) \
+    $(HTML-Parser-ver) \
+    $(IO-Socket-SSL-ver) \
+    $(List-MoreUtils-ver) \
+    $(Pod-Coverage-ver) \
+    $(Python-ver) \
+    $(Scalar-MoreUtils-ver) \
+    $(Test-Pod-ver) \
+    $(Test-Pod-Coverage-ver) \
+    $(URI-ver) \
     $(acl-ver) \
-    $(apr-ver) \
     $(apr-util-ver) \
+    $(apr-ver) \
     $(attr-ver) \
     $(autoconf-ver) \
     $(automake-ver) \
     $(autossh-ver) \
     $(bash-ver) \
-    $(binutils-ver) \
     $(bcrypt-ver) \
+    $(binutils-ver) \
     $(bzip-ver) \
     $(ca-cert-ver) \
     $(cairo-ver) \
@@ -1733,7 +1761,6 @@ wget-all: \
     $(cppcheck-ver) \
     $(curl-ver) \
     $(dejagnu-ver) \
-    $(Devel-Symdump-ver) \
     $(diffutils-ver) \
     $(doxygen-ver) \
     $(e2fsprogs-ver) \
@@ -1755,9 +1782,9 @@ wget-all: \
     $(glib-ver) \
     $(glibc-ver) \
     $(gmp-ver) \
-    $(go-ver) \
     $(gntls-ver) \
     $(gnupg-ver) \
+    $(go-ver) \
     $(grep-ver) \
     $(guile-ver) \
     $(gzip-ver) \
@@ -1769,7 +1796,6 @@ wget-all: \
     $(icu-ver) \
     $(inetutils-ver) \
     $(iptraf-ng-ver) \
-    $(IO-Socket-SSL-ver) \
     $(iwyu-ver) \
     $(jnettop-ver) \
     $(libarchive-ver) \
@@ -1800,6 +1826,7 @@ wget-all: \
     $(nettle-ver) \
     $(ntfs-3g-ver) \
     $(openssl-ver) \
+    $(p7zip-ver) \
     $(par2cmdline-ver) \
     $(pcre-ver) \
     $(perl-ver) \
@@ -1808,25 +1835,23 @@ wget-all: \
     $(protobuf-ver) \
     $(psmisc-ver) \
     $(pth-ver) \
-    $(Python-ver) \
-    $(p7zip-ver) \
     $(scons-ver) \
     $(screen-ver) \
     $(scrypt-ver) \
     $(sed-ver) \
     $(serf-ver) \
     $(sharutils-ver) \
-    $(sqlite-ver) \
-    $(symlinks-ver) \
     $(socat-ver) \
     $(sparse-ver) \
+    $(sqlite-ver) \
     $(srm-ver) \
     $(subversion-ver) \
     $(swig-ver) \
     $(symlinks-ver) \
-    $(tcp_wrappers-ver) \
+    $(symlinks-ver) \
     $(tar-ver) \
     $(tcl-ver) \
+    $(tcp_wrappers-ver) \
     $(tcpdump-ver) \
     $(texinfo-ver) \
     $(tmux-ver) \
@@ -1852,6 +1877,9 @@ $(apr-ver):
 
 $(apr-util-ver):
 	$(call SOURCEWGET,"apr-util","http://archive.apache.org/dist/apr/apr-util-1.5.3.tar.bz2")
+
+$(Archive-Zip-ver):
+	$(call SOURCEWGET,"Archive-Zip","http://search.cpan.org/CPAN/authors/id/P/PH/PHRED/"$(notdir $(Archive-Zip-ver)))
 
 $(attr-ver):
 	$(call SOURCEWGET,"attr","http://download.savannah.gnu.org/releases/attr/attr-2.4.47.src.tar.gz")
@@ -1911,7 +1939,7 @@ $(curl-ver):
 	$(call SOURCEWGET,"curl","http://curl.haxx.se/download/curl-7.41.0.tar.bz2")
 
 $(Devel-Symdump-ver):
-	$(call SOURCEWGET,"Devel-Symdump","http://search.cpan.org/CPAN/authors/id/A/AN/ANDK/Devel-Symdump-2.14.tar.gz")
+	$(call SOURCEWGET,"Devel-Symdump","http://search.cpan.org/CPAN/authors/id/A/AN/ANDK/"$(notdir $(Devel-Symdump-ver)))
 
 $(dejagnu-ver):
 	$(call SOURCEWGET,"dejagnu","https://ftp.gnu.org/pub/gnu/"$(dejagnu-ver))
@@ -1919,6 +1947,9 @@ $(dejagnu-ver):
 
 $(diffutils-ver):
 	$(call SOURCEWGET,"diffutils","http://ftp.gnu.org/gnu/"$(diffutils-ver))
+
+$(Digest-SHA1-ver):
+	$(call SOURCEWGET,"Digest-SHA1","http://search.cpan.org/CPAN/authors/id/G/GA/GAAS/"$(notdir $(Digest-SHA1-ver)))
 
 $(doxygen-ver):
 	$(call SOURCEWGET,"doxygen","http://ftp.stack.nl/pub/"$(doxygen-ver))
@@ -2004,6 +2035,12 @@ $(harfbuzz-ver):
 $(hashdeep-ver):
 	$(call SOURCEGIT,"hashdeep","https://github.com/jessek/hashdeep.git")
 
+$(HTML-Parser-ver):
+	$(call SOURCEWGET,"HTML-Parser","http://search.cpan.org/CPAN/authors/id/G/GA/GAAS/"$(notdir $(HTML-Parser-ver)))
+
+$(HTML-Tagset-ver):
+	$(call SOURCEWGET,"HTML-Tagset","http://search.cpan.org/CPAN/authors/id/P/PE/PETDANCE/"$(notdir $(HTML-Tagset-ver)))
+
 $(htop-ver):
 	$(call SOURCEWGET,"htop","http://hisham.hm/htop/releases/1.0.1/htop-1.0.1.tar.gz")
 
@@ -2080,6 +2117,9 @@ $(libusb-ver):
 wget-libxml2:
 	$(call SOURCEWGET,"libxml2","http://xmlsoft.org/sources/libxml2-2.9.1.tar.gz")
 
+$(List-MoreUtils-ver):
+	$(call SOURCEWGET,"List-MoreUtils","http://search.cpan.org/CPAN/authors/id/R/RE/REHSACK/"$(notdir $(List-MoreUtils-ver)))
+
 $(llvm-ver):
 	$(call SOURCEWGET,"llvm","http://llvm.org/releases/3.4/llvm-3.4.src.tar.gz")
 
@@ -2142,6 +2182,9 @@ $(perl-ver):
 $(pixman-ver):
 	$(call SOURCEWGET,"pixman","http://cairographics.org/releases/pixman-0.32.6.tar.gz")
 
+$(Pod-Coverage-ver):
+	$(call SOURCEWGET,"Pod-Coverage","http://search.cpan.org/CPAN/authors/id/R/RC/RCLAMP/"$(notdir $(Pod-Coverage-ver)))
+
 # Popt needed for cryptsetup
 $(popt-ver):
 	$(call SOURCEWGET,"popt","http://rpm5.org/files/popt/popt-1.16.tar.gz")
@@ -2160,6 +2203,9 @@ $(Python-ver):
 
 $(p7zip-ver):
 	$(call SOURCEWGET,"p7zip","http://downloads.sourceforge.net/project/p7zip/p7zip/9.38.1/p7zip_9.38.1_src_all.tar.bz2")
+
+$(Scalar-MoreUtils-ver):
+	$(call SOURCEWGET,"Scalar-MoreUtils","http://search.cpan.org/CPAN/authors/id/R/RK/RKRIMEN/"$(notdir $(Scalar-MoreUtils-ver)))
 
 $(scons-ver):
 	$(call SOURCEWGET, "scons", "http://prdownloads.sourceforge.net/scons/scons-2.3.4.tar.gz")
@@ -2219,6 +2265,12 @@ wget-tcp_wrappers-patch:
 $(tcpdump-ver):
 	$(call SOURCEWGET,"tcpdump","http://www.tcpdump.org/release/tcpdump-4.5.1.tar.gz")
 
+$(Test-Pod-ver):
+	$(call SOURCEWGET,"Test-Pod","http://search.cpan.org/CPAN/authors/id/D/DW/DWHEELER/"$(notdir $(Test-Pod-ver)))
+
+$(Test-Pod-Coverage-ver):
+	$(call SOURCEWGET,"Test-Pod-Coverage","http://search.cpan.org/CPAN/authors/id/N/NE/NEILB/"$(notdir $(Test-Pod-Coverage-ver)))
+
 $(texinfo-ver):
 	$(call SOURCEWGET,"texinfo","https://ftp.gnu.org/gnu/texinfo/texinfo-5.2.tar.gz")
 
@@ -2236,6 +2288,9 @@ $(util-linux-ng-ver):
 
 $(unzip-ver):
 	$(call SOURCEWGET,"unzip","http://downloads.sourceforge.net/infozip/unzip60.tar.gz")
+
+$(URI-ver):
+	$(call SOURCEWGET,"URI","http://search.cpan.org/CPAN/authors/id/E/ET/ETHER/"$(notdir $(URI-ver)))
 
 $(vim-ver):
 	$(call SOURCEWGET,"vim","ftp://ftp.vim.org/pub/vim/unix/vim-7.4.tar.bz2")
