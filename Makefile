@@ -76,8 +76,9 @@ define SOURCECLEAN
 	$(call SOURCEBASE,$1)
 	-cd $1; mkdir -p $$HOME/files/backups/oldpackages
 	-cd $1; /bin/rm -f `basename $2`
+	-cd $1; test ! -e $1-*.tar || /bin/mv $1-*.tar $$HOME/files/backups/oldpackages/.
 	-cd $1; test ! -e $1-*.tar.gz || /bin/mv $1-*.tar.gz $$HOME/files/backups/oldpackages/.
-	-cd $1; test ! -e $1-*.tgz || /bin/mv $1-*.t.gz $$HOME/files/backups/oldpackages/.
+	-cd $1; test ! -e $1-*.tgz || /bin/mv $1-*.tgz $$HOME/files/backups/oldpackages/.
 	-cd $1; test ! -e $1-*.tar.bz2 || /bin/mv $1-*.tar.bz2 $$HOME/files/backups/oldpackages/.
 endef
 
@@ -212,24 +213,64 @@ all: phase1 aftergcc
 # we need to get a version of GCC built before we can redo what we
 # have done to get GCC working and do the rest of the packages.
 .PHONY: phase1
-phase1: target_test target_dirs \
+phase1: \
+    target_test \
+    target_dirs \
      nameservers \
-     check_sudo scripts devices make zlib \
-     gzip tar xz perl texinfo binutils \
-     coreutils findutils diffutils which \
-     symlinks m4 ecj gmp mpfr mpc libelf \
-     flex gawk libtool sed \
-     bzip sqlite zip unzip \
+     check_sudo \
+     scripts \
+     devices \
+     make \
+     zlib \
+     gzip \
+     tar \
+     xz \
+     perl \
+     texinfo \
+     binutils \
+     coreutils \
+     findutils \
+     diffutils \
+     which \
+     symlinks \
+     m4 \
+     ecj \
+     gmp \
+     mpfr \
+     mpc \
+     libelf \
+     flex \
+     gawk \
+     libtool \
+     sed \
+     bzip \
+     sqlite \
+     zip \
+     unzip \
      autoconf \
      libunistring \
-     libatomic_ops gc \
-     libffi guile gcc
+     libatomic_ops \
+     gc \
+     libffi \
+     guile \
+     gcc
 
 # db needs C++
 # lzma needs C++
+# lzip needs C++
 .PHONY: aftergcc
-aftergcc: pcre grep db lzma gdbm gettext libiconv gettext \
-     Python afterpython
+aftergcc: \
+    check_sudo \
+    pcre \
+    grep \
+    db \
+    lzma \
+    gdbm \
+    gettext \
+    libiconv \
+    gettext \
+    Python \
+    afterpython
 
 # run ca-cert twice. The shell scripts are sloppy. They want to
 # manipulate the previously installed certs
@@ -238,48 +279,119 @@ aftergcc: pcre grep db lzma gdbm gettext libiconv gettext \
 #     Net-SSLeay IO-Socket-SSL 
 
 .PHONY: afterpython
-afterpython: ca-cert ca-cert openssl afteropenssl
+afterpython: \
+    check_sudo \
+    ca-cert \
+    ca-cert \
+    openssl \
+    afteropenssl
 
 .PHONY: afteropenssl
 afteropenssl: \
-     Archive-Zip Digest-SHA1 \
-     Scalar-MoreUtils \
-     URI HTML-Tagset HTML-Parser \
-     Devel-Symdump Pod-Coverage \
-     Test-Pod Test-Pod-Coverage \
-     libwww-perl \
-     bison afterbison
+    check_sudo \
+    Archive-Zip \
+    Digest-SHA1 \
+    Scalar-MoreUtils \
+    URI \
+    HTML-Tagset \
+    HTML-Parser \
+    Devel-Symdump \
+    Pod-Coverage \
+    Test-Pod \
+    Test-Pod-Coverage \
+    libwww-perl \
+    bison \
+    afterbison
 
 # lua needs ncurses
 .PHONY: afterbison
-afterbison: autogen tcl tclx \
-     expect dejagnu wget libgpg-error libgcrypt libassuan libksba \
-     pth gnupg \
-     bash expat apr apr-util \
-     pkg-config glib ncurses lua ruby vim aftervim
+afterbison: \
+    check_sudo \
+    autogen \
+    tcl \
+    tclx \
+    expect \
+    dejagnu \
+    wget \
+    libgpg-error \
+    libgcrypt \
+    libassuan \
+    libksba \
+    pth gnupg \
+    bash \
+    expat \
+    apr \
+    apr-util \
+    pkg-config \
+    glib \
+    ncurses \
+    lua \
+    ruby \
+    vim \
+    aftervim
 
 .PHONY: aftervim
-aftervim: cppcheck libpcap \
-    jnettop scrypt bcrypt \
-    nettle libtasn1 \
+aftervim: \
+    check_sudo \
+    cppcheck \
+    libpcap \
+    jnettop \
+    scrypt \
+    bcrypt \
+    nettle \
+    libtasn1 \
     gnutls \
-    curl wipe srm util-linux-ng libxml2 afterlibxml2
+    curl \
+    wipe \
+    srm \
+    util-linux-ng \
+    libxml2 \
+    afterlibxml2
 
 .PHONY: afterlibxml2
-afterlibxml2: libarchive lzo \
+afterlibxml2: \
+    check_sudo \
+    libarchive \
+    lzo \
     cmake \
-    fuse ntfs-3g check file \
-    scons afterscons
+    fuse \
+    ntfs-3g \
+    check file \
+    scons \
+    afterscons
 
 .PHONY: afterscons
-afterscons: serf protobuf mosh \
-    llvm socat screen libevent tmux autossh inetutils \
-    swig httpd subversion git \
-    psmisc tcp_wrappers doxygen icu aftericu
+afterscons: \
+    check_sudo \
+    serf \
+    protobuf \
+    mosh \
+    llvm \
+    socat \
+    screen \
+    libevent \
+    tmux \
+    autossh \
+    inetutils \
+    swig \
+    httpd \
+    subversion \
+    git \
+    psmisc \
+    tcp_wrappers \
+    doxygen \
+    icu \
+    aftericu
 
 # Need to do harfbuzz, then freetype, the harfbuzz again
 .PHONY: aftericu
-aftericu: harfbuzz libpng freetype-nohb harfbuzz freetype \
+aftericu: \
+    check_sudo \
+    harfbuzz \
+    libpng \
+    freetype-nohb \
+    harfbuzz \
+    freetype \
     afterfreetype
 
 .PHONY: afterfreetype
@@ -302,27 +414,31 @@ aftersharutils: \
     iptraf-ng \
     hwloc \
     e2fsprogs \
+    openvpn \
+    whois \
     go \
     pixman \
     cairo \
     glibc \
-    automake truecrypt
+    automake \
+    truecrypt
 
 # ==============================================================
 # Versions
 # ==============================================================
+# fontconfig-ver     = fontconfig/fontconfig-2.11.94.tar.bz2
 Archive-Zip-ver    = Archive-Zip/Archive-Zip-1.51.tar.gz
 Devel-Symdump-ver  = Devel-Symdump/Devel-Symdump-2.15.tar.gz
 Digest-SHA1-ver    = Digest-SHA1/Digest-SHA1-2.13.tar.gz
-HTML-Tagset-ver    = HTML-Tagset/HTML-Tagset-3.20.tar.gz
 HTML-Parser-ver    = HTML-Parser/HTML-Parser-3.71.tar.gz
+HTML-Tagset-ver    = HTML-Tagset/HTML-Tagset-3.20.tar.gz
 IO-Socket-SSL-ver  = IO-Socket-SSL/IO-Socket-SSL-2.012.tar.gz
 List-MoreUtils-ver = List-MoreUtils/List-MoreUtils-0.413.tar.gz
 Pod-Coverage-ver   = Pod-Coverage/Pod-Coverage-0.23.tar.gz
 Python-ver         = Python/Python-2.7.9.tar.xz
 Scalar-MoreUtils-ver = Scalar-MoreUtils/Scalar-MoreUtils-0.02.tar.gz
-Test-Pod-ver       = Test-Pod/Test-Pod-1.49.tar.gz
 Test-Pod-Coverage-ver = Test-Pod-Coverage/Test-Pod-Coverage-1.10.tar.gz
+Test-Pod-ver       = Test-Pod/Test-Pod-1.49.tar.gz
 URI-ver            = URI/URI-1.69.tar.gz
 acl-ver            = acl/acl-2.2.52.src.tar.gz
 apr-util-ver       = apr-util/apr-util-1.5.3.tar.bz2
@@ -343,7 +459,7 @@ clisp-ver          = clisp/clisp-2.49.tar.gz
 cmake-ver          = cmake/cmake-3.1.2.tar.gz
 compiler-rt-ver    = compiler-rt/compiler-rt-3.4.src.tar.gz
 coreutils-ver      = coreutils/coreutils-8.22.tar.xz
-cppcheck-ver       = cppcheck/cppcheck-1.65.tar.bz2
+cppcheck-ver       = cppcheck/cppcheck-1.70.tar.bz2
 curl-ver           = curl/curl-7.41.0.tar.bz2
 dejagnu-ver        = dejagnu/dejagnu-1.5.2.tar.gz
 diffutils-ver      = diffutils/diffutils-3.3.tar.xz
@@ -362,7 +478,7 @@ gc-ver             = gc/gc-7.4.2.tar.gz
 gcc-ver            = gcc/gcc-4.7.3.tar.bz2
 gdb-ver            = gdb/gdb-7.9.tar.xz
 gdbm-ver           = gdbm/gdbm-1.10.tar.gz
-gettext-ver        = gettext/gettext-0.19.4.tar.gz
+gettext-ver        = gettext/gettext-0.19.6.tar.gz
 git-ver            = git/git-2.2.1.tar.xz
 glib-ver           = glib/glib-2.42.1.tar.xz
 glibc-ver          = glibc/glibc-2.21.tar.gz
@@ -404,14 +520,15 @@ lua-ver            = lua/lua-5.3.0.tar.gz
 lzo-ver            = lzo/lzo-2.08.tar.gz
 m4-ver             = m4/m4-1.4.17.tar.gz
 make-ver           = make/make-4.1.tar.gz
-mosh-ver           = mosh/mosh-1.2.4.tar.gz
+mosh-ver           = mosh/mosh-1.2.5.tar.gz
 mpc-ver            = mpc/mpc-0.8.1.tar.gz
 mpfr-ver           = mpfr/mpfr-2.4.2.tar.gz
-multitail-ver      = multitail/multitail-6.4.1.tgz
+multitail-ver      = multitail/multitail-6.4.2.tgz
 netpbm-ver         = netpbm/netpbm-10.35.95.tgz
 nettle-ver         = nettle/nettle-2.7.1.tar.gz
 ntfs-3g-ver        = ntfs-3g/ntfs-3g_ntfsprogs-2013.1.13.tgz
 openssl-ver        = openssl/openssl-1.0.2.tar.gz
+openvpn-ver        = openvpn/openvpn-2.3.8.tar.xz
 p7zip-ver          = p7zip/p7zip_9.38.1_src_all.tar.bz2
 par2cmdline-ver    = par2cmdline/master.zip
 pcre-ver           = pcre/pcre-8.36.tar.bz2
@@ -441,11 +558,14 @@ tcpdump-ver        = tcpdump/tcpdump-4.5.1.tar.gz
 texinfo-ver        = texinfo/texinfo-5.2.tar.gz
 tmux-ver           = tmux/tmux-1.9a.tar.gz
 truecrypt-ver      = truecrypt/truecrypt-7.1a-linux-console-x86.tar.gz
+unrar-ver          = unrar/unrarsrc-5.3.3.tar.gz
 unzip-ver          = unzip/unzip60.tar.gz
 util-linux-ng-ver  = util-linux-ng/util-linux-ng-2.18.tar.xz
 util-linux-ver     = util-linux/util-linux-2.24.tar.gz
 vim-ver            = vim/vim-7.4.tar.bz2
+wget-ver           = wget/wget-1.16.3.tar.xz
 which-ver          = which/which-2.20.tar.gz
+whois-ver          = whois/whois_5.2.10.tar.xz
 wipe-ver           = wipe/wipe-2.3.1.tar.bz2
 xz-ver             = xz/xz-5.0.5.tar.gz
 zip-ver            = zip/zip30.tar.gz
@@ -676,11 +796,15 @@ make libpcap sqlite lzma bison autogen tcpdump: $(make-ver) $(libpcap-ver) $(tcp
 	$(call CPLIB,$@*)
 
 # No configure and no make check || make test
+#
+# unrar is going to install in /usr/bin
+#
 .PHONY: bcrypt
 .PHONY: bzip
 .PHONY: symlinks
 .PHONY: multitail
-bcrypt bzip multitail symlinks: $(bcrypt-ver) $(bzip-ver) $(multitail-ver) $(symlinks-ver)
+.PHONY: unrar
+bcrypt bzip multitail symlinks unrar: $(bcrypt-ver) $(bzip-ver) $(multitail-ver) $(symlinks-ver) $(unrar-ver)
 	$(call SOURCEDIR,$@,xfz)
 	cd $@/`cat $@/untar.dir`/; make
 	$(call PKGINSTALL,$@)
@@ -1486,6 +1610,16 @@ openssl: $(openssl-ver)
 	$(call LNLIB,libcrypto.so.1.0.0)
 	@echo "======= Build of $@ Successful ======="
 
+.PHONY: openvpn
+openvpn: $(openvpn-ver)
+	$(call SOURCEDIR,$@,xf)
+	cd $@/`cat $@/untar.dir`/; autoreconf -vi
+	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
+	cd $@/`cat $@/untar.dir`/; make
+	$(call PKGINSTALL,$@)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
+
 .PHONY: pcre
 pcre: $(pcre-ver)
 	$(call SOURCEDIR,$@,xf)
@@ -1697,6 +1831,29 @@ vim: $(vim-ver)
 	cd $@/`cat $@/untar.dir`/; LANG=C LC_ALL=C make test || LANG=C LC_ALL=C make check
 	$(call PKGINSTALL,$@)
 
+.PHONY: wget
+wget: $(wget-ver)
+	$(call SOURCEDIR,$@,xf)
+	# cd $@/`cat $@/untar.dir`/; patch -Np1 -i ../wget-1.14-texi2pod-1.patch
+	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --sysconfdir=/usr/local/etc --with-ssl=openssl
+	cd $@/`cat $@/untar.dir`/; make
+	# Uses perl to do the tests and setup a server, there is something failing
+	# Linux from scratch warsn HTTPS tests fail if openssl is used and
+	# valgrind is enabled.
+	# cd $@/`cat $@/untar.dir`/; make check || make test
+	$(call PKGINSTALL,$@)
+
+.PHONY: whois
+whois: $(whois-ver)
+	$(call SOURCEDIR,$@,xfz)
+	cd $@/`cat $@/untar.dir`/; make
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo make prefix=/usr/local install-whois
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo make prefix=/usr/local install-mkpasswd
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo make prefix=/usr/local install-pos
+	$(call PKGINSTALL,$@)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
+
 .PHONY: zip
 zip: $(zip-ver)
 	$(call SOURCEDIR,$@,zip)
@@ -1713,16 +1870,6 @@ zlib: $(zlib-ver)
 	cd $@/`cat $@/untar.dir`/; make check || make test
 	$(call PKGINSTALL,$@)
 	$(call CPLIB,libz.*)
-
-.PHONY: wget
-wget:
-	$(call SOURCEDIR,$@,xf)
-	cd $@/`cat $@/untar.dir`/; patch -Np1 -i ../wget-1.14-texi2pod-1.patch
-	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --sysconfdir=/usr/local/etc --with-ssl=openssl
-	cd $@/`cat $@/untar.dir`/; make
-	# Uses perl to do the tests and setup a server, there is something failing
-	# cd $@/`cat $@/untar.dir`/; make check || make test
-	$(call PKGINSTALL,$@)
 
 .PHONY: wget-all
 wget-all: \
@@ -1826,6 +1973,7 @@ wget-all: \
     $(nettle-ver) \
     $(ntfs-3g-ver) \
     $(openssl-ver) \
+    $(openvpn-ver) \
     $(p7zip-ver) \
     $(par2cmdline-ver) \
     $(pcre-ver) \
@@ -1856,9 +2004,12 @@ wget-all: \
     $(texinfo-ver) \
     $(tmux-ver) \
     $(truecrypt-ver) \
+    $(unrar-ver) \
     $(unzip-ver) \
     $(vim-ver) \
+    $(wget-ver) \
     $(which-ver) \
+    $(whois-ver) \
     $(wipe-ver) \
     $(zip-ver) \
     $(zlib-ver) \
@@ -1933,7 +2084,7 @@ $(coreutils-ver):
 	$(call SOURCEWGET,"coreutils","http://ftp.gnu.org/gnu/"$(coreutils-ver))
 
 $(cppcheck-ver):
-	$(call SOURCEWGET,"cppcheck","http://downloads.sourceforge.net/project/cppcheck/cppcheck/1.65/cppcheck-1.65.tar.bz2")
+	$(call SOURCEWGET,"cppcheck","http://downloads.sourceforge.net/project/cppcheck/cppcheck/1.70/"$(notdir $(cppcheck-ver)))
 
 $(curl-ver):
 	$(call SOURCEWGET,"curl","http://curl.haxx.se/download/curl-7.41.0.tar.bz2")
@@ -1973,7 +2124,7 @@ $(flex-ver):
 	$(call SOURCEWGET,"flex","http://sourceforge.net/projects/flex/files/flex-2.5.39.tar.gz")
 
 $(fontconfig-ver):
-	$(call SOURCEWGET,"fontconfig","http://www.freedesktop.org/software/fontconfig/release/fontconfig-2.11.1.tar.bz2")
+	$(call SOURCEWGET,"fontconfig","http://www.freedesktop.org/software/fontconfig/release/"$(notdir $(fontconfig-ver)))
 
 $(freetype-ver):
 	$(call SOURCEWGET,"freetype","http://downloads.sourceforge.net/"$(freetype-ver))
@@ -2145,10 +2296,10 @@ $(mpfr-ver):
 	$(call SOURCEWGET,"mpfr","ftp://gcc.gnu.org/pub/gcc/infrastructure/mpfr-2.4.2.tar.bz2")
 
 $(mosh-ver):
-	$(call SOURCEWGET,"mosh","http://mosh.mit.edu/mosh-1.2.4.tar.gz")
+	$(call SOURCEWGET,"mosh","http://mosh.mit.edu/"$(notdir $(mosh-ver)))
 
 $(multitail-ver):
-	$(call SOURCEWGET,"multitail","http://www.vanheusden.com/multitail/multitail-6.4.1.tgz")
+	$(call SOURCEWGET,"multitail","http://www.vanheusden.com/"$(multitail-ver))
 
 $(nettle-ver):
 	$(call SOURCEWGET,"nettle","https://ftp.gnu.org/gnu/nettle/nettle-2.7.1.tar.gz")
@@ -2168,7 +2319,10 @@ $(ntfs-3g-ver):
 	$(call SOURCEWGET,"ntfs-3g","http://tuxera.com/opensource/ntfs-3g_ntfsprogs-2013.1.13.tgz")
 
 $(openssl-ver):
-	$(call SOURCEWGET,"openssl","http://www.openssl.org/source/openssl-1.0.2.tar.gz")
+	$(call SOURCEWGET,"openssl","http://www.openssl.org/source/"$(notdir $(openssl-ver)))
+
+$(openvpn-ver):
+	$(call SOURCEWGET,"openvpn","https://swupdate.openvpn.org/community/releases/"$(notdir $(openvpn-ver)))
 
 $(par2cmdline-ver):
 	$(call SOURCEWGET,"par2cmdline","https://github.com/Parchive/par2cmdline/archive/master.zip")
@@ -2286,6 +2440,9 @@ $(util-linux-ver):
 $(util-linux-ng-ver):
 	$(call SOURCEWGET,"util-linux-ng","ftp://ftp.kernel.org/pub/linux/utils/util-linux/v2.18/util-linux-ng-2.18.tar.xz")
 
+$(unrar-ver):
+	$(call SOURCEWGET,"unrar","http://www.rarlab.com/rar/"$(notdir $(unrar-ver)))
+
 $(unzip-ver):
 	$(call SOURCEWGET,"unzip","http://downloads.sourceforge.net/infozip/unzip60.tar.gz")
 
@@ -2295,8 +2452,14 @@ $(URI-ver):
 $(vim-ver):
 	$(call SOURCEWGET,"vim","ftp://ftp.vim.org/pub/vim/unix/vim-7.4.tar.bz2")
 
+$(wget-ver):
+	$(call SOURCEWGET,"wget","http://ftp.gnu.org/gnu/"$(wget-ver))
+
 $(which-ver):
 	$(call SOURCEWGET,"which","https://ftp.gnu.org/pub/gnu/"$(which-ver))
+
+$(whois-ver):
+	$(call SOURCEWGET,"whois","http://ftp.debian.org/debian/pool/main/w/"$(whois-ver))
 
 $(wipe-ver):
 	$(call SOURCEWGET,"wipe","http://sourceforge.net/projects/wipe/files/wipe/2.3.1/wipe-2.3.1.tar.bz2")
