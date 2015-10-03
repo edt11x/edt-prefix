@@ -4,6 +4,7 @@
 # export LD_LIBRARY_PATH="/usr/local/lib:/lib:."
 set -o pipefail
 ulimit -s 16384
+unset DISPLAY
 export LD_LIBRARY_PATH="/usr/local/lib:/usr/local/lib64:/lib:/usr/lib:/usr/local/glibc/lib"
 # A few packages have to be built with the old compiler first
 # or they cause too much chaos when we rebuild other packages

@@ -51,9 +51,11 @@ define MKVRFYDIR
 	cd $1; readlink -f . | grep $1
 endef
 
+# tcp_wrappers uses underscore in front of the version number
 define SOURCEBASE
 	$(call MKVRFYDIR,$1)
 	cd $1; find . -maxdepth 1 -type d -name $1-\* -print -exec /bin/rm -rf {} \;
+	cd $1; find . -maxdepth 1 -type d -name $1_\* -print -exec /bin/rm -rf {} \;
 endef
 
 # Old versions of tar may not handle all archives and may not dynamically detect
@@ -72,13 +74,15 @@ define SOURCEDIR
 	cd $1/`cat $1/untar.dir`/; readlink -f . | grep `cat ../untar.dir`
 endef
 
+# cd $1; test ! -e $1-*.patch || /bin/mv $1-*.patch $$HOME/files/backups/oldpackages/.
 define SOURCECLEAN
 	$(call SOURCEBASE,$1)
 	-cd $1; mkdir -p $$HOME/files/backups/oldpackages
 	-cd $1; /bin/rm -f `basename $2`
 	-cd $1; test ! -e $1-*.tar || /bin/mv $1-*.tar $$HOME/files/backups/oldpackages/.
-	-cd $1; test ! -e $1-*.tar.gz || /bin/mv $1-*.tar.gz $$HOME/files/backups/oldpackages/.
 	-cd $1; test ! -e $1-*.tgz || /bin/mv $1-*.tgz $$HOME/files/backups/oldpackages/.
+	-cd $1; test ! -e $1-*.tar.gz || /bin/mv $1-*.tar.gz $$HOME/files/backups/oldpackages/.
+	-cd $1; test ! -e $1-*.tar.xz || /bin/mv $1-*.tar.xz $$HOME/files/backups/oldpackages/.
 	-cd $1; test ! -e $1-*.tar.bz2 || /bin/mv $1-*.tar.bz2 $$HOME/files/backups/oldpackages/.
 endef
 
@@ -269,17 +273,17 @@ aftergcc: \
     gettext \
     libiconv \
     gettext \
-    Python \
-    afterpython
+    aftergettext
 
 # run ca-cert twice. The shell scripts are sloppy. They want to
 # manipulate the previously installed certs
+# Need the certs for Python Pip
 
 # took out Net-SSLeay
 #     Net-SSLeay IO-Socket-SSL 
 
-.PHONY: afterpython
-afterpython: \
+.PHONY: aftergettext
+aftergettext: \
     check_sudo \
     ca-cert \
     ca-cert \
@@ -289,6 +293,7 @@ afterpython: \
 .PHONY: afteropenssl
 afteropenssl: \
     check_sudo \
+    Python \
     Archive-Zip \
     Digest-SHA1 \
     Scalar-MoreUtils \
@@ -317,7 +322,8 @@ afterbison: \
     libgcrypt \
     libassuan \
     libksba \
-    pth gnupg \
+    pth \
+    gnupg \
     bash \
     expat \
     apr \
@@ -367,6 +373,11 @@ afterscons: \
     protobuf \
     mosh \
     llvm \
+    afterllvm
+
+.PHONY: afterllvm
+afterllvm: \
+    check_sudo \
     socat \
     screen \
     libevent \
@@ -416,6 +427,7 @@ aftersharutils: \
     e2fsprogs \
     openvpn \
     whois \
+    patch \
     go \
     pixman \
     cairo \
@@ -434,6 +446,7 @@ HTML-Parser-ver    = HTML-Parser/HTML-Parser-3.71.tar.gz
 HTML-Tagset-ver    = HTML-Tagset/HTML-Tagset-3.20.tar.gz
 IO-Socket-SSL-ver  = IO-Socket-SSL/IO-Socket-SSL-2.012.tar.gz
 List-MoreUtils-ver = List-MoreUtils/List-MoreUtils-0.413.tar.gz
+Net-SSLeay-ver     = Net-SSLeay/Net-SSLeay-1.68.tar.gz
 Pod-Coverage-ver   = Pod-Coverage/Pod-Coverage-0.23.tar.gz
 Python-ver         = Python/Python-2.7.9.tar.xz
 Scalar-MoreUtils-ver = Scalar-MoreUtils/Scalar-MoreUtils-0.02.tar.gz
@@ -515,6 +528,7 @@ libtasn1-ver       = libtasn1/libtasn1-4.2.tar.gz
 libtool-ver        = libtool/libtool-2.4.2.tar.gz
 libunistring-ver   = libunistring/libunistring-0.9.5.tar.xz
 libusb-ver         = libusb/libusb-1.0.19.tar.bz2
+libxml2-ver        = libxml2/libxml2-2.9.1.tar.gz
 llvm-ver           = llvm/llvm-3.4.src.tar.gz
 lua-ver            = lua/lua-5.3.0.tar.gz
 lzo-ver            = lzo/lzo-2.08.tar.gz
@@ -524,13 +538,15 @@ mosh-ver           = mosh/mosh-1.2.5.tar.gz
 mpc-ver            = mpc/mpc-0.8.1.tar.gz
 mpfr-ver           = mpfr/mpfr-2.4.2.tar.gz
 multitail-ver      = multitail/multitail-6.4.2.tgz
+ncurses-ver        = ncurses/ncurses-5.9.tar.gz
 netpbm-ver         = netpbm/netpbm-10.35.95.tgz
 nettle-ver         = nettle/nettle-2.7.1.tar.gz
 ntfs-3g-ver        = ntfs-3g/ntfs-3g_ntfsprogs-2013.1.13.tgz
-openssl-ver        = openssl/openssl-1.0.2.tar.gz
+openssl-ver        = openssl/openssl-1.0.2d.tar.gz
 openvpn-ver        = openvpn/openvpn-2.3.8.tar.xz
 p7zip-ver          = p7zip/p7zip_9.38.1_src_all.tar.bz2
 par2cmdline-ver    = par2cmdline/master.zip
+patch-ver          = patch/patch-2.7.tar.gz
 pcre-ver           = pcre/pcre-8.36.tar.bz2
 perl-ver           = perl/perl-5.22.0.tar.gz
 pixman-ver         = pixman/pixman-0.32.6.tar.gz
@@ -554,6 +570,7 @@ symlinks-ver       = symlinks/symlinks-1.4.tar.gz
 tar-ver            = tar/tar-1.28.tar.gz
 tcl-ver            = tcl/tcl8.6.3-src.tar.gz
 tcp_wrappers-ver   = tcp_wrappers/tcp_wrappers_7.6.tar.gz
+tcp_wrappers-patch-ver = tcp_wrappers/tcp_wrappers-7.6-shared_lib_plus_plus-1.patch
 tcpdump-ver        = tcpdump/tcpdump-4.5.1.tar.gz
 texinfo-ver        = texinfo/texinfo-5.2.tar.gz
 tmux-ver           = tmux/tmux-1.9a.tar.gz
@@ -701,8 +718,10 @@ apr automake findutils gdbm libgcrypt libgpg-error libassuan libksba libpng whic
 # Post tar rule, we should have a good version of tar that
 # automatically detects file type, with test-update-copyright.sh
 # failure that is in several packages
-.PHONY: diffutils grep
-diffutils grep m4: $(diffutils-ver) $(grep-ver) $(m4-ver)
+# patch hardcodes /bin/vi and fails tests because the installed vi
+# is too old to handle the command line arguments that are passed.
+.PHONY: diffutils grep patch
+diffutils grep m4 patch: $(diffutils-ver) $(grep-ver) $(m4-ver) $(patch-ver)
 	$(call SOURCEDIR,$@,xf)
 	cd $@; mkdir $@-build
 	cd $@/$@-build/; readlink -f . | grep $@-build
@@ -715,7 +734,10 @@ diffutils grep m4: $(diffutils-ver) $(grep-ver) $(m4-ver)
 
 # Post tar rule, we should have a good version of tar that
 # automatically detects file type
-# For phase1, we will skip tests
+#
+# NOTE:
+# For PHASE1, we will skip tests
+#
 # skip tests for autoconf, we may not have Fortran in PHASE1
 # skip tests for libffi, we may not have a C++ compiler in PHASE1
 # skip tests for texinfo needs a newer version of gzip to pass
@@ -837,7 +859,7 @@ Archive-Zip Digest-SHA1 Scalar-MoreUtils URI HTML-Tagset HTML-Parser IO-Socket-S
 # PERL_MM_USE_DEFAULT=1 is the way to answer 'no' to 
 # Makefile.PL for external tests question.
 .PHONY: Net-SSLeay
-Net-SSLeay:
+Net-SSLeay: $(Net-SSLeay-ver)
 	$(call SOURCEDIR,$@,xfz)
 	cd $@/`cat $@/untar.dir`/; PERL_MM_USE_DEFAULT=1 perl Makefile.PL
 	cd $@/`cat $@/untar.dir`/; make
@@ -1573,7 +1595,7 @@ mpfr: $(mpfr-ver)
 	$(call PKGINSTALL,$@)
 
 .PHONY: ncurses
-ncurses:
+ncurses: $(ncurses-ver)
 	$(call SOURCEDIR,$@,xfz)
 	cd $@; mkdir $@-build
 	cd $@/$@-build/; readlink -f . | grep $@-build
@@ -1600,8 +1622,8 @@ openssl: $(openssl-ver)
 	cd $@/`cat $@/untar.dir`/; make
 	cd $@/`cat $@/untar.dir`/; make check || make test
 	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo make MANDIR=/usr/share/man MANSUFFIX=ssl install
-	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo install -dv -m755 /usr/share/doc/openssl-1.0.1e
-	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo make cp -vfr doc/*     /usr/share/doc/openssl-1.0.1e
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo install -dv -m755 /usr/share/doc/openssl
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo make cp -vfr doc/*     /usr/share/doc/openssl
 	$(call LNLIB,libssl.a)
 	$(call LNLIB,libssl.so)
 	$(call LNLIB,libssl.so.1.0.0)
@@ -1785,7 +1807,7 @@ tclx:
 	$(call PKGINSTALLBUILD,$@)
 
 .PHONY: tcp_wrappers
-tcp_wrappers: $(tcp_wrappers-ver)
+tcp_wrappers: $(tcp_wrappers-ver) $(tcp_wrappers-patch-ver)
 	$(call SOURCEDIR,$@,xf)
 	cd $@/`cat $@/untar.dir`/; patch -Np1 -i ../../patches/tcp_wrappers-7.6-shared_lib_plus_plus-1.patch
 	cd $@/`cat $@/untar.dir`/; sed -i -e "s,^extern char \*malloc();,/* & */," scaffold.c
@@ -1876,15 +1898,16 @@ wget-all: \
     $(Archive-Zip-ver) \
     $(Devel-Symdump-ver) \
     $(Digest-SHA1-ver) \
-    $(HTML-Tagset-ver) \
     $(HTML-Parser-ver) \
+    $(HTML-Tagset-ver) \
     $(IO-Socket-SSL-ver) \
     $(List-MoreUtils-ver) \
+    $(Net-SSLeay-ver) \
     $(Pod-Coverage-ver) \
     $(Python-ver) \
     $(Scalar-MoreUtils-ver) \
-    $(Test-Pod-ver) \
     $(Test-Pod-Coverage-ver) \
+    $(Test-Pod-ver) \
     $(URI-ver) \
     $(acl-ver) \
     $(apr-util-ver) \
@@ -1961,6 +1984,7 @@ wget-all: \
     $(libtool-ver) \
     $(libunistring-ver) \
     $(libusb-ver) \
+    $(libxml2-ver) \
     $(lua-ver) \
     $(lzo-ver) \
     $(m4-ver) \
@@ -1969,6 +1993,7 @@ wget-all: \
     $(mpc-ver) \
     $(mpfr-ver) \
     $(multitail-ver) \
+    $(ncurses-ver) \
     $(netpbm-ver) \
     $(nettle-ver) \
     $(ntfs-3g-ver) \
@@ -1976,6 +2001,7 @@ wget-all: \
     $(openvpn-ver) \
     $(p7zip-ver) \
     $(par2cmdline-ver) \
+    $(patch-ver) \
     $(pcre-ver) \
     $(perl-ver) \
     $(pixman-ver) \
@@ -1999,6 +2025,7 @@ wget-all: \
     $(symlinks-ver) \
     $(tar-ver) \
     $(tcl-ver) \
+    $(tcp_wrappers-patch-ver) \
     $(tcp_wrappers-ver) \
     $(tcpdump-ver) \
     $(texinfo-ver) \
@@ -2006,6 +2033,7 @@ wget-all: \
     $(truecrypt-ver) \
     $(unrar-ver) \
     $(unzip-ver) \
+    $(util-linux-ver) \
     $(vim-ver) \
     $(wget-ver) \
     $(which-ver) \
@@ -2013,11 +2041,6 @@ wget-all: \
     $(wipe-ver) \
     $(zip-ver) \
     $(zlib-ver) \
-    wget-libxml2 \
-    wget-NetSSLeay \
-    wget-ncurses \
-    wget-tcp_wrappers-patch \
-    $(util-linux-ver) \
     $(util-linux-ng-ver)
 
 $(acl-ver):
@@ -2264,9 +2287,8 @@ $(libunistring-ver):
 $(libusb-ver):
 	$(call SOURCEWGET,"libusb","http://downloads.sourceforge.net/libusb/libusb-1.0.19.tar.bz2")
 
-.PHONY: wget-libxml2
-wget-libxml2:
-	$(call SOURCEWGET,"libxml2","http://xmlsoft.org/sources/libxml2-2.9.1.tar.gz")
+$(libxml2-ver):
+	$(call SOURCEWGET,"libxml2","http://xmlsoft.org/sources/"$(notdir $(libxml2-ver)))
 
 $(List-MoreUtils-ver):
 	$(call SOURCEWGET,"List-MoreUtils","http://search.cpan.org/CPAN/authors/id/R/RE/REHSACK/"$(notdir $(List-MoreUtils-ver)))
@@ -2304,13 +2326,11 @@ $(multitail-ver):
 $(nettle-ver):
 	$(call SOURCEWGET,"nettle","https://ftp.gnu.org/gnu/nettle/nettle-2.7.1.tar.gz")
 
-.PHONY: wget-ncurses
-wget-ncurses:
+$(ncurses-ver):
 	$(call SOURCEWGET,"ncurses","https://ftp.gnu.org/pub/gnu/ncurses/ncurses-5.9.tar.gz")
 
-.PHONY: wget-Net-SSLeay
-wget-Net-SSLeay:
-	$(call SOURCEWGET,"Net-SSLeay","http://search.cpan.org/CPAN/authors/id/M/MI/MIKEM/Net-SSLeay-1.68.tar.gz")
+$(Net-SSLeay-ver):
+	$(call SOURCEWGET,"Net-SSLeay","http://search.cpan.org/CPAN/authors/id/M/MI/MIKEM/$(notdir $(Net-SSLeay-ver)))
 
 $(netpbm-ver):
 	$(call SOURCEWGET,"netpbm","http://downloads.sourceforge.net/project/netpbm/super_stable/10.35.95/netpbm-10.35.95.tgz")
@@ -2326,6 +2346,9 @@ $(openvpn-ver):
 
 $(par2cmdline-ver):
 	$(call SOURCEWGET,"par2cmdline","https://github.com/Parchive/par2cmdline/archive/master.zip")
+
+$(patch-ver):
+	$(call SOURCEWGET,"patch","http://ftp.gnu.org/gnu/"$(patch-ver))
 
 $(pcre-ver):
 	$(call SOURCEWGET,"pcre","ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.36.tar.bz2")
@@ -2412,8 +2435,7 @@ $(tcl-ver):
 $(tcp_wrappers-ver):
 	$(call SOURCEWGET,"tcp_wrappers","ftp://ftp.porcupine.org/pub/security/tcp_wrappers_7.6.tar.gz")
 
-.PHONY: wget-tcp_wrappers-patch
-wget-tcp_wrappers-patch:
+$(tcp_wrappers-patch-ver):
 	$(call PATCHWGET,"http://www.linuxfromscratch.org/patches/blfs/6.3/tcp_wrappers-7.6-shared_lib_plus_plus-1.patch")
 
 $(tcpdump-ver):
