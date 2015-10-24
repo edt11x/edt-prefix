@@ -38,12 +38,12 @@ GCC_LANGS=c,c++,fortran,java,objc,obj-c++
 # Function Defines
 #
 define LNBIN
-	test -f /usr/bin/$1 || /usr/bin/sudo ln -s /usr/local/bin/$1 /usr/bin/.
+	test -f /usr/bin/$1 || /usr/bin/sudo ln -sf /usr/local/bin/$1 /usr/bin/.
 endef
 
 # call LNLIB libssp.a
 define LNLIB
-	test -f /lib/$1 || test -L /lib/$1 || /usr/bin/sudo ln -s /usr/local/lib/$1 /lib/.
+	test -f /lib/$1 || test -L /lib/$1 || /usr/bin/sudo ln -sf /usr/local/lib/$1 /lib/.
 endef
 
 define MKVRFYDIR
@@ -105,7 +105,7 @@ define PATCHWGET
 endef
 
 define CPLIB
-	cd /usr/local/lib; for FILE in $1; do if test -e /usr/local/lib/$$FILE ; then test -f /lib/$$FILE || test -L /lib/$$FILE || /usr/bin/sudo ln -s /usr/local/lib/$$FILE /lib/. ; fi ; done ; sudo /bin/rm -f /lib/*.scm /lib/*.py ; sudo /sbin/ldconfig
+	cd /usr/local/lib; for FILE in $1; do if test -e /usr/local/lib/$$FILE ; then test -f /lib/$$FILE || test -L /lib/$$FILE || /usr/bin/sudo ln -sf /usr/local/lib/$$FILE /lib/. ; fi ; done ; sudo /bin/rm -f /lib/*.scm /lib/*.py ; sudo /sbin/ldconfig
 endef
 
 define RENEXE
@@ -124,10 +124,10 @@ endef
 
 define PKGINSTALLTO
 	@echo "======= Start of $1 Successful ======="
-	cd $1/$2/; /usr/bin/sudo make install
+	cd $1/$2/; /usr/bin/sudo make install || /usr/bin/sudo make LD_LIBRARY_PATH="/usr/local/lib:/usr/local/lib64:/lib:/usr/lib:/usr/local/glibc/lib" install
 	cd $1/$2/; /usr/bin/sudo /bin/rm -rf /tmp/stage
 	cd $1/$2/; /usr/bin/sudo /bin/mkdir -p /tmp/stage
-	cd $1/$2/; /usr/bin/sudo make DESTDIR=/tmp/stage install
+	cd $1/$2/; /usr/bin/sudo make DESTDIR=/tmp/stage install || /usr/bin/sudo make LD_LIBRARY_PATH="/usr/local/lib:/usr/local/lib64:/lib:/usr/lib:/usr/local/glibc/lib" DESTDIR=/tmp/stage install
 	$(call PKGFROMSTAGE,$1,$2,stage)
 	cd $1/$2/; /usr/bin/sudo /bin/rm -rf /tmp/stage
 	@echo "======= Install of $1 Successful ======="
@@ -137,10 +137,10 @@ endef
 # and DESTDIR variables to determine where they should install
 define PKGINSTALLTOPREFIX
 	@echo "======= Start of $1 Successful ======="
-	cd $1/$2/; /usr/bin/sudo make PREFIX=/usr/local install
+	cd $1/$2/; /usr/bin/sudo make PREFIX=/usr/local install || /usr/bin/sudo make LD_LIBRARY_PATH="/usr/local/lib:/usr/local/lib64:/lib:/usr/lib:/usr/local/glibc/lib" PREFIX=/usr/local install
 	cd $1/$2/; /usr/bin/sudo /bin/rm -rf /tmp/stage
 	cd $1/$2/; /usr/bin/sudo /bin/mkdir -p /tmp/stage
-	cd $1/$2/; /usr/bin/sudo make PREFIX=/usr/local DESTDIR=/tmp/stage install
+	cd $1/$2/; /usr/bin/sudo make PREFIX=/usr/local DESTDIR=/tmp/stage install || /usr/bin/sudo make LD_LIBRARY_PATH="/usr/local/lib:/usr/local/lib64:/lib:/usr/lib:/usr/local/glibc/lib" PREFIX=/usr/local DESTDIR=/tmp/stage install
 	$(call PKGFROMSTAGE,$1,$2,stage)
 	cd $1/$2/; /usr/bin/sudo /bin/rm -rf /tmp/stage
 	@echo "======= Install of $1 Successful ======="
@@ -322,6 +322,9 @@ afterbison: \
     libgcrypt \
     libassuan \
     libksba \
+    libcap \
+    libxslt \
+    pinentry \
     pth \
     gnupg \
     bash \
@@ -357,8 +360,8 @@ aftervim: \
 .PHONY: afterlibxml2
 afterlibxml2: \
     check_sudo \
-    libarchive \
     lzo \
+    libarchive \
     cmake \
     fuse \
     ntfs-3g \
@@ -419,6 +422,7 @@ afterfreetype: \
 
 .PHONY: aftersharutils
 aftersharutils: \
+    check_sudo \
     hashdeep \
     gdb \
     par2cmdline \
@@ -429,8 +433,11 @@ aftersharutils: \
     whois \
     patch \
     go \
+    libpthread \
+    vala \
     pixman \
     cairo \
+    pango \
     glibc \
     automake \
     truecrypt
@@ -460,7 +467,7 @@ attr-ver           = attr/attr-2.4.47.src.tar.gz
 autoconf-ver       = autoconf/autoconf-2.69.tar.xz
 automake-ver       = automake/automake-1.14.tar.xz
 autossh-ver        = autossh/autossh-1.4c.tgz
-bash-ver           = bash/bash-4.3.tar.gz
+bash-ver           = bash/bash-4.3.30.tar.gz
 bcrypt-ver         = bcrypt/bcrypt-1.1.tar.gz
 binutils-ver       = binutils/binutils-2.24.tar.gz
 bzip-ver           = bzip/bzip2-1.0.6.tar.gz
@@ -469,7 +476,7 @@ cairo-ver          = cairo/cairo-1.14.2.tar.xz
 check-ver          = check/check-0.9.12.tar.gz
 clang-ver          = clang/clang-3.4.src.tar.gz
 clisp-ver          = clisp/clisp-2.49.tar.gz
-cmake-ver          = cmake/cmake-3.1.2.tar.gz
+cmake-ver          = cmake/cmake-3.3.2.tar.gz
 compiler-rt-ver    = compiler-rt/compiler-rt-3.4.src.tar.gz
 coreutils-ver      = coreutils/coreutils-8.22.tar.xz
 cppcheck-ver       = cppcheck/cppcheck-1.70.tar.bz2
@@ -493,10 +500,10 @@ gdb-ver            = gdb/gdb-7.9.tar.xz
 gdbm-ver           = gdbm/gdbm-1.10.tar.gz
 gettext-ver        = gettext/gettext-0.19.6.tar.gz
 git-ver            = git/git-2.2.1.tar.xz
-glib-ver           = glib/glib-2.42.1.tar.xz
+glib-ver           = glib/glib-2.44.1.tar.xz
 glibc-ver          = glibc/glibc-2.21.tar.gz
 gmp-ver            = gmp/gmp-4.3.2.tar.bz2
-gnupg-ver          = gnupg/gnupg-2.0.26.tar.bz2
+gnupg-ver          = gnupg/gnupg-2.0.29.tar.bz2
 gnutls-ver         = gnutls/gnutls-3.3.13.tar.xz
 go-ver             = go/go1.4.2.src.tar.gz
 grep-ver           = grep/grep-2.21.tar.xz
@@ -513,22 +520,25 @@ iptraf-ng-ver      = iptraf-ng/iptraf-ng-1.1.4.tar.gz
 iwyu-ver           = include-what-you-use/include-what-you-use-3.4.src.tar.gz
 jnettop-ver        = jnettop/jnettop-0.13.0.tar.gz
 libarchive-ver     = libarchive/libarchive-3.1.2.tar.gz
-libassuan-ver      = libassuan/libassuan-2.2.0.tar.bz2
+libassuan-ver      = libassuan/libassuan-2.3.0.tar.bz2
 libatomic_ops-ver  = libatomic_ops/libatomic_ops-7.4.2.tar.gz
+libcap-ver         = libcap/libcap-2.24.tar.xz
 libelf-ver         = libelf/libelf-0.8.13.tar.gz
 libevent-ver       = libevent/libevent-2.0.21-stable.tar.gz
 libffi-ver         = libffi/libffi-3.2.1.tar.gz
-libgcrypt-ver      = libgcrypt/libgcrypt-1.6.2.tar.bz2
-libgpg-error-ver   = libgpg-error/libgpg-error-1.18.tar.bz2
+libgcrypt-ver      = libgcrypt/libgcrypt-1.6.4.tar.bz2
+libgpg-error-ver   = libgpg-error/libgpg-error-1.20.tar.bz2
 libiconv-ver       = libiconv/libiconv-1.14.tar.gz
-libksba-ver        = libksba/libksba-1.3.2.tar.bz2
+libksba-ver        = libksba/libksba-1.3.3.tar.bz2
 libpcap-ver        = libpcap/libpcap-1.4.0.tar.gz
 libpng-ver         = libpng/libpng-1.6.16.tar.xz
+libpthread-ver     = libpthread/master.zip
 libtasn1-ver       = libtasn1/libtasn1-4.2.tar.gz
 libtool-ver        = libtool/libtool-2.4.2.tar.gz
 libunistring-ver   = libunistring/libunistring-0.9.5.tar.xz
 libusb-ver         = libusb/libusb-1.0.19.tar.bz2
 libxml2-ver        = libxml2/libxml2-2.9.1.tar.gz
+libxslt-ver        = libxslt/libxslt-1.1.28.tar.gz
 llvm-ver           = llvm/llvm-3.4.src.tar.gz
 lua-ver            = lua/lua-5.3.0.tar.gz
 lzo-ver            = lzo/lzo-2.08.tar.gz
@@ -545,10 +555,12 @@ ntfs-3g-ver        = ntfs-3g/ntfs-3g_ntfsprogs-2013.1.13.tgz
 openssl-ver        = openssl/openssl-1.0.2d.tar.gz
 openvpn-ver        = openvpn/openvpn-2.3.8.tar.xz
 p7zip-ver          = p7zip/p7zip_9.38.1_src_all.tar.bz2
+pango-ver          = pango/pango-1.36.8.tar.xz
 par2cmdline-ver    = par2cmdline/master.zip
 patch-ver          = patch/patch-2.7.tar.gz
 pcre-ver           = pcre/pcre-8.36.tar.bz2
 perl-ver           = perl/perl-5.22.0.tar.gz
+pinentry-ver       = pinentry/pinentry-0.9.5.tar.bz2
 pixman-ver         = pixman/pixman-0.32.6.tar.gz
 popt-ver           = popt/popt-1.16.tar.gz
 protobuf-ver       = protobuf/protobuf-2.5.0.tar.bz2
@@ -579,6 +591,7 @@ unrar-ver          = unrar/unrarsrc-5.3.3.tar.gz
 unzip-ver          = unzip/unzip60.tar.gz
 util-linux-ng-ver  = util-linux-ng/util-linux-ng-2.18.tar.xz
 util-linux-ver     = util-linux/util-linux-2.24.tar.gz
+vala-ver           = vala/vala-0.28.1.tar.xz
 vim-ver            = vim/vim-7.4.tar.bz2
 wget-ver           = wget/wget-1.16.3.tar.xz
 which-ver          = which/which-2.20.tar.gz
@@ -614,12 +627,20 @@ target_dirs:
 	sudo mkdir -p /usr/local/share/man/mann
 	sudo mkdir -p /usr/local/share/man/web
 	sudo mkdir -p /usr/local/sbin
-	test -e /usr/local/man || sudo ln -s /usr/local/share/man /usr/local/man
+	# Create a link from /usr/local/usr back to /usr/local
+	# This allows us to specify --sysroot=/usr/local and when
+	# GCC appends usr/lib, which gives /usr/local/usr/lib, this
+	# will resolve to /usr/local/lib. Same for GCC searching for
+	# sysroot/usr/bin, this will give /usr/local/usr/bin which
+	# will resolve to /usr/local/bin.
+	#
+	test -e /usr/local/src || sudo ln -sf /usr/local /usr/local/usr
+	test -e /usr/local/man || sudo ln -sf /usr/local/share/man /usr/local/man
 
 # These will mess themselves up in the build process when they try to install, because
 # the shared libraries are being used for the install
 # Use the stock compiler to install them into /usr/local
-oldcompiler: check_sudo nameservers attr acl
+oldcompiler: check_sudo nameservers gettext attr acl
 
 .PHONY: foo
 foo:
@@ -703,8 +724,9 @@ gettext scrypt: $(gettext-ver) $(scrypt-ver)
 .PHONY: libgpg-error
 .PHONY: libksba
 .PHONY: libpng
+.PHONY: pinentry
 .PHONY: which
-apr automake findutils gdbm libgcrypt libgpg-error libassuan libksba libpng which: $(which-ver) $(libpng-ver) $(libgpg-error-ver) $(libassuan-ver) $(libgcrypt-ver) $(libksba-ver) $(apr-ver) $(automake-ver) $(gdbm-ver) $(findutils-ver)
+apr automake findutils gdbm libgcrypt libgpg-error libassuan libksba libpng pinentry which: $(which-ver) $(libpng-ver) $(libgpg-error-ver) $(libassuan-ver) $(libgcrypt-ver) $(libksba-ver) $(apr-ver) $(automake-ver) $(gdbm-ver) $(findutils-ver) $(pinentry-ver)
 	$(call SOURCEDIR,$@,xf)
 	cd $@; mkdir $@-build
 	cd $@/$@-build/; readlink -f . | grep $@-build
@@ -720,8 +742,17 @@ apr automake findutils gdbm libgcrypt libgpg-error libassuan libksba libpng whic
 # failure that is in several packages
 # patch hardcodes /bin/vi and fails tests because the installed vi
 # is too old to handle the command line arguments that are passed.
-.PHONY: diffutils grep patch
-diffutils grep m4 patch: $(diffutils-ver) $(grep-ver) $(m4-ver) $(patch-ver)
+.PHONY: diffutils
+.PHONY: grep
+.PHONY: libpthread
+.PHONY: m4
+.PHONY: patch
+diffutils grep libpthread m4 patch: \
+    $(diffutils-ver) \
+    $(grep-ver) \
+    $(libpthread-ver) \
+    $(m4-ver) \
+    $(patch-ver)
 	$(call SOURCEDIR,$@,xf)
 	cd $@; mkdir $@-build
 	cd $@/$@-build/; readlink -f . | grep $@-build
@@ -757,8 +788,35 @@ libffi texinfo: $(libffi-ver) $(texinfo-ver)
 	$(call CPLIB,$@*)
 
 # Post tar rule, no build directory
-.PHONY: jnettop libxml2 check file protobuf libarchive libunistring lzo gnupg nettle popt sharutils pixman
-jnettop libxml2 check file protobuf libarchive libtasn1 libunistring lzo gnupg nettle popt sharutils pixman: $(gnupg-ver) $(nettle-ver) $(libtasn1-ver) $(libunistring-ver) $(libarchive-ver) $(lzo-ver) $(check-ver) $(file-ver) $(protobuf-ver) $(popt-ver) $(sharutils-ver) $(pixman-ver) $(jnettop-ver)
+.PHONY: check
+.PHONY: file
+.PHONY: gnupg
+.PHONY: jnettop
+.PHONY: libunistring
+.PHONY: libxml2
+.PHONY: lzo
+.PHONY: nettle
+.PHONY: pixman
+.PHONY: popt
+.PHONY: protobuf
+.PHONY: sharutils
+.PHONY: vala
+.PHONY: libxslt
+jnettop libxml2 check file protobuf libtasn1 libunistring lzo gnupg nettle popt sharutils pixman vala libxslt : \
+    $(check-ver) \
+    $(file-ver) \
+    $(gnupg-ver) \
+    $(jnettop-ver) \
+    $(libtasn1-ver) \
+    $(libunistring-ver) \
+    $(libxslt-ver) \
+    $(lzo-ver) \
+    $(nettle-ver) \
+    $(pixman-ver) \
+    $(popt-ver) \
+    $(protobuf-ver) \
+    $(sharutils-ver) \
+    $(vala-ver)
 	$(call SOURCEDIR,$@,xf)
 	# cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local LDFLAGS="-lpthreads"
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
@@ -802,14 +860,21 @@ srm wipe mosh socat screen tmux psmisc libusb htop cairo iptraf-ng hwloc: $(srm-
 #  we are linking to an old librt in GLIBC
 # libpcap does not appear to have any tests
 # tcpdump fails on PPOE
+# pango needs cairo to test
 .PHONY: autogen
 .PHONY: bison
 .PHONY: libpcap
 .PHONY: lzma
 .PHONY: make
+.PHONY: pango
 .PHONY: sqlite
 .PHONY: tcpdump
-make libpcap sqlite lzma bison autogen tcpdump: $(make-ver) $(libpcap-ver) $(tcpdump-ver) $(sqlite-ver)
+make libpcap sqlite lzma bison autogen pango tcpdump: \
+    $(make-ver) \
+    $(libpcap-ver) \
+    $(pango-ver) \
+    $(sqlite-ver) \
+    $(tcpdump-ver)
 	$(call SOURCEDIR,$@,xfz)
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/; make
@@ -823,10 +888,11 @@ make libpcap sqlite lzma bison autogen tcpdump: $(make-ver) $(libpcap-ver) $(tcp
 #
 .PHONY: bcrypt
 .PHONY: bzip
+.PHONY: libcap
 .PHONY: symlinks
 .PHONY: multitail
 .PHONY: unrar
-bcrypt bzip multitail symlinks unrar: $(bcrypt-ver) $(bzip-ver) $(multitail-ver) $(symlinks-ver) $(unrar-ver)
+bcrypt bzip libcap multitail symlinks unrar: $(bcrypt-ver) $(bzip-ver) $(multitail-ver) $(symlinks-ver) $(unrar-ver) $(libcap-ver)
 	$(call SOURCEDIR,$@,xfz)
 	cd $@/`cat $@/untar.dir`/; make
 	$(call PKGINSTALL,$@)
@@ -965,15 +1031,15 @@ ca-cert: $(ca-cert-ver)
 	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo c_rehash
 	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo install BLFS-ca-bundle*.crt /usr/local/etc/ssl/ca-bundle.crt
 	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo /bin/rm -f /usr/local/etc/ssl/certs/ca-certificates.crt
-	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo ln -s /usr/local/etc/ssl/ca-bundle.crt /usr/local/etc/ssl/certs/ca-certificates.crt
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo ln -sf /usr/local/etc/ssl/ca-bundle.crt /usr/local/etc/ssl/certs/ca-certificates.crt
 
 # cmake tests fail on not having GTK2
 .PHONY: cmake
 cmake: $(cmake-ver)
 	$(call SOURCEDIR,$@,xf)
-	cd $@/`cat $@/untar.dir`/; ./bootstrap --prefix=/usr/local --system-libs --mandir=/usr/local/share/man --docdir=/usr/local/share/doc/cmake-3.1.2
+	cd $@/`cat $@/untar.dir`/; ./bootstrap --prefix=/usr/local --system-libs --mandir=/usr/local/share/man --docdir=/usr/local/share/doc/cmake
 	cd $@/`cat $@/untar.dir`/; make
-	-cd $@/`cat $@/untar.dir`/; bin/ctest -j2 -O ../cmake-3.1.2-test.log
+	-cd $@/`cat $@/untar.dir`/; bin/ctest -j2 -O ../cmake-test.log
 	$(call PKGINSTALL,$@)
 
 .PHONY: curl
@@ -1209,7 +1275,7 @@ gcc: $(gcc-ver)
 		    --with-ecj-jar=/usr/local/share/java/ecj.jar
 	cd $@/$@-build/; make
 	-cd $@/$@-build/; C_INCLUDE_PATH=/usr/local/include LIBRARY_PATH=/usr/local/lib make check
-	test -e /usr/local/bin/cc || /usr/bin/sudo ln -s /usr/local/bin/gcc /usr/local/bin/cc
+	test -e /usr/local/bin/cc || /usr/bin/sudo ln -sf /usr/local/bin/gcc /usr/local/bin/cc
 	$(call PKGINSTALLBUILD,$@)
 	$(call CPLIB,libssp*)
 	$(call CPLIB,libstdc*)
@@ -1307,6 +1373,18 @@ include-what-you-use: $(iwyu-ver)
 	cd $@/$@-build/; cmake -G "Unix Makefiles" -DLLVM_PATH=../../llvm-3.4 ../include-what-you-use
 	cd $@/$@-build/; make
 	$(call PKGINSTALLBUILD,$@)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
+
+.PHONY: libarchive
+libarchive : $(libarchive-ver)
+	$(call SOURCEDIR,$@,xf)
+	# cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local LDFLAGS="-lpthreads"
+	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
+	cd $@/`cat $@/untar.dir`/; make
+	cd $@/`cat $@/untar.dir`/; make check || make test
+	$(call PKGINSTALL,$@)
+	$(call CPLIB,libproto*)
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
 
@@ -1455,6 +1533,7 @@ glib: $(glib-ver)
 	# Can not run check until desktop-file-utils are installed
 	# cd $@/`cat $@/untar.dir`/; make check || make test
 	$(call PKGINSTALL,$@)
+	$(call CPLIB,libgio*)
 
 # CFLAGS="-march=i686 -g -O2 -fno-stack-protector"
 .PHONY: glibc
@@ -1604,8 +1683,8 @@ ncurses: $(ncurses-ver)
 	cd $@/$@-build/; make check || make test
 	$(call PKGINSTALLBUILD,$@)
 	$(call CPLIB,lib$@*)
-	if test -d /usr/local/include/ncursesw ; then test -d /usr/include/ncursesw || test -L /usr/include/ncursesw || /usr/bin/sudo ln -s /usr/local/include/ncursesw /usr/include/. ; fi 
-	if test -d /usr/local/include/ncursesw ; then test -d /usr/include/ncurses || test -L /usr/include/ncurses || /usr/bin/sudo ln -s /usr/local/include/ncursesw /usr/include/ncurses ; fi 
+	if test -d /usr/local/include/ncursesw ; then test -d /usr/include/ncursesw || test -L /usr/include/ncursesw || /usr/bin/sudo ln -sf /usr/local/include/ncursesw /usr/include/. ; fi 
+	if test -d /usr/local/include/ncursesw ; then test -d /usr/include/ncurses || test -L /usr/include/ncurses || /usr/bin/sudo ln -sf f/usr/local/include/ncursesw /usr/include/ncurses ; fi 
 
 .PHONY: ntfs-3g
 ntfs-3g: $(ntfs-3g-ver)
@@ -1669,6 +1748,10 @@ pth: $(pth-ver)
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
 
+#
+# We may be compiling on a machine without internet access, so
+# the Python PIP installations, we do not check the return code.
+#
 .PHONY: Python
 Python: $(Python-ver)
 	$(call SOURCEDIR,$@,xf)
@@ -1676,11 +1759,11 @@ Python: $(Python-ver)
 	cd $@/`cat $@/untar.dir`/; make
 	$(call PKGINSTALL,$@)
 	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo python2.7 setup.py install
-	cd $@/`cat $@/untar.dir`/; wget https://bootstrap.pypa.io/get-pip.py
-	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo python2.7 get-pip.py
-	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo pip install -U setuptools
-	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo pip install -U pip
-	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo pip install -U cppclean
+	-cd $@/`cat $@/untar.dir`/; wget https://bootstrap.pypa.io/get-pip.py
+	-cd $@/`cat $@/untar.dir`/; /usr/bin/sudo python2.7 get-pip.py
+	-cd $@/`cat $@/untar.dir`/; /usr/bin/sudo pip install -U setuptools
+	-cd $@/`cat $@/untar.dir`/; /usr/bin/sudo pip install -U pip
+	-cd $@/`cat $@/untar.dir`/; /usr/bin/sudo pip install -U cppclean
 
 .PHONY: perl
 perl: $(perl-ver)
@@ -1971,6 +2054,7 @@ wget-all: \
     $(libarchive-ver) \
     $(libassuan-ver) \
     $(libatomic_ops-ver) \
+    $(libcap-ver) \
     $(libelf-ver) \
     $(libevent-ver) \
     $(libffi-ver) \
@@ -1980,11 +2064,13 @@ wget-all: \
     $(libksba-ver) \
     $(libpcap-ver) \
     $(libpng-ver) \
+    $(libpthread-ver) \
     $(libtasn1-ver) \
     $(libtool-ver) \
     $(libunistring-ver) \
     $(libusb-ver) \
     $(libxml2-ver) \
+    $(libxslt-ver) \
     $(lua-ver) \
     $(lzo-ver) \
     $(m4-ver) \
@@ -2000,10 +2086,12 @@ wget-all: \
     $(openssl-ver) \
     $(openvpn-ver) \
     $(p7zip-ver) \
+    $(pango-ver) \
     $(par2cmdline-ver) \
     $(patch-ver) \
     $(pcre-ver) \
     $(perl-ver) \
+    $(pinentry-ver) \
     $(pixman-ver) \
     $(popt-ver) \
     $(protobuf-ver) \
@@ -2034,6 +2122,7 @@ wget-all: \
     $(unrar-ver) \
     $(unzip-ver) \
     $(util-linux-ver) \
+    $(vala-ver) \
     $(vim-ver) \
     $(wget-ver) \
     $(which-ver) \
@@ -2177,7 +2266,7 @@ $(git-ver):
 	$(call SOURCEWGET,"git","http://www.kernel.org/pub/software/scm/"$(git-ver))
 
 $(glib-ver):
-	$(call SOURCEWGET,"glib","http://ftp.gnome.org/pub/gnome/sources/glib/2.42/glib-2.42.1.tar.xz")
+	$(call SOURCEWGET,"glib","http://ftp.gnome.org/pub/gnome/sources/glib/2.44/"$(notdir $(glib-ver)))
 
 $(glibc-ver):
 	$(call SOURCEWGET,"glibc","https://ftp.gnu.org/gnu/"$(glibc-ver))
@@ -2248,6 +2337,9 @@ $(libassuan-ver):
 $(libatomic_ops-ver):
 	$(call SOURCEWGET,"libatomic_ops","http://www.ivmaisoft.com/_bin/atomic_ops/libatomic_ops-7.4.2.tar.gz")
 
+$(libcap-ver):
+	$(call SOURCEWGET,"libcap","https://www.kernel.org/pub/linux/libs/security/linux-privs/libcap2/"$(notdir $(libcap-ver)))
+
 $(libelf-ver):
 	$(call SOURCEWGET,"libelf","http://www.mr511.de/software/libelf-0.8.13.tar.gz")
 
@@ -2258,7 +2350,7 @@ $(libffi-ver):
 	$(call SOURCEWGET,"libffi","ftp://sourceware.org/pub/"$(libffi-ver))
 
 $(libgcrypt-ver):
-	$(call SOURCEWGET,"libgcrypt","ftp://ftp.gnupg.org/gcrypt/libgcrypt/libgcrypt-1.6.2.tar.bz2")
+	$(call SOURCEWGET,"libgcrypt","ftp://ftp.gnupg.org/gcrypt/"$(libgcrypt-ver))
 
 $(libksba-ver):
 	$(call SOURCEWGET,"libksba","ftp://ftp.gnupg.org/gcrypt/"$(libksba-ver))
@@ -2270,10 +2362,13 @@ $(libpcap-ver):
 	$(call SOURCEWGET,"libpcap","http://www.tcpdump.org/release/libpcap-1.4.0.tar.gz")
 
 $(libgpg-error-ver):
-	$(call SOURCEWGET,"libgpg-error","ftp://ftp.gnupg.org/gcrypt/libgpg-error/libgpg-error-1.18.tar.bz2")
+	$(call SOURCEWGET,"libgpg-error","ftp://ftp.gnupg.org/gcrypt/"$(libgpg-error-ver))
 
 $(libpng-ver):
 	$(call SOURCEWGET,"libpng","http://downloads.sourceforge.net/libpng/libpng-1.6.16.tar.xz")
+
+$(libpthread-ver):
+	$(call SOURCEGIT,"libpthread","git://git.sv.gnu.org/hurd/libpthread.git")
 
 $(libtasn1-ver):
 	$(call SOURCEWGET,"libtasn1","https://ftp.gnu.org/gnu/libtasn1/libtasn1-4.2.tar.gz")
@@ -2289,6 +2384,9 @@ $(libusb-ver):
 
 $(libxml2-ver):
 	$(call SOURCEWGET,"libxml2","http://xmlsoft.org/sources/"$(notdir $(libxml2-ver)))
+
+$(libxslt-ver):
+	$(call SOURCEWGET,"libxslt","http://xmlsoft.org/sources/"$(notdir $(libxslt-ver)))
 
 $(List-MoreUtils-ver):
 	$(call SOURCEWGET,"List-MoreUtils","http://search.cpan.org/CPAN/authors/id/R/RE/REHSACK/"$(notdir $(List-MoreUtils-ver)))
@@ -2324,7 +2422,7 @@ $(multitail-ver):
 	$(call SOURCEWGET,"multitail","http://www.vanheusden.com/"$(multitail-ver))
 
 $(nettle-ver):
-	$(call SOURCEWGET,"nettle","https://ftp.gnu.org/gnu/nettle/nettle-2.7.1.tar.gz")
+	$(call SOURCEWGET,"nettle","https://ftp.gnu.org/gnu/"$(nettle-ver))
 
 $(ncurses-ver):
 	$(call SOURCEWGET,"ncurses","https://ftp.gnu.org/pub/gnu/ncurses/ncurses-5.9.tar.gz")
@@ -2344,6 +2442,9 @@ $(openssl-ver):
 $(openvpn-ver):
 	$(call SOURCEWGET,"openvpn","https://swupdate.openvpn.org/community/releases/"$(notdir $(openvpn-ver)))
 
+$(pango-ver):
+	$(call SOURCEWGET,"pango","http://ftp.gnome.org/pub/gnome/sources/pango/1.36/"$(notdir $(pango-ver)))
+
 $(par2cmdline-ver):
 	$(call SOURCEWGET,"par2cmdline","https://github.com/Parchive/par2cmdline/archive/master.zip")
 
@@ -2355,6 +2456,9 @@ $(pcre-ver):
 
 $(perl-ver):
 	$(call SOURCEWGET,"perl","http://www.cpan.org/src/5.0/perl-5.22.0.tar.gz")
+
+$(pinentry-ver):
+	$(call SOURCEWGET,"pinentry","ftp://ftp.gnupg.org/gcrypt/"$(pinentry-ver))
 
 $(pixman-ver):
 	$(call SOURCEWGET,"pixman","http://cairographics.org/releases/pixman-0.32.6.tar.gz")
@@ -2470,6 +2574,9 @@ $(unzip-ver):
 
 $(URI-ver):
 	$(call SOURCEWGET,"URI","http://search.cpan.org/CPAN/authors/id/E/ET/ETHER/"$(notdir $(URI-ver)))
+
+$(vala-ver):
+	$(call SOURCEWGET,"vala","http://ftp.gnome.org/pub/gnome/sources/vala/0.28/"$(notdir $(vala-ver)))
 
 $(vim-ver):
 	$(call SOURCEWGET,"vim","ftp://ftp.vim.org/pub/vim/unix/vim-7.4.tar.bz2")
