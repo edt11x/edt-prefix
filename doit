@@ -5,7 +5,17 @@
 set -o pipefail
 ulimit -s 16384
 unset DISPLAY
+unset CFLAGS
 export LD_LIBRARY_PATH="/usr/local/lib:/usr/local/lib64:/lib:/usr/lib:/usr/local/glibc/lib"
+#
+# If we already built binutils, we need to get /usr/local/bin/ld
+# out of the way so that Perl does not find it.
+#
+if [ -e /usr/local/bin/ld ]
+then
+    echo sudo /bin/rm -f /usr/local/bin/ld.save
+    echo sudo /bin/mv /usr/local/bin/ld /usr/local/bin/ld.save
+fi
 # A few packages have to be built with the old compiler first
 # or they cause too much chaos when we rebuild other packages
 PATH=/usr/sbin:/usr/bin:/bin make SHELL=/bin/bash oldcompiler 2>&1 | /usr/bin/tee oldcompiler.out
@@ -24,6 +34,7 @@ then
     echo "Phase 1 build failed."
     exit 1
 fi
+unset CFLAGS
 PATH=/usr/local/bin:/usr/local/sbin:/usr/sbin:/usr/bin:/bin /usr/local/bin/make SHELL=/bin/bash all 2>&1 | /usr/bin/tee make2.out
 export RETVAL=$?
 echo Look Here XXX XXX XXX - $RETVAL

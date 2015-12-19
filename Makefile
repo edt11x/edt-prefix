@@ -304,6 +304,7 @@ afteropenssl: \
     Pod-Coverage \
     Test-Pod \
     Test-Pod-Coverage \
+    XML-Parser \
     libwww-perl \
     bison \
     afterbison
@@ -432,11 +433,28 @@ aftersharutils: \
     openvpn \
     whois \
     patch \
+    afterpatch
+
+.PHONY: afterpatch
+afterpatch: \
+    vala \
+    intltool \
+    gobject-introspection \
+    pygobject \
+    libsecret \
+    tcc \
+    afterlibsecret
+
+# Problem children
+#
+# cairo wants libpthreads
+#
+.PHONY: afterlibsecret
+afterlibsecret: \
     go \
     libpthread \
-    vala \
-    pixman \
     cairo \
+    pixman \
     pango \
     glibc \
     automake \
@@ -445,7 +463,7 @@ aftersharutils: \
 # ==============================================================
 # Versions
 # ==============================================================
-# fontconfig-ver     = fontconfig/fontconfig-2.11.94.tar.bz2
+# fontconfig-ver     = fontconfig/fontconfig-2.11.1.tar.bz2
 Archive-Zip-ver    = Archive-Zip/Archive-Zip-1.51.tar.gz
 Devel-Symdump-ver  = Devel-Symdump/Devel-Symdump-2.15.tar.gz
 Digest-SHA1-ver    = Digest-SHA1/Digest-SHA1-2.13.tar.gz
@@ -455,10 +473,11 @@ IO-Socket-SSL-ver  = IO-Socket-SSL/IO-Socket-SSL-2.012.tar.gz
 List-MoreUtils-ver = List-MoreUtils/List-MoreUtils-0.413.tar.gz
 Net-SSLeay-ver     = Net-SSLeay/Net-SSLeay-1.68.tar.gz
 Pod-Coverage-ver   = Pod-Coverage/Pod-Coverage-0.23.tar.gz
-Python-ver         = Python/Python-2.7.9.tar.xz
+Python-ver         = Python/Python-2.7.10.tar.xz
 Scalar-MoreUtils-ver = Scalar-MoreUtils/Scalar-MoreUtils-0.02.tar.gz
 Test-Pod-Coverage-ver = Test-Pod-Coverage/Test-Pod-Coverage-1.10.tar.gz
 Test-Pod-ver       = Test-Pod/Test-Pod-1.49.tar.gz
+XML-Parser-ver     = XML-Parser/XML-Parser-2.36.tar.gz
 URI-ver            = URI/URI-1.69.tar.gz
 acl-ver            = acl/acl-2.2.52.src.tar.gz
 apr-util-ver       = apr-util/apr-util-1.5.3.tar.bz2
@@ -479,7 +498,7 @@ clisp-ver          = clisp/clisp-2.49.tar.gz
 cmake-ver          = cmake/cmake-3.3.2.tar.gz
 compiler-rt-ver    = compiler-rt/compiler-rt-3.4.src.tar.gz
 coreutils-ver      = coreutils/coreutils-8.22.tar.xz
-cppcheck-ver       = cppcheck/cppcheck-1.70.tar.bz2
+cppcheck-ver       = cppcheck/cppcheck-1.71.tar.bz2
 curl-ver           = curl/curl-7.41.0.tar.bz2
 dejagnu-ver        = dejagnu/dejagnu-1.5.2.tar.gz
 diffutils-ver      = diffutils/diffutils-3.3.tar.xz
@@ -491,7 +510,7 @@ file-ver           = file/file-5.17.tar.gz
 findutils-ver      = findutils/findutils-4.4.2.tar.gz
 flex-ver           = flex/flex-2.5.39.tar.gz
 fontconfig-ver     = fontconfig/fontconfig-2.11.1.tar.bz2
-freetype-ver       = freetype/freetype-2.5.5.tar.bz2
+freetype-ver       = freetype/freetype-2.6.1.tar.bz2
 fuse-ver           = fuse/fuse-2.9.3.tar.gz
 gawk-ver           = gawk/gawk-4.1.1.tar.gz
 gc-ver             = gc/gc-7.4.2.tar.gz
@@ -500,12 +519,14 @@ gdb-ver            = gdb/gdb-7.9.tar.xz
 gdbm-ver           = gdbm/gdbm-1.10.tar.gz
 gettext-ver        = gettext/gettext-0.19.6.tar.gz
 git-ver            = git/git-2.2.1.tar.xz
-glib-ver           = glib/glib-2.44.1.tar.xz
+# glib-ver           = glib/glib-2.44.1.tar.xz
+glib-ver           = glib/glib-2.46.1.tar.xz
 glibc-ver          = glibc/glibc-2.21.tar.gz
 gmp-ver            = gmp/gmp-4.3.2.tar.bz2
 gnupg-ver          = gnupg/gnupg-2.0.29.tar.bz2
 gnutls-ver         = gnutls/gnutls-3.3.13.tar.xz
 go-ver             = go/go1.4.2.src.tar.gz
+gobject-introspection-ver = gobject-introspection/gobject-introspection-1.46.0.tar.xz
 grep-ver           = grep/grep-2.21.tar.xz
 guile-ver          = guile/guile-2.0.11.tar.xz
 gzip-ver           = gzip/gzip-1.6.tar.gz
@@ -516,6 +537,7 @@ httpd-ver          = httpd/httpd-2.4.12.tar.bz2
 hwloc-ver          = hwloc/hwloc-1.11.0.tar.gz
 icu-ver            = icu/icu4c-54_1-src.tgz
 inetutils-ver      = inetutils/inetutils-1.9.tar.gz
+intltool-ver       = intltool/intltool-0.51.0.tar.gz
 iptraf-ng-ver      = iptraf-ng/iptraf-ng-1.1.4.tar.gz
 iwyu-ver           = include-what-you-use/include-what-you-use-3.4.src.tar.gz
 jnettop-ver        = jnettop/jnettop-0.13.0.tar.gz
@@ -533,6 +555,7 @@ libksba-ver        = libksba/libksba-1.3.3.tar.bz2
 libpcap-ver        = libpcap/libpcap-1.4.0.tar.gz
 libpng-ver         = libpng/libpng-1.6.16.tar.xz
 libpthread-ver     = libpthread/master.zip
+libsecret-ver      = libsecret/libsecret-0.18.3.tar.xz
 libtasn1-ver       = libtasn1/libtasn1-4.2.tar.gz
 libtool-ver        = libtool/libtool-2.4.2.tar.gz
 libunistring-ver   = libunistring/libunistring-0.9.5.tar.xz
@@ -566,8 +589,9 @@ popt-ver           = popt/popt-1.16.tar.gz
 protobuf-ver       = protobuf/protobuf-2.5.0.tar.bz2
 psmisc-ver         = psmisc/psmisc-22.21.tar.gz
 pth-ver            = pth/pth-2.0.7.tar.gz
+pygobject-ver      = pygobject/pygobject-2.28.6.tar.xz
 scons-ver          = scons/scons-2.3.4.tar.gz
-screen-ver         = screen/screen-4.2.1.tar.gz
+screen-ver         = screen/screen-4.3.1.tar.gz
 scrypt-ver         = scrypt/scrypt-1.1.6.tgz
 sed-ver            = sed/sed-4.2.2.tar.gz
 serf-ver           = serf/serf-1.3.5.tar.bz2
@@ -585,6 +609,7 @@ tcp_wrappers-ver   = tcp_wrappers/tcp_wrappers_7.6.tar.gz
 tcp_wrappers-patch-ver = tcp_wrappers/tcp_wrappers-7.6-shared_lib_plus_plus-1.patch
 tcpdump-ver        = tcpdump/tcpdump-4.5.1.tar.gz
 texinfo-ver        = texinfo/texinfo-5.2.tar.gz
+tcc-ver            = tcc/tcc-0.9.26.tar.bz2
 tmux-ver           = tmux/tmux-1.9a.tar.gz
 truecrypt-ver      = truecrypt/truecrypt-7.1a-linux-console-x86.tar.gz
 unrar-ver          = unrar/unrarsrc-5.3.3.tar.gz
@@ -640,7 +665,7 @@ target_dirs:
 # These will mess themselves up in the build process when they try to install, because
 # the shared libraries are being used for the install
 # Use the stock compiler to install them into /usr/local
-oldcompiler: check_sudo nameservers gettext attr acl
+oldcompiler: check_sudo nameservers attr acl
 
 .PHONY: foo
 foo:
@@ -713,7 +738,8 @@ gettext scrypt: $(gettext-ver) $(scrypt-ver)
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
 
-# Post tar rule, we should have a good version of tar that
+# Standard build, post tar rule, separate build directory
+# We should have a good version of tar that
 # automatically detects file type
 .PHONY: apr
 .PHONY: automake
@@ -737,9 +763,12 @@ apr automake findutils gdbm libgcrypt libgpg-error libassuan libksba libpng pine
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
 
-# Post tar rule, we should have a good version of tar that
-# automatically detects file type, with test-update-copyright.sh
-# failure that is in several packages
+# Standard build, post tar rule, separate build directory,
+# broken copyright
+#
+# We should have a good version of tar that automatically detects
+# file type
+# With test-update-copyright.sh failure that is in several packages
 # patch hardcodes /bin/vi and fails tests because the installed vi
 # is too old to handle the command line arguments that are passed.
 .PHONY: diffutils
@@ -763,7 +792,10 @@ diffutils grep libpthread m4 patch: \
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
 
-# Post tar rule, we should have a good version of tar that
+# Standard build, post tar rule, separate build directory,
+# skip PHASE1 tests
+#
+# We should have a good version of tar that
 # automatically detects file type
 #
 # NOTE:
@@ -787,26 +819,28 @@ libffi texinfo: $(libffi-ver) $(texinfo-ver)
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
 
-# Post tar rule, no build directory
+# Standard build, post tar rule, no separate build directory
 .PHONY: check
 .PHONY: file
 .PHONY: gnupg
 .PHONY: jnettop
+.PHONY: libsecret
 .PHONY: libunistring
 .PHONY: libxml2
+.PHONY: libxslt
 .PHONY: lzo
 .PHONY: nettle
 .PHONY: pixman
 .PHONY: popt
 .PHONY: protobuf
 .PHONY: sharutils
-.PHONY: vala
-.PHONY: libxslt
-jnettop libxml2 check file protobuf libtasn1 libunistring lzo gnupg nettle popt sharutils pixman vala libxslt : \
+.PHONY: tcc
+jnettop libxml2 check file protobuf libtasn1 libunistring lzo gnupg nettle popt sharutils pixman libxslt libsecret tcc : \
     $(check-ver) \
     $(file-ver) \
     $(gnupg-ver) \
     $(jnettop-ver) \
+    $(libsecret-ver) \
     $(libtasn1-ver) \
     $(libunistring-ver) \
     $(libxslt-ver) \
@@ -816,7 +850,7 @@ jnettop libxml2 check file protobuf libtasn1 libunistring lzo gnupg nettle popt 
     $(popt-ver) \
     $(protobuf-ver) \
     $(sharutils-ver) \
-    $(vala-ver)
+    $(tcc-ver)
 	$(call SOURCEDIR,$@,xf)
 	# cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local LDFLAGS="-lpthreads"
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
@@ -827,7 +861,8 @@ jnettop libxml2 check file protobuf libtasn1 libunistring lzo gnupg nettle popt 
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
 
-# Post tar rule, no build directory, full automake build
+# Standard build, post tar rule, no separate build directory,
+# full automake
 .PHONY: par2cmdline
 par2cmdline: $(par2cmdline-ver)
 	$(call SOURCEDIR,$@,xf)
@@ -842,8 +877,11 @@ par2cmdline: $(par2cmdline-ver)
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
 
-# Post tar rule, no build directory, no make check || make test, no test, no check
-# we should have a good version of tar that automatically detects file type
+# Standard build, post tar rule, no separate build directory
+# no make check || make test, no test, no check
+#
+# we should have a good version of tar that automatically
+# detects file type
 .PHONY: mosh srm wipe socat screen tmux psmisc libusb htop cairo iptraf-ng hwloc
 srm wipe mosh socat screen tmux psmisc libusb htop cairo iptraf-ng hwloc: $(srm-ver) $(libusb-ver) $(htop-ver) $(mosh-ver) $(socat-ver) $(screen-ver) $(tmux-ver) $(psmisc-ver) $(wipe-ver) $(cairo-ver) $(iptraf-ng-ver) $(hwloc-ver)
 	$(call SOURCEDIR,$@,xf)
@@ -855,24 +893,30 @@ srm wipe mosh socat screen tmux psmisc libusb htop cairo iptraf-ng hwloc: $(srm-
 
 # No make check || make test, no test
 # bison fails the glibc version test, we have too old of a GLIBC
+# gobject-introspection wants cairo installed for testing
 # lmza fails the glibc version test, we have too old of a GLIBC
 # libunistring fails one test of 418, that appears to be because
 #  we are linking to an old librt in GLIBC
 # libpcap does not appear to have any tests
 # tcpdump fails on PPOE
 # pango needs cairo to test
+# pygobject does not have a working test suite
 .PHONY: autogen
 .PHONY: bison
+.PHONY: gobject-introspection
 .PHONY: libpcap
 .PHONY: lzma
 .PHONY: make
 .PHONY: pango
+.PHONY: pygobject
 .PHONY: sqlite
 .PHONY: tcpdump
-make libpcap sqlite lzma bison autogen pango tcpdump: \
+make libpcap sqlite lzma bison autogen pango pygobject tcpdump gobject-introspection : \
     $(make-ver) \
     $(libpcap-ver) \
+    $(gobject-introspection-ver) \
     $(pango-ver) \
+    $(pygobject-ver) \
     $(sqlite-ver) \
     $(tcpdump-ver)
 	$(call SOURCEDIR,$@,xfz)
@@ -912,8 +956,21 @@ bcrypt bzip libcap multitail symlinks unrar: $(bcrypt-ver) $(bzip-ver) $(multita
 .PHONY: Test-Pod
 .PHONY: Test-Pod-Coverage
 .PHONY: URI
+.PHONY: XML-Parser
 .PHONY: libwww-perl
-Archive-Zip Digest-SHA1 Scalar-MoreUtils URI HTML-Tagset HTML-Parser IO-Socket-SSL Devel-Symdump List-MoreUtils Pod-Coverage Test-Pod Test-Pod-Coverage libwww-perl: $(Archive-Zip-ver) $(Digest-SHA1-ver) $(List-MoreUtils-ver) $(Scalar-MoreUtils-ver) $(URI-ver) $(HTML-Tagset-ver) $(HTML-Parser-ver) $(Devel-Symdump-ver) $(Pod-Coverage-ver) $(Test-Pod-ver) $(Test-Pod-Coverage-ver)
+Archive-Zip Digest-SHA1 Scalar-MoreUtils URI HTML-Tagset HTML-Parser IO-Socket-SSL Devel-Symdump List-MoreUtils Pod-Coverage Test-Pod Test-Pod-Coverage libwww-perl XML-Parser : \
+    $(Archive-Zip-ver) \
+    $(Devel-Symdump-ver) \
+    $(Digest-SHA1-ver) \
+    $(HTML-Parser-ver) \
+    $(HTML-Tagset-ver) \
+    $(List-MoreUtils-ver) \
+    $(Pod-Coverage-ver) \
+    $(Scalar-MoreUtils-ver) \
+    $(Test-Pod-Coverage-ver) \
+    $(Test-Pod-ver) \
+    $(URI-ver) \
+    $(XML-Parser-ver)
 	$(call SOURCEDIR,$@,xfz)
 	cd $@/`cat $@/untar.dir`/; perl Makefile.PL LIBS='-L/usr/local/lib -L/usr/lib -L/lib' INC='-I/usr/local/include -I/usr/include'
 	cd $@/`cat $@/untar.dir`/; make
@@ -1192,9 +1249,9 @@ fontconfig: $(fontconfig-ver)
 .PHONY: freetype
 freetype: $(freetype-ver)
 	$(call SOURCEDIR,$@,xfj)
-	cd $@/`cat $@/untar.dir`/; sed -i  -e "/AUX.*.gxvalid/s@^# @@" -e "/AUX.*.otvalid/s@^# @@" modules.cfg
-	cd $@/`cat $@/untar.dir`/; sed -ri -e 's:.*(#.*SUBPIXEL.*) .*:\1:' include/config/ftoption.h
-	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local $(HBOPT)
+	-cd $@/`cat $@/untar.dir`/; sed -i  -e "/AUX.*.gxvalid/s@^# @@" -e "/AUX.*.otvalid/s@^# @@" modules.cfg
+	-cd $@/`cat $@/untar.dir`/; sed -ri -e 's:.*(#.*SUBPIXEL.*) .*:\1:' include/config/ftoption.h
+	-cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local $(HBOPT)
 	cd $@/`cat $@/untar.dir`/; make
 	# freetype does not have a test package
 	$(call PKGINSTALL,$@)
@@ -1212,32 +1269,6 @@ fuse: $(fuse-ver)
 	$(call PKGINSTALL,$@)
 	$(call CPLIB,lib$@*)
 
-.PHONY: harfbuzz
-harfbuzz: $(harfbuzz-ver)
-	$(call SOURCEDIR,$@,xf)
-	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --with-gobject
-	cd $@/`cat $@/untar.dir`/; make
-	cd $@/`cat $@/untar.dir`/; make check || make test
-	$(call PKGINSTALL,$@)
-	$(call CPLIB,lib$@*)
-
-.PHONY: httpd
-httpd: $(httpd-ver)
-	$(call SOURCEDIR,$@,xf)
-	cd $@/`cat $@/untar.dir`/; sed 's/ldump_writer, &b/&, NULL/' -i modules/lua/mod_lua.c
-	cd $@/`cat $@/untar.dir`/; sed '/dir.*CFG_PREFIX/s@^@#@' -i support/apxs.in
-	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local \
-	        --enable-mods-shared="all cgi" \
-		--enable-mpms-shared=all --with-apr=/usr/local/bin/apr-1-config \
-		--with-apr-util=/usr/local/bin/apu-1-config --enable-suexec=shared \
-		--with-suexec-bin=/usr/lib/httpd/suexec \
-		--with-suexec-docroot=/srv/www --with-suexec-caller=apache \
-		--with-suexec-userdir=public_html \
-		--with-suexec-logfile=/usr/local/var/log/httpd/suexec.log \
-		--with-suexec-uidmin=100
-	cd $@/`cat $@/untar.dir`/; make
-	$(call PKGINSTALL,$@)
-
 .PHONY: gc
 gc: $(gc-ver)
 	$(call SOURCEDIR,$@,xf)
@@ -1245,7 +1276,9 @@ gc: $(gc-ver)
 	cd $@/`cat $@/untar.dir`/; make
 	-cd $@/`cat $@/untar.dir`/; make check || make test
 	$(call PKGINSTALL,$@)
+	$(call CPLIB,libcord.*)
 	$(call CPLIB,lib$@.*)
+	$(call CPLIB,lib$@cpp.*)
 
 .PHONY: gcc
 gcc: $(gcc-ver)
@@ -1337,6 +1370,44 @@ hashdeep: $(hashdeep-ver)
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/; make
 	$(call PKGINSTALL,$@)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
+
+.PHONY: harfbuzz
+harfbuzz: $(harfbuzz-ver)
+	$(call SOURCEDIR,$@,xf)
+	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --with-gobject
+	cd $@/`cat $@/untar.dir`/; make
+	cd $@/`cat $@/untar.dir`/; make check || make test
+	$(call PKGINSTALL,$@)
+	$(call CPLIB,lib$@*)
+
+.PHONY: httpd
+httpd: $(httpd-ver)
+	$(call SOURCEDIR,$@,xf)
+	cd $@/`cat $@/untar.dir`/; sed 's/ldump_writer, &b/&, NULL/' -i modules/lua/mod_lua.c
+	cd $@/`cat $@/untar.dir`/; sed '/dir.*CFG_PREFIX/s@^@#@' -i support/apxs.in
+	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local \
+	        --enable-mods-shared="all cgi" \
+		--enable-mpms-shared=all --with-apr=/usr/local/bin/apr-1-config \
+		--with-apr-util=/usr/local/bin/apu-1-config --enable-suexec=shared \
+		--with-suexec-bin=/usr/lib/httpd/suexec \
+		--with-suexec-docroot=/srv/www --with-suexec-caller=apache \
+		--with-suexec-userdir=public_html \
+		--with-suexec-logfile=/usr/local/var/log/httpd/suexec.log \
+		--with-suexec-uidmin=100
+	cd $@/`cat $@/untar.dir`/; make
+	$(call PKGINSTALL,$@)
+
+.PHONY: intltool
+intltool: \
+    $(intltool-ver)
+	$(call SOURCEDIR,$@,xf)
+	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
+	cd $@/`cat $@/untar.dir`/; make
+	cd $@/`cat $@/untar.dir`/; make check || make test
+	$(call PKGINSTALL,$@)
+	$(call CPLIB,libproto*)
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
 
@@ -1927,6 +1998,20 @@ util-linux-ng: $(util-linux-ng-ver)
 	$(call PKGINSTALL,$@)
 	$(call CPLIB,libuuid*)
 
+# The tests hardcode a path back to the original OS directories
+.PHONY: vala
+vala : \
+    $(vala-ver)
+	$(call SOURCEDIR,$@,xf)
+	# cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local LDFLAGS="-lpthreads"
+	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
+	cd $@/`cat $@/untar.dir`/; make
+	-cd $@/`cat $@/untar.dir`/; make check || make test
+	$(call PKGINSTALL,$@)
+	$(call CPLIB,libproto*)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
+
 .PHONY: vim
 vim: $(vim-ver)
 	$(call SOURCEDIR,$@,xf)
@@ -1992,6 +2077,7 @@ wget-all: \
     $(Test-Pod-Coverage-ver) \
     $(Test-Pod-ver) \
     $(URI-ver) \
+    $(XML-Parser-ver) \
     $(acl-ver) \
     $(apr-util-ver) \
     $(apr-ver) \
@@ -2038,6 +2124,7 @@ wget-all: \
     $(gntls-ver) \
     $(gnupg-ver) \
     $(go-ver) \
+    $(gobject-introspection) \
     $(grep-ver) \
     $(guile-ver) \
     $(gzip-ver) \
@@ -2048,6 +2135,7 @@ wget-all: \
     $(hwloc-ver) \
     $(icu-ver) \
     $(inetutils-ver) \
+    $(intltool-ver) \
     $(iptraf-ng-ver) \
     $(iwyu-ver) \
     $(jnettop-ver) \
@@ -2065,6 +2153,7 @@ wget-all: \
     $(libpcap-ver) \
     $(libpng-ver) \
     $(libpthread-ver) \
+    $(libsecret-ver) \
     $(libtasn1-ver) \
     $(libtool-ver) \
     $(libunistring-ver) \
@@ -2097,6 +2186,7 @@ wget-all: \
     $(protobuf-ver) \
     $(psmisc-ver) \
     $(pth-ver) \
+    $(pygobject-ver) \
     $(scons-ver) \
     $(screen-ver) \
     $(scrypt-ver) \
@@ -2112,6 +2202,7 @@ wget-all: \
     $(symlinks-ver) \
     $(symlinks-ver) \
     $(tar-ver) \
+    $(tcc-ver) \
     $(tcl-ver) \
     $(tcp_wrappers-patch-ver) \
     $(tcp_wrappers-ver) \
@@ -2196,7 +2287,7 @@ $(coreutils-ver):
 	$(call SOURCEWGET,"coreutils","http://ftp.gnu.org/gnu/"$(coreutils-ver))
 
 $(cppcheck-ver):
-	$(call SOURCEWGET,"cppcheck","http://downloads.sourceforge.net/project/cppcheck/cppcheck/1.70/"$(notdir $(cppcheck-ver)))
+	$(call SOURCEWGET,"cppcheck","http://downloads.sourceforge.net/project/cppcheck/cppcheck/1.71/"$(notdir $(cppcheck-ver)))
 
 $(curl-ver):
 	$(call SOURCEWGET,"curl","http://curl.haxx.se/download/curl-7.41.0.tar.bz2")
@@ -2266,7 +2357,7 @@ $(git-ver):
 	$(call SOURCEWGET,"git","http://www.kernel.org/pub/software/scm/"$(git-ver))
 
 $(glib-ver):
-	$(call SOURCEWGET,"glib","http://ftp.gnome.org/pub/gnome/sources/glib/2.44/"$(notdir $(glib-ver)))
+	$(call SOURCEWGET,"glib","http://ftp.gnome.org/pub/gnome/sources/glib/2.46/"$(notdir $(glib-ver)))
 
 $(glibc-ver):
 	$(call SOURCEWGET,"glibc","https://ftp.gnu.org/gnu/"$(glibc-ver))
@@ -2282,6 +2373,9 @@ $(gnutls-ver):
 
 $(go-ver):
 	$(call SOURCEWGET,"go","https://storage.googleapis.com/golang/go1.4.2.src.tar.gz")
+
+$(gobject-introspection-ver):
+	$(call SOURCEWGET, "gobject-introspection", "http://ftp.gnome.org/pub/gnome/sources/gobject-introspection/1.46/"$(notdir $(gobject-introspection-ver)))
 
 $(grep-ver):
 	$(call SOURCEWGET,"grep","https://ftp.gnu.org/gnu/"$(grep-ver))
@@ -2318,6 +2412,9 @@ $(icu-ver):
 
 $(inetutils-ver):
 	$(call SOURCEWGET,"inetutils","https://ftp.gnu.org/gnu/"$(inetutils-ver))
+
+$(intltool-ver):
+	$(call SOURCEWGET,"intltool","https://launchpad.net/intltool/trunk/0.51.0/+download/"$(notdir $(intltool-ver)))
 
 $(iptraf-ng-ver):
 	$(call SOURCEWGET,"iptraf-ng","https://fedorahosted.org/releases/i/p/"$(iptraf-ng-ver))
@@ -2369,6 +2466,9 @@ $(libpng-ver):
 
 $(libpthread-ver):
 	$(call SOURCEGIT,"libpthread","git://git.sv.gnu.org/hurd/libpthread.git")
+
+$(libsecret-ver):
+	$(call SOURCEWGET,"libsecret","http://ftp.gnome.org/pub/gnome/sources/libsecret/0.18/"$(notdir $(libsecret-ver)))
 
 $(libtasn1-ver):
 	$(call SOURCEWGET,"libtasn1","https://ftp.gnu.org/gnu/libtasn1/libtasn1-4.2.tar.gz")
@@ -2482,6 +2582,9 @@ $(pth-ver):
 $(Python-ver):
 	$(call SOURCEWGET, "Python", "https://www.python.org/ftp/python/2.7.9/Python-2.7.9.tar.xz")
 
+$(pygobject-ver):
+	$(call SOURCEWGET, "pygobject", "http://ftp.gnome.org/pub/gnome/sources/pygobject/2.28/"$(notdir $(pygobject-ver)))
+
 $(p7zip-ver):
 	$(call SOURCEWGET,"p7zip","http://downloads.sourceforge.net/project/p7zip/p7zip/9.38.1/p7zip_9.38.1_src_all.tar.bz2")
 
@@ -2531,6 +2634,9 @@ $(swig-ver):
 
 $(tar-ver):
 	$(call SOURCEWGET,"tar","https://ftp.gnu.org/gnu/tar/tar-1.28.tar.gz")
+
+$(tcc-ver):
+	$(call SOURCEWGET,"tcc","http://download.savannah.gnu.org/releases/tinycc/"$(notdir $(tcc-ver)))
 
 # http://www.tcl.tk/software/tcltk/download.html
 $(tcl-ver):
@@ -2592,6 +2698,9 @@ $(whois-ver):
 
 $(wipe-ver):
 	$(call SOURCEWGET,"wipe","http://sourceforge.net/projects/wipe/files/wipe/2.3.1/wipe-2.3.1.tar.bz2")
+
+$(XML-Parser-ver):
+	$(call SOURCEWGET,"XML-Parser","http://search.cpan.org/CPAN/authors/id/M/MS/MSERGEANT/"$(notdir $(XML-Parser-ver)))
 
 $(xz-ver):
 	$(call SOURCEWGET,"xz","http://tukaani.org/"$(xz-ver))
