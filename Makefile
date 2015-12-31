@@ -35,6 +35,19 @@
 GCC_LANGS=c,c++,fortran,java,objc,obj-c++
 
 #
+# Generate a unique file name for this run of make.
+#
+THIS_RUN := $(notdir $(shell mktemp -u))
+
+#
+# variable representations of comma and space
+#
+comma := ,
+
+space :=
+space +=
+
+#
 # Function Defines
 #
 define LNBIN
@@ -233,6 +246,7 @@ phase1: \
      texinfo \
      binutils \
      coreutils \
+     save_ld \
      findutils \
      diffutils \
      which \
@@ -256,7 +270,12 @@ phase1: \
      libatomic_ops \
      gc \
      libffi \
+     gettext \
+     libiconv \
+     gettext \
+     pkg-config \
      guile \
+     restore_ld \
      gcc
 
 # db needs C++
@@ -332,7 +351,6 @@ afterbison: \
     expat \
     apr \
     apr-util \
-    pkg-config \
     glib \
     ncurses \
     lua \
@@ -517,7 +535,7 @@ gc-ver             = gc/gc-7.4.2.tar.gz
 gcc-ver            = gcc/gcc-4.7.3.tar.bz2
 gdb-ver            = gdb/gdb-7.9.tar.xz
 gdbm-ver           = gdbm/gdbm-1.10.tar.gz
-gettext-ver        = gettext/gettext-0.19.6.tar.gz
+gettext-ver        = gettext/gettext-0.19.7.tar.gz
 git-ver            = git/git-2.2.1.tar.xz
 # glib-ver           = glib/glib-2.44.1.tar.xz
 glib-ver           = glib/glib-2.46.1.tar.xz
@@ -582,9 +600,10 @@ pango-ver          = pango/pango-1.36.8.tar.xz
 par2cmdline-ver    = par2cmdline/master.zip
 patch-ver          = patch/patch-2.7.tar.gz
 pcre-ver           = pcre/pcre-8.36.tar.bz2
-perl-ver           = perl/perl-5.22.0.tar.gz
+perl-ver           = perl/perl-5.22.1.tar.gz
 pinentry-ver       = pinentry/pinentry-0.9.5.tar.bz2
 pixman-ver         = pixman/pixman-0.32.6.tar.gz
+pkg-config-ver     = pkg-config/pkg-config-0.29.tar.gz
 popt-ver           = popt/popt-1.16.tar.gz
 protobuf-ver       = protobuf/protobuf-2.5.0.tar.bz2
 psmisc-ver         = psmisc/psmisc-22.21.tar.gz
@@ -697,6 +716,21 @@ devices:
 nameservers:
 	egrep 8.8.8.8 /etc/resolv.conf || sudo bash -c "echo nameserver 8.8.8.8 >> /etc/resolv.conf"
 	egrep 8.8.4.4 /etc/resolv.conf || sudo bash -c "echo nameserver 8.8.4.4 >> /etc/resolv.conf"
+
+.PHONY: save_ld
+save_ld:
+ifneq ($(subst $(space),-,$(PHASE1_NOCHECK)),)
+	@/bin/echo "Saving /usr/local/bin/ld"
+	/bin/rm -rf /usr/local/bin/ld.$(THIS_RUN)
+	-cd /usr/local/bin; test ! -e ld || sudo /bin/mv ld ld.$(THIS_RUN)
+else
+	@/bin/echo ""
+endif
+
+.PHONE: restore_ld
+restore_ld:
+	@/bin/echo "Restoring /usr/local/bin/ld"
+	-cd /usr/local/bin; test ! -e ld.$(THIS_RUN) || sudo /bin/mv ld.$(THIS_RUN) ld
 
 .PHONY: check_sudo
 .PHONY: sudo
@@ -1485,6 +1519,7 @@ libevent: $(libevent-ver)
 .PHONY: libiconv
 libiconv: $(libiconv-ver)
 	$(call SOURCEDIR,$@,xfz)
+	-cd $@/`cat $@/untar.dir`/; sed -i -e '/gets is a security/d' srclib/stdio.in.h
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/; make
 	$(call PKGINSTALL,$@)
@@ -1847,7 +1882,7 @@ perl: $(perl-ver)
 	$(call PKGINSTALL,$@)
 
 .PHONY: pkg-config
-pkg-config:
+pkg-config: $(pkg-config-ver)
 	$(call SOURCEDIR,$@,xf)
 	sudo /bin/rm -f /usr/local/bin/i686-pc-linux-gnu-pkg-config
 	-cd $@/`cat $@/untar.dir`/; sed -i -e '/GNU libiconv not in use but included iconv.h/d' ./glib/glib/gconvert.c
@@ -2182,6 +2217,7 @@ wget-all: \
     $(perl-ver) \
     $(pinentry-ver) \
     $(pixman-ver) \
+    $(pkg-config-ver) \
     $(popt-ver) \
     $(protobuf-ver) \
     $(psmisc-ver) \
@@ -2453,7 +2489,7 @@ $(libksba-ver):
 	$(call SOURCEWGET,"libksba","ftp://ftp.gnupg.org/gcrypt/"$(libksba-ver))
 
 $(libiconv-ver):
-	$(call SOURCEWGET,"libiconv","https://ftp.gnu.org/pub/gnu/$(libiconv-ver))
+	$(call SOURCEWGET,"libiconv","http://ftp.gnu.org/gnu/"$(libiconv-ver))
 
 $(libpcap-ver):
 	$(call SOURCEWGET,"libpcap","http://www.tcpdump.org/release/libpcap-1.4.0.tar.gz")
@@ -2562,6 +2598,9 @@ $(pinentry-ver):
 
 $(pixman-ver):
 	$(call SOURCEWGET,"pixman","http://cairographics.org/releases/pixman-0.32.6.tar.gz")
+
+$(pkg-config-ver):
+	$(call SOURCEWGET,"pkg-config","http://pkgconfig.freedesktop.org/releases/"$(notdir $(pkg-config-ver)))
 
 $(Pod-Coverage-ver):
 	$(call SOURCEWGET,"Pod-Coverage","http://search.cpan.org/CPAN/authors/id/R/RC/RCLAMP/"$(notdir $(Pod-Coverage-ver)))
