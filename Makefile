@@ -576,7 +576,7 @@ libpthread-ver     = libpthread/master.zip
 libsecret-ver      = libsecret/libsecret-0.18.3.tar.xz
 libtasn1-ver       = libtasn1/libtasn1-4.2.tar.gz
 libtool-ver        = libtool/libtool-2.4.2.tar.gz
-libunistring-ver   = libunistring/libunistring-0.9.5.tar.xz
+libunistring-ver   = libunistring/libunistring-0.9.6.tar.xz
 libusb-ver         = libusb/libusb-1.0.19.tar.bz2
 libxml2-ver        = libxml2/libxml2-2.9.1.tar.gz
 libxslt-ver        = libxslt/libxslt-1.1.28.tar.gz
@@ -740,6 +740,17 @@ check_sudo sudo:
 # Standard build with separate build directory
 # make check is automatically built by automake
 # so we will try that target first
+#
+# In several packages, there is a problem inherited
+# from an old gnulib, where they are trying to warn
+# of the definition of gets(). There are three ways
+# to deal with it:
+#
+# * Update the pacakge that has a newer stdio.in.h inherited from gnulib
+# * Surround the warning line with #if HAVE_RAW_DECL_GETS ... #endif
+# * Just delete the line, which is what we do here.
+#
+#
 .PHONY: gawk
 .PHONY: tar
 .PHONY: xz
@@ -767,7 +778,7 @@ gettext scrypt: $(gettext-ver) $(scrypt-ver)
 	$(call SOURCEDIR,$@,xfz)
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/; make
-	cd $@/`cat $@/untar.dir`/; make check || make test
+	cd $@/`cat $@/untar.dir`/; $(PHASE1_NOCHECK) make check || $(PHASE1_NOCHECK) make test
 	$(call PKGINSTALL,$@)
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
@@ -840,8 +851,12 @@ diffutils grep libpthread m4 patch: \
 # skip tests for texinfo needs a newer version of gzip to pass
 # its tests, it may fail in tests phase1
 .PHONY: libffi
+.PHONY: libunistring
 .PHONY: texinfo
-libffi texinfo: $(libffi-ver) $(texinfo-ver)
+libffi texinfo: \
+    $(libffi-ver) \
+    $(libunistring-ver) \
+    $(texinfo-ver)
 	$(call SOURCEDIR,$@,xf)
 	cd $@; mkdir $@-build
 	cd $@/$@-build/; readlink -f . | grep $@-build
@@ -859,7 +874,6 @@ libffi texinfo: $(libffi-ver) $(texinfo-ver)
 .PHONY: gnupg
 .PHONY: jnettop
 .PHONY: libsecret
-.PHONY: libunistring
 .PHONY: libxml2
 .PHONY: libxslt
 .PHONY: lzo
@@ -869,14 +883,13 @@ libffi texinfo: $(libffi-ver) $(texinfo-ver)
 .PHONY: protobuf
 .PHONY: sharutils
 .PHONY: tcc
-jnettop libxml2 check file protobuf libtasn1 libunistring lzo gnupg nettle popt sharutils pixman libxslt libsecret tcc : \
+jnettop libxml2 check file protobuf libtasn1 lzo gnupg nettle popt sharutils pixman libxslt libsecret tcc : \
     $(check-ver) \
     $(file-ver) \
     $(gnupg-ver) \
     $(jnettop-ver) \
     $(libsecret-ver) \
     $(libtasn1-ver) \
-    $(libunistring-ver) \
     $(libxslt-ver) \
     $(lzo-ver) \
     $(nettle-ver) \
@@ -2513,7 +2526,7 @@ $(libtool-ver):
 	$(call SOURCEWGET,"libtool","http://ftpmirror.gnu.org/"$(libtool-ver))
 
 $(libunistring-ver):
-	$(call SOURCEWGET,"libunistring","https://ftp.gnu.org/gnu/libunistring/libunistring-0.9.5.tar.xz")
+	$(call SOURCEWGET,"libunistring","https://ftp.gnu.org/gnu/"$(libunistring-ver))
 
 $(libusb-ver):
 	$(call SOURCEWGET,"libusb","http://downloads.sourceforge.net/libusb/libusb-1.0.19.tar.bz2")
