@@ -582,7 +582,7 @@ pango-ver          = pango/pango-1.36.8.tar.xz
 par2cmdline-ver    = par2cmdline/master.zip
 patch-ver          = patch/patch-2.7.tar.gz
 pcre-ver           = pcre/pcre-8.36.tar.bz2
-perl-ver           = perl/perl-5.22.0.tar.gz
+perl-ver           = perl/perl-5.22.1.tar.gz
 pinentry-ver       = pinentry/pinentry-0.9.5.tar.bz2
 pixman-ver         = pixman/pixman-0.32.6.tar.gz
 popt-ver           = popt/popt-1.16.tar.gz
@@ -2339,7 +2339,7 @@ $(gawk-ver):
 	$(call SOURCEWGET,"gawk","https://ftp.gnu.org/gnu/"$(gawk-ver))
 
 $(gc-ver):
-	$(call SOURCEWGET,"gc","http://www.hboehm.info/gc/gc_source/gc-7.4.2.tar.gz")
+	$(call SOURCEWGET,"gc","http://www.hboehm.info/gc/gc_source/"$(notdir $(gc-ver)))
 
 $(gcc-ver):
 	$(call SOURCEWGET,"gcc","http://ftp.gnu.org/gnu/gcc/gcc-4.7.3/"$(notdir $(gcc-ver)))
