@@ -35,6 +35,19 @@
 GCC_LANGS=c,c++,fortran,java,objc,obj-c++
 
 #
+# Generate a unique file name for this run of make.
+#
+THIS_RUN := $(notdir $(shell mktemp -u))
+
+#
+# variable representations of comma and space
+#
+comma := ,
+
+space :=
+space +=
+
+#
 # Function Defines
 #
 define LNBIN
@@ -233,6 +246,7 @@ phase1: \
      texinfo \
      binutils \
      coreutils \
+     save_ld \
      findutils \
      diffutils \
      which \
@@ -256,7 +270,12 @@ phase1: \
      libatomic_ops \
      gc \
      libffi \
+     gettext \
+     libiconv \
+     gettext \
+     pkg-config \
      guile \
+     restore_ld \
      gcc
 
 # db needs C++
@@ -332,7 +351,6 @@ afterbison: \
     expat \
     apr \
     apr-util \
-    pkg-config \
     glib \
     ncurses \
     lua \
@@ -517,7 +535,7 @@ gc-ver             = gc/gc-7.4.2.tar.gz
 gcc-ver            = gcc/gcc-4.7.3.tar.bz2
 gdb-ver            = gdb/gdb-7.9.tar.xz
 gdbm-ver           = gdbm/gdbm-1.10.tar.gz
-gettext-ver        = gettext/gettext-0.19.6.tar.gz
+gettext-ver        = gettext/gettext-0.19.7.tar.gz
 git-ver            = git/git-2.2.1.tar.xz
 # glib-ver           = glib/glib-2.44.1.tar.xz
 glib-ver           = glib/glib-2.46.1.tar.xz
@@ -558,7 +576,7 @@ libpthread-ver     = libpthread/master.zip
 libsecret-ver      = libsecret/libsecret-0.18.3.tar.xz
 libtasn1-ver       = libtasn1/libtasn1-4.2.tar.gz
 libtool-ver        = libtool/libtool-2.4.2.tar.gz
-libunistring-ver   = libunistring/libunistring-0.9.5.tar.xz
+libunistring-ver   = libunistring/libunistring-0.9.6.tar.xz
 libusb-ver         = libusb/libusb-1.0.19.tar.bz2
 libxml2-ver        = libxml2/libxml2-2.9.1.tar.gz
 libxslt-ver        = libxslt/libxslt-1.1.28.tar.gz
@@ -585,6 +603,7 @@ pcre-ver           = pcre/pcre-8.36.tar.bz2
 perl-ver           = perl/perl-5.22.1.tar.gz
 pinentry-ver       = pinentry/pinentry-0.9.5.tar.bz2
 pixman-ver         = pixman/pixman-0.32.6.tar.gz
+pkg-config-ver     = pkg-config/pkg-config-0.29.tar.gz
 popt-ver           = popt/popt-1.16.tar.gz
 protobuf-ver       = protobuf/protobuf-2.5.0.tar.bz2
 psmisc-ver         = psmisc/psmisc-22.21.tar.gz
@@ -698,6 +717,21 @@ nameservers:
 	egrep 8.8.8.8 /etc/resolv.conf || sudo bash -c "echo nameserver 8.8.8.8 >> /etc/resolv.conf"
 	egrep 8.8.4.4 /etc/resolv.conf || sudo bash -c "echo nameserver 8.8.4.4 >> /etc/resolv.conf"
 
+.PHONY: save_ld
+save_ld:
+ifneq ($(subst $(space),-,$(PHASE1_NOCHECK)),)
+	@/bin/echo "Saving /usr/local/bin/ld"
+	/bin/rm -rf /usr/local/bin/ld.$(THIS_RUN)
+	-cd /usr/local/bin; test ! -e ld || sudo /bin/mv ld ld.$(THIS_RUN)
+else
+	@/bin/echo ""
+endif
+
+.PHONE: restore_ld
+restore_ld:
+	@/bin/echo "Restoring /usr/local/bin/ld"
+	-cd /usr/local/bin; test ! -e ld.$(THIS_RUN) || sudo /bin/mv ld.$(THIS_RUN) ld
+
 .PHONY: check_sudo
 .PHONY: sudo
 check_sudo sudo:
@@ -706,6 +740,17 @@ check_sudo sudo:
 # Standard build with separate build directory
 # make check is automatically built by automake
 # so we will try that target first
+#
+# In several packages, there is a problem inherited
+# from an old gnulib, where they are trying to warn
+# of the definition of gets(). There are three ways
+# to deal with it:
+#
+# * Update the pacakge that has a newer stdio.in.h inherited from gnulib
+# * Surround the warning line with #if HAVE_RAW_DECL_GETS ... #endif
+# * Just delete the line, which is what we do here.
+#
+#
 .PHONY: gawk
 .PHONY: tar
 .PHONY: xz
@@ -733,7 +778,7 @@ gettext scrypt: $(gettext-ver) $(scrypt-ver)
 	$(call SOURCEDIR,$@,xfz)
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/; make
-	cd $@/`cat $@/untar.dir`/; make check || make test
+	cd $@/`cat $@/untar.dir`/; $(PHASE1_NOCHECK) make check || $(PHASE1_NOCHECK) make test
 	$(call PKGINSTALL,$@)
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
@@ -806,8 +851,12 @@ diffutils grep libpthread m4 patch: \
 # skip tests for texinfo needs a newer version of gzip to pass
 # its tests, it may fail in tests phase1
 .PHONY: libffi
+.PHONY: libunistring
 .PHONY: texinfo
-libffi texinfo: $(libffi-ver) $(texinfo-ver)
+libffi texinfo: \
+    $(libffi-ver) \
+    $(libunistring-ver) \
+    $(texinfo-ver)
 	$(call SOURCEDIR,$@,xf)
 	cd $@; mkdir $@-build
 	cd $@/$@-build/; readlink -f . | grep $@-build
@@ -825,7 +874,6 @@ libffi texinfo: $(libffi-ver) $(texinfo-ver)
 .PHONY: gnupg
 .PHONY: jnettop
 .PHONY: libsecret
-.PHONY: libunistring
 .PHONY: libxml2
 .PHONY: libxslt
 .PHONY: lzo
@@ -835,14 +883,13 @@ libffi texinfo: $(libffi-ver) $(texinfo-ver)
 .PHONY: protobuf
 .PHONY: sharutils
 .PHONY: tcc
-jnettop libxml2 check file protobuf libtasn1 libunistring lzo gnupg nettle popt sharutils pixman libxslt libsecret tcc : \
+jnettop libxml2 check file protobuf libtasn1 lzo gnupg nettle popt sharutils pixman libxslt libsecret tcc : \
     $(check-ver) \
     $(file-ver) \
     $(gnupg-ver) \
     $(jnettop-ver) \
     $(libsecret-ver) \
     $(libtasn1-ver) \
-    $(libunistring-ver) \
     $(libxslt-ver) \
     $(lzo-ver) \
     $(nettle-ver) \
@@ -1485,6 +1532,7 @@ libevent: $(libevent-ver)
 .PHONY: libiconv
 libiconv: $(libiconv-ver)
 	$(call SOURCEDIR,$@,xfz)
+	-cd $@/`cat $@/untar.dir`/; sed -i -e '/gets is a security/d' srclib/stdio.in.h
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/; make
 	$(call PKGINSTALL,$@)
@@ -1847,7 +1895,7 @@ perl: $(perl-ver)
 	$(call PKGINSTALL,$@)
 
 .PHONY: pkg-config
-pkg-config:
+pkg-config: $(pkg-config-ver)
 	$(call SOURCEDIR,$@,xf)
 	sudo /bin/rm -f /usr/local/bin/i686-pc-linux-gnu-pkg-config
 	-cd $@/`cat $@/untar.dir`/; sed -i -e '/GNU libiconv not in use but included iconv.h/d' ./glib/glib/gconvert.c
@@ -2182,6 +2230,7 @@ wget-all: \
     $(perl-ver) \
     $(pinentry-ver) \
     $(pixman-ver) \
+    $(pkg-config-ver) \
     $(popt-ver) \
     $(protobuf-ver) \
     $(psmisc-ver) \
@@ -2453,7 +2502,7 @@ $(libksba-ver):
 	$(call SOURCEWGET,"libksba","ftp://ftp.gnupg.org/gcrypt/"$(libksba-ver))
 
 $(libiconv-ver):
-	$(call SOURCEWGET,"libiconv","https://ftp.gnu.org/pub/gnu/$(libiconv-ver))
+	$(call SOURCEWGET,"libiconv","http://ftp.gnu.org/gnu/"$(libiconv-ver))
 
 $(libpcap-ver):
 	$(call SOURCEWGET,"libpcap","http://www.tcpdump.org/release/libpcap-1.4.0.tar.gz")
@@ -2477,7 +2526,7 @@ $(libtool-ver):
 	$(call SOURCEWGET,"libtool","http://ftpmirror.gnu.org/"$(libtool-ver))
 
 $(libunistring-ver):
-	$(call SOURCEWGET,"libunistring","https://ftp.gnu.org/gnu/libunistring/libunistring-0.9.5.tar.xz")
+	$(call SOURCEWGET,"libunistring","https://ftp.gnu.org/gnu/"$(libunistring-ver))
 
 $(libusb-ver):
 	$(call SOURCEWGET,"libusb","http://downloads.sourceforge.net/libusb/libusb-1.0.19.tar.bz2")
@@ -2562,6 +2611,9 @@ $(pinentry-ver):
 
 $(pixman-ver):
 	$(call SOURCEWGET,"pixman","http://cairographics.org/releases/pixman-0.32.6.tar.gz")
+
+$(pkg-config-ver):
+	$(call SOURCEWGET,"pkg-config","http://pkgconfig.freedesktop.org/releases/"$(notdir $(pkg-config-ver)))
 
 $(Pod-Coverage-ver):
 	$(call SOURCEWGET,"Pod-Coverage","http://search.cpan.org/CPAN/authors/id/R/RC/RCLAMP/"$(notdir $(Pod-Coverage-ver)))

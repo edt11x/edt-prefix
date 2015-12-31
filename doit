@@ -13,8 +13,8 @@ export LD_LIBRARY_PATH="/usr/local/lib:/usr/local/lib64:/lib:/usr/lib:/usr/local
 #
 if [ -e /usr/local/bin/ld ]
 then
-    echo sudo /bin/rm -f /usr/local/bin/ld.save
-    echo sudo /bin/mv /usr/local/bin/ld /usr/local/bin/ld.save
+    sudo /bin/rm -f /usr/local/bin/ld.save
+    sudo /bin/mv /usr/local/bin/ld /usr/local/bin/ld.save
 fi
 # A few packages have to be built with the old compiler first
 # or they cause too much chaos when we rebuild other packages
