@@ -532,7 +532,7 @@ freetype-ver       = freetype/freetype-2.6.1.tar.bz2
 fuse-ver           = fuse/fuse-2.9.3.tar.gz
 gawk-ver           = gawk/gawk-4.1.1.tar.gz
 gc-ver             = gc/gc-7.4.2.tar.gz
-gcc-ver            = gcc/gcc-4.7.3.tar.bz2
+gcc-ver            = gcc/gcc-4.7.4.tar.bz2
 gdb-ver            = gdb/gdb-7.9.tar.xz
 gdbm-ver           = gdbm/gdbm-1.10.tar.gz
 gettext-ver        = gettext/gettext-0.19.7.tar.gz
@@ -540,7 +540,7 @@ git-ver            = git/git-2.2.1.tar.xz
 # glib-ver           = glib/glib-2.44.1.tar.xz
 glib-ver           = glib/glib-2.46.1.tar.xz
 glibc-ver          = glibc/glibc-2.21.tar.gz
-gmp-ver            = gmp/gmp-4.3.2.tar.bz2
+gmp-ver            = gmp/gmp-5.1.2.tar.bz2
 gnupg-ver          = gnupg/gnupg-2.0.29.tar.bz2
 gnutls-ver         = gnutls/gnutls-3.3.13.tar.xz
 go-ver             = go/go1.4.2.src.tar.gz
@@ -586,8 +586,8 @@ lzo-ver            = lzo/lzo-2.08.tar.gz
 m4-ver             = m4/m4-1.4.17.tar.gz
 make-ver           = make/make-4.1.tar.gz
 mosh-ver           = mosh/mosh-1.2.5.tar.gz
-mpc-ver            = mpc/mpc-0.8.1.tar.gz
-mpfr-ver           = mpfr/mpfr-2.4.2.tar.gz
+mpc-ver            = mpc/mpc-1.0.1.tar.gz
+mpfr-ver           = mpfr/mpfr-3.1.2.tar.gz
 multitail-ver      = multitail/multitail-6.4.2.tgz
 ncurses-ver        = ncurses/ncurses-5.9.tar.gz
 netpbm-ver         = netpbm/netpbm-10.35.95.tgz
@@ -1349,6 +1349,7 @@ gcc: $(gcc-ver)
 	cd $@; mkdir $@-build
 	cd $@/$@-build/; readlink -f . | grep $@-build
 	cd $@/$@-build/; ../`cat ../untar.dir`/configure \
+		    --enable-shared \
 		    --disable-multilib \
 		    --prefix=/usr/local \
                     --enable-languages=$(GCC_LANGS) \
@@ -2391,7 +2392,7 @@ $(gc-ver):
 	$(call SOURCEWGET,"gc","http://www.hboehm.info/gc/gc_source/"$(notdir $(gc-ver)))
 
 $(gcc-ver):
-	$(call SOURCEWGET,"gcc","http://ftp.gnu.org/gnu/gcc/gcc-4.7.3/"$(notdir $(gcc-ver)))
+	$(call SOURCEWGET,"gcc","http://ftp.gnu.org/gnu/gcc/gcc-4.7.4/"$(notdir $(gcc-ver)))
 
 $(gdb-ver):
 	$(call SOURCEWGET,"gdb","https://ftp.gnu.org/gnu/"$(gdb-ver))
@@ -2412,7 +2413,7 @@ $(glibc-ver):
 	$(call SOURCEWGET,"glibc","https://ftp.gnu.org/gnu/"$(glibc-ver))
 
 $(gmp-ver):
-	$(call SOURCEWGET,"gmp","ftp://gcc.gnu.org/pub/gcc/infrastructure/gmp-4.3.2.tar.bz2")
+	$(call SOURCEWGET,"gmp","http://ftp.gnu.org/gnu/"$(gmp-ver))
 
 $(gnupg-ver):
 	$(call SOURCEWGET,"gnupg","ftp://ftp.gnupg.org/gcrypt/"$(gnupg-ver))
@@ -2559,10 +2560,10 @@ $(m4-ver):
 	$(call SOURCEWGET,"m4","http://ftp.gnu.org/gnu/m4/m4-1.4.17.tar.gz")
 
 $(mpc-ver):
-	$(call SOURCEWGET,"mpc","ftp://gcc.gnu.org/pub/gcc/infrastructure/mpc-0.8.1.tar.gz")
+	$(call SOURCEWGET,"mpc","ftp://ftp.gnu.org/gnu/"$(mpc-ver))
 
 $(mpfr-ver):
-	$(call SOURCEWGET,"mpfr","ftp://gcc.gnu.org/pub/gcc/infrastructure/mpfr-2.4.2.tar.bz2")
+	$(call SOURCEWGET,"mpfr","http://ftp.gnu.org/gnu/"$(mpfr-ver))
 
 $(mosh-ver):
 	$(call SOURCEWGET,"mosh","http://mosh.mit.edu/"$(notdir $(mosh-ver)))
