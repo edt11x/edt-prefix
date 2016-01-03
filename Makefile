@@ -2605,7 +2605,7 @@ $(pcre-ver):
 	$(call SOURCEWGET,"pcre","ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.36.tar.bz2")
 
 $(perl-ver):
-	$(call SOURCEWGET,"perl","http://www.cpan.org/src/5.0/perl-5.22.0.tar.gz")
+	$(call SOURCEWGET,"perl","http://www.cpan.org/src/5.0/"$(notdir $(perl-ver)))
 
 $(pinentry-ver):
 	$(call SOURCEWGET,"pinentry","ftp://ftp.gnupg.org/gcrypt/"$(pinentry-ver))
