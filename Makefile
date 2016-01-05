@@ -355,6 +355,7 @@ afterbison: \
     libassuan \
     libksba \
     libcap \
+    libxml2 \
     libxslt \
     pinentry \
     pth \
@@ -384,7 +385,6 @@ aftervim: \
     wipe \
     srm \
     util-linux-ng \
-    libxml2 \
     afterlibxml2
 
 .PHONY: afterlibxml2
@@ -493,42 +493,19 @@ afterlibsecret: \
 # Versions
 # ==============================================================
 # fontconfig-ver     = fontconfig/fontconfig-2.11.1.tar.bz2
-Archive-Zip-ver    = Archive-Zip/Archive-Zip-1.51.tar.gz
-Devel-Symdump-ver  = Devel-Symdump/Devel-Symdump-2.15.tar.gz
-Digest-SHA1-ver    = Digest-SHA1/Digest-SHA1-2.13.tar.gz
-Encode-Locale-ver  = Encode-Locale/Encode-Locale-1.05.tar.gz
-File-Listing-ver   = File-Listing/File-Listing-6.04.tar.gz
-HTML-Parser-ver    = HTML-Parser/HTML-Parser-3.71.tar.gz
-HTML-Tagset-ver    = HTML-Tagset/HTML-Tagset-3.20.tar.gz
-HTTP-Cookies-ver   = HTTP-Cookies/HTTP-Cookies-6.01.tar.gz
-HTTP-Date-ver      = HTTP-Date/HTTP-Date-6.02.tar.gz
-HTTP-Daemon-ver    = HTTP-Daemon/HTTP-Daemon-6.01.tar.gz
-HTTP-Message-ver   = HTTP-Message/HTTP-Message-6.11.tar.gz
-HTTP-Negotiate-ver = HTTP-Negotiate/HTTP-Negotiate-6.01.tar.gz
-IO-HTML-ver        = IO-HTML/IO-HTML-1.001.tar.gz
-IO-Socket-SSL-ver  = IO-Socket-SSL/IO-Socket-SSL-2.012.tar.gz
-List-MoreUtils-ver = List-MoreUtils/List-MoreUtils-0.413.tar.gz
-LWP-MediaTypes-ver = LWP-MediaTypes/LWP-MediaTypes-6.02.tar.gz
-Net-HTTP-ver       = Net-HTTP/Net-HTTP-6.09.tar.gz
-Net-SSLeay-ver     = Net-SSLeay/Net-SSLeay-1.68.tar.gz
-Pod-Coverage-ver   = Pod-Coverage/Pod-Coverage-0.23.tar.gz
-Python-ver         = Python/Python-2.7.10.tar.xz
-Scalar-MoreUtils-ver = Scalar-MoreUtils/Scalar-MoreUtils-0.02.tar.gz
-Test-Pod-Coverage-ver = Test-Pod-Coverage/Test-Pod-Coverage-1.10.tar.gz
-Test-Pod-ver       = Test-Pod/Test-Pod-1.49.tar.gz
-XML-Parser-ver     = XML-Parser/XML-Parser-2.36.tar.gz
-URI-ver            = URI/URI-1.69.tar.gz
-WWW-RobotRules-ver = WWW-RobotRules/WWW-RobotRules-6.02.tar.gz
 acl-ver            = acl/acl-2.2.52.src.tar.gz
 apr-util-ver       = apr-util/apr-util-1.5.3.tar.bz2
 apr-ver            = apr/apr-1.4.8.tar.bz2
+Archive-Zip-ver    = Archive-Zip/Archive-Zip-1.51.tar.gz
 attr-ver           = attr/attr-2.4.47.src.tar.gz
 autoconf-ver       = autoconf/autoconf-2.69.tar.xz
+autogen-ver        = autogen/autogen-5.18.7.tar.xz
 automake-ver       = automake/automake-1.14.tar.xz
 autossh-ver        = autossh/autossh-1.4c.tgz
 bash-ver           = bash/bash-4.3.30.tar.gz
 bcrypt-ver         = bcrypt/bcrypt-1.1.tar.gz
 binutils-ver       = binutils/binutils-2.24.tar.gz
+bison-ver          = bison/bison-3.0.tar.gz
 bzip-ver           = bzip/bzip2-1.0.6.tar.gz
 ca-cert-ver        = ca-cert/ca-cert-1.0
 cairo-ver          = cairo/cairo-1.14.2.tar.xz
@@ -541,13 +518,17 @@ coreutils-ver      = coreutils/coreutils-8.22.tar.xz
 cppcheck-ver       = cppcheck/cppcheck-1.71.tar.bz2
 curl-ver           = curl/curl-7.41.0.tar.bz2
 db-ver             = db/db-6.1.26.tar
-dejagnu-ver        = dejagnu/dejagnu-1.5.2.tar.gz
+dejagnu-ver        = dejagnu/dejagnu-1.5.3.tar.gz
+Devel-Symdump-ver  = Devel-Symdump/Devel-Symdump-2.15.tar.gz
 diffutils-ver      = diffutils/diffutils-3.3.tar.xz
+Digest-SHA1-ver    = Digest-SHA1/Digest-SHA1-2.13.tar.gz
 doxygen-ver        = doxygen/doxygen-1.8.9.1.src.tar.gz
 e2fsprogs-ver      = e2fsprogs/master.zip
 ecj-ver            = ecj/ecj-latest.jar
+Encode-Locale-ver  = Encode-Locale/Encode-Locale-1.05.tar.gz
 expat-ver          = expat/expat-2.1.0.tar.gz
 expect-ver         = expect/expect5.45.tar.gz
+File-Listing-ver   = File-Listing/File-Listing-6.04.tar.gz
 file-ver           = file/file-5.17.tar.gz
 findutils-ver      = findutils/findutils-4.4.2.tar.gz
 flex-ver           = flex/flex-2.5.39.tar.gz
@@ -555,31 +536,40 @@ fontconfig-ver     = fontconfig/fontconfig-2.11.1.tar.bz2
 freetype-ver       = freetype/freetype-2.6.1.tar.bz2
 fuse-ver           = fuse/fuse-2.9.3.tar.gz
 gawk-ver           = gawk/gawk-4.1.1.tar.gz
-gc-ver             = gc/gc-7.4.2.tar.gz
 gcc-ver            = gcc/gcc-4.7.4.tar.bz2
-gdb-ver            = gdb/gdb-7.9.tar.xz
+gc-ver             = gc/gc-7.4.2.tar.gz
 gdbm-ver           = gdbm/gdbm-1.10.tar.gz
+gdb-ver            = gdb/gdb-7.9.tar.xz
 gettext-ver        = gettext/gettext-0.19.7.tar.gz
 git-ver            = git/git-2.2.1.tar.xz
+glibc-ver          = glibc/glibc-2.21.tar.gz
 # glib-ver           = glib/glib-2.44.1.tar.xz
 glib-ver           = glib/glib-2.46.1.tar.xz
-glibc-ver          = glibc/glibc-2.21.tar.gz
 gmp-ver            = gmp/gmp-5.1.2.tar.bz2
 gnupg-ver          = gnupg/gnupg-2.0.29.tar.bz2
 gnutls-ver         = gnutls/gnutls-3.3.13.tar.xz
-go-ver             = go/go1.4.2.src.tar.gz
 gobject-introspection-ver = gobject-introspection/gobject-introspection-1.46.0.tar.xz
+go-ver             = go/go1.4.2.src.tar.gz
 grep-ver           = grep/grep-2.21.tar.xz
 guile-ver          = guile/guile-2.0.11.tar.xz
 gzip-ver           = gzip/gzip-1.6.tar.gz
 harfbuzz-ver       = harfbuzz/harfbuzz-0.9.38.tar.bz2
 hashdeep-ver       = hashdeep/master.zip
+HTML-Parser-ver    = HTML-Parser/HTML-Parser-3.71.tar.gz
+HTML-Tagset-ver    = HTML-Tagset/HTML-Tagset-3.20.tar.gz
 htop-ver           = htop/htop-1.0.1.tar.gz
+HTTP-Cookies-ver   = HTTP-Cookies/HTTP-Cookies-6.01.tar.gz
+HTTP-Daemon-ver    = HTTP-Daemon/HTTP-Daemon-6.01.tar.gz
+HTTP-Date-ver      = HTTP-Date/HTTP-Date-6.02.tar.gz
 httpd-ver          = httpd/httpd-2.4.12.tar.bz2
+HTTP-Message-ver   = HTTP-Message/HTTP-Message-6.11.tar.gz
+HTTP-Negotiate-ver = HTTP-Negotiate/HTTP-Negotiate-6.01.tar.gz
 hwloc-ver          = hwloc/hwloc-1.11.0.tar.gz
 icu-ver            = icu/icu4c-54_1-src.tgz
 inetutils-ver      = inetutils/inetutils-1.9.tar.gz
 intltool-ver       = intltool/intltool-0.51.0.tar.gz
+IO-HTML-ver        = IO-HTML/IO-HTML-1.001.tar.gz
+IO-Socket-SSL-ver  = IO-Socket-SSL/IO-Socket-SSL-2.012.tar.gz
 iptraf-ng-ver      = iptraf-ng/iptraf-ng-1.1.4.tar.gz
 iwyu-ver           = include-what-you-use/include-what-you-use-3.4.src.tar.gz
 jnettop-ver        = jnettop/jnettop-0.13.0.tar.gz
@@ -603,10 +593,12 @@ libtool-ver        = libtool/libtool-2.4.2.tar.gz
 libunistring-ver   = libunistring/libunistring-0.9.6.tar.xz
 libusb-ver         = libusb/libusb-1.0.19.tar.bz2
 libwww-perl-ver    = libwww-perl/libwww-perl-6.15.tar.gz
-libxml2-ver        = libxml2/libxml2-2.9.1.tar.gz
+libxml2-ver        = libxml2/libxml2-2.9.3.tar.gz
 libxslt-ver        = libxslt/libxslt-1.1.28.tar.gz
+List-MoreUtils-ver = List-MoreUtils/List-MoreUtils-0.413.tar.gz
 llvm-ver           = llvm/llvm-3.4.src.tar.gz
 lua-ver            = lua/lua-5.3.0.tar.gz
+LWP-MediaTypes-ver = LWP-MediaTypes/LWP-MediaTypes-6.02.tar.gz
 lzma-ver           = lzma/lzma-4.32.7.tar.gz
 lzo-ver            = lzo/lzo-2.08.tar.gz
 m4-ver             = m4/m4-1.4.17.tar.gz
@@ -616,7 +608,9 @@ mpc-ver            = mpc/mpc-1.0.1.tar.gz
 mpfr-ver           = mpfr/mpfr-3.1.2.tar.gz
 multitail-ver      = multitail/multitail-6.4.2.tgz
 ncurses-ver        = ncurses/ncurses-5.9.tar.gz
+Net-HTTP-ver       = Net-HTTP/Net-HTTP-6.09.tar.gz
 netpbm-ver         = netpbm/netpbm-10.35.95.tgz
+Net-SSLeay-ver     = Net-SSLeay/Net-SSLeay-1.68.tar.gz
 nettle-ver         = nettle/nettle-2.7.1.tar.gz
 ntfs-3g-ver        = ntfs-3g/ntfs-3g_ntfsprogs-2013.1.13.tgz
 openssl-ver        = openssl/openssl-1.0.2e.tar.gz
@@ -630,11 +624,14 @@ perl-ver           = perl/perl-5.22.1.tar.gz
 pinentry-ver       = pinentry/pinentry-0.9.5.tar.bz2
 pixman-ver         = pixman/pixman-0.32.6.tar.gz
 pkg-config-ver     = pkg-config/pkg-config-0.29.tar.gz
+Pod-Coverage-ver   = Pod-Coverage/Pod-Coverage-0.23.tar.gz
 popt-ver           = popt/popt-1.16.tar.gz
 protobuf-ver       = protobuf/protobuf-2.5.0.tar.bz2
 psmisc-ver         = psmisc/psmisc-22.21.tar.gz
 pth-ver            = pth/pth-2.0.7.tar.gz
 pygobject-ver      = pygobject/pygobject-2.28.6.tar.xz
+Python-ver         = Python/Python-2.7.10.tar.xz
+Scalar-MoreUtils-ver = Scalar-MoreUtils/Scalar-MoreUtils-0.02.tar.gz
 scons-ver          = scons/scons-2.3.4.tar.gz
 screen-ver         = screen/screen-4.3.1.tar.gz
 scrypt-ver         = scrypt/scrypt-1.1.6.tgz
@@ -649,16 +646,20 @@ subversion-ver     = subversion/subversion-1.8.9.tar.bz2
 swig-ver           = swig/swig-3.0.0.tar.gz
 symlinks-ver       = symlinks/symlinks-1.4.tar.gz
 tar-ver            = tar/tar-1.28.tar.gz
-tcl-ver            = tcl/tcl8.6.3-src.tar.gz
-tcp_wrappers-ver   = tcp_wrappers/tcp_wrappers_7.6.tar.gz
-tcp_wrappers-patch-ver = tcp_wrappers/tcp_wrappers-7.6-shared_lib_plus_plus-1.patch
-tcpdump-ver        = tcpdump/tcpdump-4.5.1.tar.gz
-texinfo-ver        = texinfo/texinfo-5.2.tar.gz
 tcc-ver            = tcc/tcc-0.9.26.tar.bz2
+tcl-ver            = tcl/tcl8.6.3-src.tar.gz
+tclx-ver           = tclx/tclx8.4.1.tar.bz2
+tcpdump-ver        = tcpdump/tcpdump-4.5.1.tar.gz
+tcp_wrappers-patch-ver = tcp_wrappers/tcp_wrappers-7.6-shared_lib_plus_plus-1.patch
+tcp_wrappers-ver   = tcp_wrappers/tcp_wrappers_7.6.tar.gz
+Test-Pod-Coverage-ver = Test-Pod-Coverage/Test-Pod-Coverage-1.10.tar.gz
+Test-Pod-ver       = Test-Pod/Test-Pod-1.49.tar.gz
+texinfo-ver        = texinfo/texinfo-5.2.tar.gz
 tmux-ver           = tmux/tmux-1.9a.tar.gz
 truecrypt-ver      = truecrypt/truecrypt-7.1a-linux-console-x86.tar.gz
 unrar-ver          = unrar/unrarsrc-5.3.3.tar.gz
 unzip-ver          = unzip/unzip60.tar.gz
+URI-ver            = URI/URI-1.69.tar.gz
 util-linux-ng-ver  = util-linux-ng/util-linux-ng-2.18.tar.xz
 util-linux-ver     = util-linux/util-linux-2.24.tar.gz
 vala-ver           = vala/vala-0.28.1.tar.xz
@@ -667,6 +668,8 @@ wget-ver           = wget/wget-1.16.3.tar.xz
 which-ver          = which/which-2.20.tar.gz
 whois-ver          = whois/whois_5.2.10.tar.xz
 wipe-ver           = wipe/wipe-2.3.1.tar.bz2
+WWW-RobotRules-ver = WWW-RobotRules/WWW-RobotRules-6.02.tar.gz
+XML-Parser-ver     = XML-Parser/XML-Parser-2.36.tar.gz
 xz-ver             = xz/xz-5.0.5.tar.gz
 zip-ver            = zip/zip30.tar.gz
 zlib-ver           = zlib/zlib-1.2.8.tar.gz
@@ -916,6 +919,7 @@ jnettop libxml2 check file protobuf libtasn1 lzo gnupg nettle popt sharutils pix
     $(jnettop-ver) \
     $(libsecret-ver) \
     $(libtasn1-ver) \
+    $(libxml2-ver) \
     $(libxslt-ver) \
     $(lzo-ver) \
     $(nettle-ver) \
@@ -985,6 +989,8 @@ srm wipe mosh socat screen tmux psmisc libusb htop cairo iptraf-ng hwloc: $(srm-
 .PHONY: sqlite
 .PHONY: tcpdump
 make libpcap sqlite lzma bison autogen pango pygobject tcpdump gobject-introspection : \
+    $(autogen-ver) \
+    $(bison-ver) \
     $(make-ver) \
     $(libpcap-ver) \
     $(lzma-ver) \
@@ -1271,7 +1277,7 @@ dejagnu: $(dejagnu-ver)
 	cd $@/`cat $@/untar.dir`/; make check || make test
 	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo make install
 	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo install -v -dm755 /usr/local/share/doc/dejagnu
-	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo install -v -m644 doc/dejagnu.{html,txt} /usr/local/share/doc/dejagnu
+	-cd $@/`cat $@/untar.dir`/; /usr/bin/sudo install -v -m644 doc/dejagnu.{html,txt} /usr/local/share/doc/dejagnu
 	$(call PKGINSTALL,$@)
 
 .PHONY: doxygen
@@ -1928,7 +1934,7 @@ pth: $(pth-ver)
 .PHONY: Python
 Python: $(Python-ver)
 	$(call SOURCEDIR,$@,xf)
-	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
+	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --enabled-shared
 	cd $@/`cat $@/untar.dir`/; make
 	$(call PKGINSTALL,$@)
 	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo python2.7 setup.py install
@@ -2052,7 +2058,7 @@ tcl: $(tcl-ver)
 	cd $@/`cat $@/untar.dir`/unix; /usr/bin/sudo ln -v -sf /usr/local/bin/tclsh8.6 /usr/local/bin/tclsh
 
 .PHONY: tclx
-tclx:
+tclx: $(tclx-ver)
 	$(call SOURCEDIR,$@,xf)
 	cd $@; mkdir $@-build
 	cd $@/$@-build/; readlink -f . | grep $@-build
@@ -2171,11 +2177,13 @@ wget-all: \
     $(Archive-Zip-ver) \
     $(attr-ver) \
     $(autoconf-ver) \
+    $(autogen-ver) \
     $(automake-ver) \
     $(autossh-ver) \
     $(bash-ver) \
     $(bcrypt-ver) \
     $(binutils-ver) \
+    $(bison-ver) \
     $(bzip-ver) \
     $(ca-cert-ver) \
     $(cairo-ver) \
@@ -2317,6 +2325,7 @@ wget-all: \
     $(tar-ver) \
     $(tcc-ver) \
     $(tcl-ver) \
+    $(tclx-ver) \
     $(tcpdump-ver) \
     $(tcp_wrappers-patch-ver) \
     $(tcp_wrappers-ver) \
@@ -2359,6 +2368,9 @@ $(attr-ver):
 $(autoconf-ver):
 	$(call SOURCEWGET,"autoconf","https://ftp.gnu.org/gnu/"$(autoconf-ver))
 
+$(autogen-ver):
+	$(call SOURCEWGET,"autogen","https://ftp.gnu.org/gnu/"$(autogen-ver))
+
 $(automake-ver):
 	$(call SOURCEWGET,"automake","https://ftp.gnu.org/gnu/"$(automake-ver))
 
@@ -2373,6 +2385,9 @@ $(bcrypt-ver):
 
 $(binutils-ver):
 	$(call SOURCEWGET,"binutils","https://ftp.gnu.org/gnu/"$(binutils-ver))
+
+$(bison-ver):
+	$(call SOURCEWGET,"bison","http://ftp.gnu.org/gnu/"$(bison-ver))
 
 $(bzip-ver):
 	$(call SOURCEWGET,"bzip","http://www.bzip.org/1.0.6/bzip2-1.0.6.tar.gz")
@@ -2417,7 +2432,7 @@ $(Devel-Symdump-ver):
 	$(call SOURCEWGET,"Devel-Symdump","http://search.cpan.org/CPAN/authors/id/A/AN/ANDK/"$(notdir $(Devel-Symdump-ver)))
 
 $(dejagnu-ver):
-	$(call SOURCEWGET,"dejagnu","https://ftp.gnu.org/pub/gnu/"$(dejagnu-ver))
+	$(call SOURCEWGET,"dejagnu","http://ftp.gnu.org/pub/gnu/"$(dejagnu-ver))
 
 
 $(diffutils-ver):
@@ -2804,6 +2819,9 @@ $(tcc-ver):
 # http://www.tcl.tk/software/tcltk/download.html
 $(tcl-ver):
 	$(call SOURCEWGET,"tcl","http://prdownloads.sourceforge.net/"$(tcl-ver))
+
+$(tclx-ver):
+	$(call SOURCEWGET,"tclx","http://prdownloads.sourceforge.net/"$(tclx-ver))
 
 $(tcp_wrappers-ver):
 	$(call SOURCEWGET,"tcp_wrappers","ftp://ftp.porcupine.org/pub/security/tcp_wrappers_7.6.tar.gz")
