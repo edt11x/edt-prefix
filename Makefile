@@ -292,6 +292,7 @@ aftergcc: \
     gettext \
     libiconv \
     gettext \
+    expat \
     aftergettext
 
 # run ca-cert twice. The shell scripts are sloppy. They want to
@@ -324,6 +325,17 @@ afteropenssl: \
     Test-Pod \
     Test-Pod-Coverage \
     XML-Parser \
+    IO-HTML \
+    LWP-MediaTypes \
+    HTTP-Date \
+    HTTP-Daemon \
+    WWW-RobotRules \
+    HTTP-Message \
+    Encode-Locale \
+    File-Listing \
+    HTTP-Cookies \
+    HTTP-Negotiate \
+    Net-HTTP \
     libwww-perl \
     bison \
     afterbison
@@ -348,7 +360,6 @@ afterbison: \
     pth \
     gnupg \
     bash \
-    expat \
     apr \
     apr-util \
     glib \
@@ -485,10 +496,20 @@ afterlibsecret: \
 Archive-Zip-ver    = Archive-Zip/Archive-Zip-1.51.tar.gz
 Devel-Symdump-ver  = Devel-Symdump/Devel-Symdump-2.15.tar.gz
 Digest-SHA1-ver    = Digest-SHA1/Digest-SHA1-2.13.tar.gz
+Encode-Locale-ver  = Encode-Locale/Encode-Locale-1.05.tar.gz
+File-Listing-ver   = File-Listing/File-Listing-6.04.tar.gz
 HTML-Parser-ver    = HTML-Parser/HTML-Parser-3.71.tar.gz
 HTML-Tagset-ver    = HTML-Tagset/HTML-Tagset-3.20.tar.gz
+HTTP-Cookies-ver   = HTTP-Cookies/HTTP-Cookies-6.01.tar.gz
+HTTP-Date-ver      = HTTP-Date/HTTP-Date-6.02.tar.gz
+HTTP-Daemon-ver    = HTTP-Daemon/HTTP-Daemon-6.01.tar.gz
+HTTP-Message-ver   = HTTP-Message/HTTP-Message-6.11.tar.gz
+HTTP-Negotiate-ver = HTTP-Negotiate/HTTP-Negotiate-6.01.tar.gz
+IO-HTML-ver        = IO-HTML/IO-HTML-1.001.tar.gz
 IO-Socket-SSL-ver  = IO-Socket-SSL/IO-Socket-SSL-2.012.tar.gz
 List-MoreUtils-ver = List-MoreUtils/List-MoreUtils-0.413.tar.gz
+LWP-MediaTypes-ver = LWP-MediaTypes/LWP-MediaTypes-6.02.tar.gz
+Net-HTTP-ver       = Net-HTTP/Net-HTTP-6.09.tar.gz
 Net-SSLeay-ver     = Net-SSLeay/Net-SSLeay-1.68.tar.gz
 Pod-Coverage-ver   = Pod-Coverage/Pod-Coverage-0.23.tar.gz
 Python-ver         = Python/Python-2.7.10.tar.xz
@@ -497,6 +518,7 @@ Test-Pod-Coverage-ver = Test-Pod-Coverage/Test-Pod-Coverage-1.10.tar.gz
 Test-Pod-ver       = Test-Pod/Test-Pod-1.49.tar.gz
 XML-Parser-ver     = XML-Parser/XML-Parser-2.36.tar.gz
 URI-ver            = URI/URI-1.69.tar.gz
+WWW-RobotRules-ver = WWW-RobotRules/WWW-RobotRules-6.02.tar.gz
 acl-ver            = acl/acl-2.2.52.src.tar.gz
 apr-util-ver       = apr-util/apr-util-1.5.3.tar.bz2
 apr-ver            = apr/apr-1.4.8.tar.bz2
@@ -518,11 +540,13 @@ compiler-rt-ver    = compiler-rt/compiler-rt-3.4.src.tar.gz
 coreutils-ver      = coreutils/coreutils-8.22.tar.xz
 cppcheck-ver       = cppcheck/cppcheck-1.71.tar.bz2
 curl-ver           = curl/curl-7.41.0.tar.bz2
+db-ver             = db/db-6.1.26.tar
 dejagnu-ver        = dejagnu/dejagnu-1.5.2.tar.gz
 diffutils-ver      = diffutils/diffutils-3.3.tar.xz
 doxygen-ver        = doxygen/doxygen-1.8.9.1.src.tar.gz
 e2fsprogs-ver      = e2fsprogs/master.zip
 ecj-ver            = ecj/ecj-latest.jar
+expat-ver          = expat/expat-2.1.0.tar.gz
 expect-ver         = expect/expect5.45.tar.gz
 file-ver           = file/file-5.17.tar.gz
 findutils-ver      = findutils/findutils-4.4.2.tar.gz
@@ -578,10 +602,12 @@ libtasn1-ver       = libtasn1/libtasn1-4.2.tar.gz
 libtool-ver        = libtool/libtool-2.4.2.tar.gz
 libunistring-ver   = libunistring/libunistring-0.9.6.tar.xz
 libusb-ver         = libusb/libusb-1.0.19.tar.bz2
+libwww-perl-ver    = libwww-perl/libwww-perl-6.15.tar.gz
 libxml2-ver        = libxml2/libxml2-2.9.1.tar.gz
 libxslt-ver        = libxslt/libxslt-1.1.28.tar.gz
 llvm-ver           = llvm/llvm-3.4.src.tar.gz
 lua-ver            = lua/lua-5.3.0.tar.gz
+lzma-ver           = lzma/lzma-4.32.7.tar.gz
 lzo-ver            = lzo/lzo-2.08.tar.gz
 m4-ver             = m4/m4-1.4.17.tar.gz
 make-ver           = make/make-4.1.tar.gz
@@ -593,13 +619,13 @@ ncurses-ver        = ncurses/ncurses-5.9.tar.gz
 netpbm-ver         = netpbm/netpbm-10.35.95.tgz
 nettle-ver         = nettle/nettle-2.7.1.tar.gz
 ntfs-3g-ver        = ntfs-3g/ntfs-3g_ntfsprogs-2013.1.13.tgz
-openssl-ver        = openssl/openssl-1.0.2d.tar.gz
+openssl-ver        = openssl/openssl-1.0.2e.tar.gz
 openvpn-ver        = openvpn/openvpn-2.3.8.tar.xz
 p7zip-ver          = p7zip/p7zip_9.38.1_src_all.tar.bz2
 pango-ver          = pango/pango-1.36.8.tar.xz
 par2cmdline-ver    = par2cmdline/master.zip
 patch-ver          = patch/patch-2.7.tar.gz
-pcre-ver           = pcre/pcre-8.36.tar.bz2
+pcre-ver           = pcre/pcre-8.38.tar.bz2
 perl-ver           = perl/perl-5.22.1.tar.gz
 pinentry-ver       = pinentry/pinentry-0.9.5.tar.bz2
 pixman-ver         = pixman/pixman-0.32.6.tar.gz
@@ -961,6 +987,7 @@ srm wipe mosh socat screen tmux psmisc libusb htop cairo iptraf-ng hwloc: $(srm-
 make libpcap sqlite lzma bison autogen pango pygobject tcpdump gobject-introspection : \
     $(make-ver) \
     $(libpcap-ver) \
+    $(lzma-ver) \
     $(gobject-introspection-ver) \
     $(pango-ver) \
     $(pygobject-ver) \
@@ -994,30 +1021,53 @@ bcrypt bzip libcap multitail symlinks unrar: $(bcrypt-ver) $(bzip-ver) $(multita
 .PHONY: Archive-Zip
 .PHONY: Devel-Symdump
 .PHONY: Digest-SHA1
+.PHONY: Encode-Locale
+.PHONY: File-Listing
 .PHONY: HTML-Parser
 .PHONY: HTML-Tagset
+.PHONY: HTTP-Cookies
+.PHONY: HTTP-Daemon
+.PHONY: HTTP-Date
+.PHONY: HTTP-Message
+.PHONY: HTTP-Negotiate
+.PHONY: IO-HTML
 .PHONY: IO-Socket-SSL
+.PHONY: libwww-perl
 .PHONY: List-MoreUtils
+.PHONY: LWP-MediaTypes
+.PHONY: Net-HTTP
 .PHONY: Pod-Coverage
 .PHONY: Scalar-MoreUtils
 .PHONY: Test-Pod
 .PHONY: Test-Pod-Coverage
 .PHONY: URI
+.PHONY: WWW-RobotRules
 .PHONY: XML-Parser
-.PHONY: libwww-perl
-Archive-Zip Digest-SHA1 Scalar-MoreUtils URI HTML-Tagset HTML-Parser IO-Socket-SSL Devel-Symdump List-MoreUtils Pod-Coverage Test-Pod Test-Pod-Coverage libwww-perl XML-Parser : \
+Archive-Zip Digest-SHA1 Encode-Locale File-Listing Scalar-MoreUtils URI HTML-Tagset HTML-Parser HTTP-Daemon HTTP-Cookies HTTP-Date WWW-RobotRules HTTP-Message HTTP-Negotiate IO-HTML IO-Socket-SSL LWP-MediaTypes Net-HTTP Devel-Symdump List-MoreUtils Pod-Coverage Test-Pod Test-Pod-Coverage libwww-perl XML-Parser : \
     $(Archive-Zip-ver) \
     $(Devel-Symdump-ver) \
     $(Digest-SHA1-ver) \
+    $(Encode-Locale-ver) \
+    $(File-Listing-ver) \
     $(HTML-Parser-ver) \
     $(HTML-Tagset-ver) \
+    $(HTTP-Cookies-ver) \
+    $(HTTP-Daemon-ver) \
+    $(HTTP-Date-ver) \
+    $(HTTP-Message-ver) \
+    $(HTTP-Negotiate-ver) \
+    $(IO-HTML-ver) \
     $(List-MoreUtils-ver) \
+    $(LWP-MediaTypes-ver) \
+    $(Net-HTTP-ver) \
     $(Pod-Coverage-ver) \
     $(Scalar-MoreUtils-ver) \
     $(Test-Pod-Coverage-ver) \
     $(Test-Pod-ver) \
     $(URI-ver) \
-    $(XML-Parser-ver)
+    $(WWW-RobotRules-ver) \
+    $(XML-Parser-ver) \
+    $(libwww-perl-ver)
 	$(call SOURCEDIR,$@,xfz)
 	cd $@/`cat $@/untar.dir`/; perl Makefile.PL LIBS='-L/usr/local/lib -L/usr/lib -L/lib' INC='-I/usr/local/include -I/usr/include'
 	cd $@/`cat $@/untar.dir`/; make
@@ -1159,7 +1209,7 @@ curl: $(curl-ver)
 
 # Berkeley DB
 .PHONY: db
-db:
+db: $(db-ver)
 	$(call SOURCEDIR,$@,xfz)
 	cd $@/`cat $@/untar.dir`/build_unix; readlink -f . | grep `cat ../../untar.dir`
 	cd $@/`cat $@/untar.dir`/build_unix; ../dist/configure --enable-compat185 --enable-dbm --enable-cxx
@@ -1257,7 +1307,7 @@ ecj: $(ecj-ver)
 	cd $@; sudo cp -v *.jar /usr/local/share/java/ecj.jar
 
 .PHONY: expat
-expat:
+expat: $(expat-ver)
 	$(call SOURCEDIR,$@,xf)
 	cd $@; mkdir $@-build
 	cd $@/$@-build/; readlink -f . | grep $@-build
@@ -1349,6 +1399,9 @@ gcc: $(gcc-ver)
 	cd $@; mkdir $@-build
 	cd $@/$@-build/; readlink -f . | grep $@-build
 	cd $@/$@-build/; ../`cat ../untar.dir`/configure \
+		    --with-gmp=/usr/local \
+		    --with-mpc=/usr/local \
+		    --with-mpfr=/usr/local \
 		    --enable-shared \
 		    --disable-multilib \
 		    --prefix=/usr/local \
@@ -1845,8 +1898,8 @@ openvpn: $(openvpn-ver)
 pcre: $(pcre-ver)
 	$(call SOURCEDIR,$@,xf)
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --enable-unicode-properties \
-	    --enable-pcre16 --enable-pcre32 --enable-pcregrep-libz --enable-pcregrep-libbz2 \
-	    --enable-pcretest-libreadline
+	    --enable-pcre16 --enable-pcre32 --enable-pcregrep-libz --enable-pcregrep-libbz2
+	    #--enable-pcretest-libreadline
 	cd $@/`cat $@/untar.dir`/; make
 	cd $@/`cat $@/untar.dir`/; make check || make test
 	$(call PKGINSTALL,$@)
@@ -2112,24 +2165,10 @@ zlib: $(zlib-ver)
 
 .PHONY: wget-all
 wget-all: \
-    $(Archive-Zip-ver) \
-    $(Devel-Symdump-ver) \
-    $(Digest-SHA1-ver) \
-    $(HTML-Parser-ver) \
-    $(HTML-Tagset-ver) \
-    $(IO-Socket-SSL-ver) \
-    $(List-MoreUtils-ver) \
-    $(Net-SSLeay-ver) \
-    $(Pod-Coverage-ver) \
-    $(Python-ver) \
-    $(Scalar-MoreUtils-ver) \
-    $(Test-Pod-Coverage-ver) \
-    $(Test-Pod-ver) \
-    $(URI-ver) \
-    $(XML-Parser-ver) \
     $(acl-ver) \
     $(apr-util-ver) \
     $(apr-ver) \
+    $(Archive-Zip-ver) \
     $(attr-ver) \
     $(autoconf-ver) \
     $(automake-ver) \
@@ -2148,12 +2187,18 @@ wget-all: \
     $(coreutils-ver) \
     $(cppcheck-ver) \
     $(curl-ver) \
+    $(db-ver) \
     $(dejagnu-ver) \
+    $(Devel-Symdump-ver) \
     $(diffutils-ver) \
+    $(Digest-SHA1-ver) \
     $(doxygen-ver) \
     $(e2fsprogs-ver) \
     $(ecj-ver) \
+    $(Encode-Locale-ver) \
+    $(expat-ver) \
     $(expect-ver) \
+    $(File-Listing-ver) \
     $(file-ver) \
     $(findutils-ver) \
     $(flex-ver) \
@@ -2161,30 +2206,39 @@ wget-all: \
     $(freetype-ver) \
     $(fuse-ver) \
     $(gawk-ver) \
-    $(gc-ver) \
     $(gcc-ver) \
-    $(gdb-ver) \
+    $(gc-ver) \
     $(gdbm-ver) \
+    $(gdb-ver) \
     $(gettext-ver) \
     $(git-ver) \
-    $(glib-ver) \
     $(glibc-ver) \
+    $(glib-ver) \
     $(gmp-ver) \
     $(gntls-ver) \
     $(gnupg-ver) \
-    $(go-ver) \
     $(gobject-introspection) \
+    $(go-ver) \
     $(grep-ver) \
     $(guile-ver) \
     $(gzip-ver) \
     $(harfbuzz-ver) \
     $(hashdeep-ver) \
+    $(HTML-Parser-ver) \
+    $(HTML-Tagset-ver) \
     $(htop-ver) \
+    $(HTTP-Cookies-ver) \
+    $(HTTP-Daemon-ver) \
+    $(HTTP-Date-ver) \
     $(httpd-ver) \
+    $(HTTP-Message-ver) \
+    $(HTTP-Negotiate-ver) \
     $(hwloc-ver) \
     $(icu-ver) \
     $(inetutils-ver) \
     $(intltool-ver) \
+    $(IO-HTML-ver) \
+    $(IO-Socket-SSL-ver) \
     $(iptraf-ng-ver) \
     $(iwyu-ver) \
     $(jnettop-ver) \
@@ -2207,9 +2261,13 @@ wget-all: \
     $(libtool-ver) \
     $(libunistring-ver) \
     $(libusb-ver) \
+    $(libwww-perl-ver) \
     $(libxml2-ver) \
     $(libxslt-ver) \
+    $(List-MoreUtils-ver) \
     $(lua-ver) \
+    $(LWP-MediaTypes-ver) \
+    $(lzma-ver) \
     $(lzo-ver) \
     $(m4-ver) \
     $(make-ver) \
@@ -2219,6 +2277,8 @@ wget-all: \
     $(multitail-ver) \
     $(ncurses-ver) \
     $(netpbm-ver) \
+    $(Net-HTTP-ver) \
+    $(Net-SSLeay-ver) \
     $(nettle-ver) \
     $(ntfs-3g-ver) \
     $(openssl-ver) \
@@ -2232,11 +2292,14 @@ wget-all: \
     $(pinentry-ver) \
     $(pixman-ver) \
     $(pkg-config-ver) \
+    $(Pod-Coverage-ver) \
     $(popt-ver) \
     $(protobuf-ver) \
     $(psmisc-ver) \
     $(pth-ver) \
     $(pygobject-ver) \
+    $(Python-ver) \
+    $(Scalar-MoreUtils-ver) \
     $(scons-ver) \
     $(screen-ver) \
     $(scrypt-ver) \
@@ -2254,14 +2317,17 @@ wget-all: \
     $(tar-ver) \
     $(tcc-ver) \
     $(tcl-ver) \
+    $(tcpdump-ver) \
     $(tcp_wrappers-patch-ver) \
     $(tcp_wrappers-ver) \
-    $(tcpdump-ver) \
+    $(Test-Pod-Coverage-ver) \
+    $(Test-Pod-ver) \
     $(texinfo-ver) \
     $(tmux-ver) \
     $(truecrypt-ver) \
     $(unrar-ver) \
     $(unzip-ver) \
+    $(URI-ver) \
     $(util-linux-ver) \
     $(vala-ver) \
     $(vim-ver) \
@@ -2269,6 +2335,8 @@ wget-all: \
     $(which-ver) \
     $(whois-ver) \
     $(wipe-ver) \
+    $(WWW-RobotRules-ver) \
+    $(XML-Parser-ver) \
     $(zip-ver) \
     $(zlib-ver) \
     $(util-linux-ng-ver)
@@ -2342,6 +2410,9 @@ $(cppcheck-ver):
 $(curl-ver):
 	$(call SOURCEWGET,"curl","http://curl.haxx.se/download/curl-7.41.0.tar.bz2")
 
+$(db-ver):
+	$(call SOURCEWGET,"db","http://download.oracle.com/otn/berkeley-"$(db-ver))
+
 $(Devel-Symdump-ver):
 	$(call SOURCEWGET,"Devel-Symdump","http://search.cpan.org/CPAN/authors/id/A/AN/ANDK/"$(notdir $(Devel-Symdump-ver)))
 
@@ -2363,6 +2434,15 @@ $(e2fsprogs-ver):
 
 $(ecj-ver):
 	$(call SOURCEWGET,"ecj","ftp://sourceware.org/pub/java/ecj-latest.jar")
+
+$(Encode-Locale-ver):
+	$(call SOURCEWGET,"Encode-Locale","http://search.cpan.org/CPAN/authors/id/G/GA/GAAS/"$(notdir $(Encode-Locale-ver)))
+
+$(File-Listing-ver):
+	$(call SOURCEWGET,"File-Listing","http://search.cpan.org/CPAN/authors/id/G/GA/GAAS/"$(notdir $(File-Listing-ver)))
+
+$(expat-ver):
+	$(call SOURCEWGET,"expat","http://downloads.sourceforge.net/expat/expat-2.1.0.tar.gz")
 
 $(expect-ver):
 	$(call SOURCEWGET,"expect","http://prdownloads.sourceforge.net/"$(expect-ver))
@@ -2442,6 +2522,21 @@ $(harfbuzz-ver):
 $(hashdeep-ver):
 	$(call SOURCEGIT,"hashdeep","https://github.com/jessek/hashdeep.git")
 
+$(HTTP-Daemon-ver):
+	$(call SOURCEWGET,"HTTP-Daemon","http://search.cpan.org/CPAN/authors/id/G/GA/GAAS/"$(notdir $(HTTP-Daemon-ver)))
+
+$(HTTP-Cookies-ver):
+	$(call SOURCEWGET,"HTTP-Cookies","http://search.cpan.org/CPAN/authors/id/G/GA/GAAS/"$(notdir $(HTTP-Cookies-ver)))
+
+$(HTTP-Date-ver):
+	$(call SOURCEWGET,"HTTP-Date","http://search.cpan.org/CPAN/authors/id/G/GA/GAAS/"$(notdir $(HTTP-Date-ver)))
+
+$(HTTP-Message-ver):
+	$(call SOURCEWGET,"HTTP-Message","http://search.cpan.org/CPAN/authors/id/E/ET/ETHER/"$(notdir $(HTTP-Message-ver)))
+
+$(HTTP-Negotiate-ver):
+	$(call SOURCEWGET,"HTTP-Negotiate","http://search.cpan.org/CPAN/authors/id/G/GA/GAAS/"$(notdir $(HTTP-Negotiate-ver)))
+
 $(HTML-Parser-ver):
 	$(call SOURCEWGET,"HTML-Parser","http://search.cpan.org/CPAN/authors/id/G/GA/GAAS/"$(notdir $(HTML-Parser-ver)))
 
@@ -2459,6 +2554,9 @@ $(hwloc-ver):
 
 $(icu-ver):
 	$(call SOURCEWGET,"icu","http://download.icu-project.org/files/icu4c/54.1/icu4c-54_1-src.tgz")
+
+$(IO-HTML-ver):
+	$(call SOURCEWGET,"IO-HTML","http://search.cpan.org/CPAN/authors/id/C/CJ/CJM/"$(notdir $(IO-HTML-ver)))
 
 $(inetutils-ver):
 	$(call SOURCEWGET,"inetutils","https://ftp.gnu.org/gnu/"$(inetutils-ver))
@@ -2532,6 +2630,9 @@ $(libunistring-ver):
 $(libusb-ver):
 	$(call SOURCEWGET,"libusb","http://downloads.sourceforge.net/libusb/libusb-1.0.19.tar.bz2")
 
+$(libwww-perl-ver):
+	$(call SOURCEWGET,"libwww-perl","http://search.cpan.org/CPAN/authors/id/E/ET/ETHER/"$(notdir $(libwww-perl-ver)))
+
 $(libxml2-ver):
 	$(call SOURCEWGET,"libxml2","http://xmlsoft.org/sources/"$(notdir $(libxml2-ver)))
 
@@ -2547,11 +2648,17 @@ $(llvm-ver):
 $(lua-ver):
 	$(call SOURCEWGET,"lua","http://www.lua.org/ftp/lua-5.3.0.tar.gz")
 
+$(LWP-MediaTypes-ver):
+	$(call SOURCEWGET,"LWP-MediaTypes","http://search.cpan.org/CPAN/authors/id/G/GA/GAAS/"$(notdir $(LWP-MediaTypes-ver)))
+
 $(make-ver):
 	$(call SOURCEWGET,"make","https://ftp.gnu.org/gnu/make/make-4.1.tar.gz")
 
 $(jnettop-ver):
 	$(call SOURCEWGET,"jnettop","http://jnettop.kubs.info/dist/jnettop-0.13.0.tar.gz")
+
+$(lzma-ver):
+	$(call SOURCEWGET,"lzma","http://tukaani.org/"$(lzma-ver))
 
 $(lzo-ver):
 	$(call SOURCEWGET,"lzo","http://www.oberhumer.com/opensource/lzo/download/lzo-2.08.tar.gz")
@@ -2576,6 +2683,9 @@ $(nettle-ver):
 
 $(ncurses-ver):
 	$(call SOURCEWGET,"ncurses","https://ftp.gnu.org/pub/gnu/ncurses/ncurses-5.9.tar.gz")
+
+$(Net-HTTP-ver):
+	$(call SOURCEWGET,"Net-HTTP","http://search.cpan.org/CPAN/authors/id/E/ET/ETHER/"$(notdir $(Net-HTTP-ver)))
 
 $(Net-SSLeay-ver):
 	$(call SOURCEWGET,"Net-SSLeay","http://search.cpan.org/CPAN/authors/id/M/MI/MIKEM/$(notdir $(Net-SSLeay-ver)))
@@ -2602,7 +2712,7 @@ $(patch-ver):
 	$(call SOURCEWGET,"patch","http://ftp.gnu.org/gnu/"$(patch-ver))
 
 $(pcre-ver):
-	$(call SOURCEWGET,"pcre","ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.36.tar.bz2")
+	$(call SOURCEWGET,"pcre","ftp://ftp.csx.cam.ac.uk/pub/software/programming/"$(pcre-ver))
 
 $(perl-ver):
 	$(call SOURCEWGET,"perl","http://www.cpan.org/src/5.0/"$(notdir $(perl-ver)))
@@ -2751,6 +2861,9 @@ $(whois-ver):
 
 $(wipe-ver):
 	$(call SOURCEWGET,"wipe","http://sourceforge.net/projects/wipe/files/wipe/2.3.1/wipe-2.3.1.tar.bz2")
+
+$(WWW-RobotRules-ver):
+	$(call SOURCEWGET,"WWW-RobotRules","http://search.cpan.org/CPAN/authors/id/G/GA/GAAS/"$(notdir $(WWW-RobotRules-ver)))
 
 $(XML-Parser-ver):
 	$(call SOURCEWGET,"XML-Parser","http://search.cpan.org/CPAN/authors/id/M/MS/MSERGEANT/"$(notdir $(XML-Parser-ver)))
