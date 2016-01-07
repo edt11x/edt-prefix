@@ -340,7 +340,7 @@ afteropenssl: \
     bison \
     afterbison
 
-# lua needs ncurses
+# lua needs ncurses and readline. readline needs ncurses
 .PHONY: afterbison
 afterbison: \
     check_sudo \
@@ -357,14 +357,16 @@ afterbison: \
     libcap \
     libxml2 \
     libxslt \
-    pinentry \
+    intltool \
+    glib \
+    libsecret \
+    ncurses \
+    readline \
     pth \
     gnupg \
     bash \
     apr \
     apr-util \
-    glib \
-    ncurses \
     lua \
     ruby \
     vim \
@@ -380,6 +382,7 @@ aftervim: \
     bcrypt \
     nettle \
     libtasn1 \
+    p11-kit \
     gnutls \
     curl \
     wipe \
@@ -467,10 +470,8 @@ aftersharutils: \
 .PHONY: afterpatch
 afterpatch: \
     vala \
-    intltool \
     gobject-introspection \
     pygobject \
-    libsecret \
     tcc \
     afterlibsecret
 
@@ -486,6 +487,7 @@ afterlibsecret: \
     pixman \
     pango \
     glibc \
+    pinentry \
     automake \
     truecrypt
 
@@ -534,7 +536,7 @@ findutils-ver      = findutils/findutils-4.4.2.tar.gz
 flex-ver           = flex/flex-2.5.39.tar.gz
 fontconfig-ver     = fontconfig/fontconfig-2.11.1.tar.bz2
 freetype-ver       = freetype/freetype-2.6.1.tar.bz2
-fuse-ver           = fuse/fuse-2.9.3.tar.gz
+fuse-ver           = fuse/fuse-2.9.4.tar.gz
 gawk-ver           = gawk/gawk-4.1.1.tar.gz
 gcc-ver            = gcc/gcc-4.7.4.tar.bz2
 gc-ver             = gc/gc-7.4.2.tar.gz
@@ -547,7 +549,7 @@ glibc-ver          = glibc/glibc-2.21.tar.gz
 glib-ver           = glib/glib-2.46.1.tar.xz
 gmp-ver            = gmp/gmp-5.1.2.tar.bz2
 gnupg-ver          = gnupg/gnupg-2.0.29.tar.bz2
-gnutls-ver         = gnutls/gnutls-3.3.13.tar.xz
+gnutls-ver         = gnutls/gnutls-3.4.7.tar.xz
 gobject-introspection-ver = gobject-introspection/gobject-introspection-1.46.0.tar.xz
 go-ver             = go/go1.4.2.src.tar.gz
 grep-ver           = grep/grep-2.21.tar.xz
@@ -588,7 +590,7 @@ libpcap-ver        = libpcap/libpcap-1.4.0.tar.gz
 libpng-ver         = libpng/libpng-1.6.16.tar.xz
 libpthread-ver     = libpthread/master.zip
 libsecret-ver      = libsecret/libsecret-0.18.3.tar.xz
-libtasn1-ver       = libtasn1/libtasn1-4.2.tar.gz
+libtasn1-ver       = libtasn1/libtasn1-4.3.tar.gz
 libtool-ver        = libtool/libtool-2.4.2.tar.gz
 libunistring-ver   = libunistring/libunistring-0.9.6.tar.xz
 libusb-ver         = libusb/libusb-1.0.19.tar.bz2
@@ -611,10 +613,11 @@ ncurses-ver        = ncurses/ncurses-5.9.tar.gz
 Net-HTTP-ver       = Net-HTTP/Net-HTTP-6.09.tar.gz
 netpbm-ver         = netpbm/netpbm-10.35.95.tgz
 Net-SSLeay-ver     = Net-SSLeay/Net-SSLeay-1.68.tar.gz
-nettle-ver         = nettle/nettle-2.7.1.tar.gz
+nettle-ver         = nettle/nettle-3.1.1.tar.gz
 ntfs-3g-ver        = ntfs-3g/ntfs-3g_ntfsprogs-2013.1.13.tgz
 openssl-ver        = openssl/openssl-1.0.2e.tar.gz
 openvpn-ver        = openvpn/openvpn-2.3.8.tar.xz
+p11-kit-ver        = p11-kit/p11-kit-0.23.2.tar.gz
 p7zip-ver          = p7zip/p7zip_9.38.1_src_all.tar.bz2
 pango-ver          = pango/pango-1.36.8.tar.xz
 par2cmdline-ver    = par2cmdline/master.zip
@@ -631,6 +634,8 @@ psmisc-ver         = psmisc/psmisc-22.21.tar.gz
 pth-ver            = pth/pth-2.0.7.tar.gz
 pygobject-ver      = pygobject/pygobject-2.28.6.tar.xz
 Python-ver         = Python/Python-2.7.10.tar.xz
+readline-ver       = readline/readline-6.3.tar.gz
+ruby-ver           = ruby/ruby-2.3.0.tar.xz
 Scalar-MoreUtils-ver = Scalar-MoreUtils/Scalar-MoreUtils-0.02.tar.gz
 scons-ver          = scons/scons-2.3.4.tar.gz
 screen-ver         = screen/screen-4.3.1.tar.gz
@@ -638,10 +643,10 @@ scrypt-ver         = scrypt/scrypt-1.1.6.tgz
 sed-ver            = sed/sed-4.2.2.tar.gz
 serf-ver           = serf/serf-1.3.5.tar.bz2
 sharutils-ver      = sharutils/sharutils-4.15.1.tar.xz
-socat-ver          = socat/socat-1.7.2.2.tar.bz2
+socat-ver          = socat/socat-1.7.3.0.tar.gz
 sparse-ver         = sparse/sparse-0.5.0.tar.gz
 sqlite-ver         = sqlite/sqlite-autoconf-3071502.tar.gz
-srm-ver            = srm/srm-1.2.13.tar.gz
+srm-ver            = srm/srm-1.2.15.tar.gz
 subversion-ver     = subversion/subversion-1.8.9.tar.bz2
 swig-ver           = swig/swig-3.0.0.tar.gz
 symlinks-ver       = symlinks/symlinks-1.4.tar.gz
@@ -687,6 +692,7 @@ target_dirs:
 	sudo mkdir -p /usr/local/bin
 	sudo mkdir -p /usr/local/etc
 	sudo mkdir -p /usr/local/lib
+	sudo mkdir -p /usr/local/lib/lib64
 	sudo mkdir -p /usr/local/lib64
 	sudo mkdir -p /usr/local/share/man
 	sudo mkdir -p /usr/local/share/man/man1
@@ -824,9 +830,8 @@ gettext scrypt: $(gettext-ver) $(scrypt-ver)
 .PHONY: libgpg-error
 .PHONY: libksba
 .PHONY: libpng
-.PHONY: pinentry
 .PHONY: which
-apr automake findutils gdbm libgcrypt libgpg-error libassuan libksba libpng pinentry which: $(which-ver) $(libpng-ver) $(libgpg-error-ver) $(libassuan-ver) $(libgcrypt-ver) $(libksba-ver) $(apr-ver) $(automake-ver) $(gdbm-ver) $(findutils-ver) $(pinentry-ver)
+apr automake findutils gdbm libgcrypt libgpg-error libassuan libksba libpng which: $(which-ver) $(libpng-ver) $(libgpg-error-ver) $(libassuan-ver) $(libgcrypt-ver) $(libksba-ver) $(apr-ver) $(automake-ver) $(gdbm-ver) $(findutils-ver)
 	$(call SOURCEDIR,$@,xf)
 	cd $@; mkdir $@-build
 	cd $@/$@-build/; readlink -f . | grep $@-build
@@ -902,27 +907,22 @@ libffi texinfo: \
 .PHONY: file
 .PHONY: gnupg
 .PHONY: jnettop
-.PHONY: libsecret
 .PHONY: libxml2
 .PHONY: libxslt
-.PHONY: lzo
-.PHONY: nettle
 .PHONY: pixman
 .PHONY: popt
 .PHONY: protobuf
 .PHONY: sharutils
 .PHONY: tcc
-jnettop libxml2 check file protobuf libtasn1 lzo gnupg nettle popt sharutils pixman libxslt libsecret tcc : \
+jnettop libxml2 check file protobuf libtasn1 p11-kit gnupg popt sharutils pixman libxslt tcc : \
     $(check-ver) \
     $(file-ver) \
     $(gnupg-ver) \
     $(jnettop-ver) \
-    $(libsecret-ver) \
     $(libtasn1-ver) \
     $(libxml2-ver) \
     $(libxslt-ver) \
-    $(lzo-ver) \
-    $(nettle-ver) \
+    $(p11-kit-ver) \
     $(pixman-ver) \
     $(popt-ver) \
     $(protobuf-ver) \
@@ -950,7 +950,6 @@ par2cmdline: $(par2cmdline-ver)
 	cd $@/`cat $@/untar.dir`/; make
 	cd $@/`cat $@/untar.dir`/; make check || make test
 	$(call PKGINSTALL,$@)
-	$(call CPLIB,libproto*)
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
 
@@ -1011,12 +1010,11 @@ make libpcap sqlite lzma bison autogen pango pygobject tcpdump gobject-introspec
 # unrar is going to install in /usr/bin
 #
 .PHONY: bcrypt
-.PHONY: bzip
 .PHONY: libcap
 .PHONY: symlinks
 .PHONY: multitail
 .PHONY: unrar
-bcrypt bzip libcap multitail symlinks unrar: $(bcrypt-ver) $(bzip-ver) $(multitail-ver) $(symlinks-ver) $(unrar-ver) $(libcap-ver)
+bcrypt libcap multitail symlinks unrar: $(bcrypt-ver) $(multitail-ver) $(symlinks-ver) $(unrar-ver) $(libcap-ver)
 	$(call SOURCEDIR,$@,xfz)
 	cd $@/`cat $@/untar.dir`/; make
 	$(call PKGINSTALL,$@)
@@ -1174,6 +1172,24 @@ bash: $(bash-ver)
 	cd $@/$@-build/; make check || make test
 	$(call PKGINSTALLBUILD,$@)
 
+.PHONY: bzip
+bzip: $(bzip-ver)
+	$(call SOURCEDIR,$@,xfz)
+	cd $@/`cat $@/untar.dir`/; make clean
+	cd $@/`cat $@/untar.dir`/; make -f Makefile-libbz2_so
+	cd $@/`cat $@/untar.dir`/; sudo cp -av libbz2.so* /usr/local/lib
+	cd $@/`cat $@/untar.dir`/; sudo cp -av libbz2.so.1.0 /usr/local/lib/libbz2.so
+	$(call PKGINSTALL,$@)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
+	cd $@/`cat $@/untar.dir`/; make clean
+	cd $@/`cat $@/untar.dir`/; make
+	cd $@/`cat $@/untar.dir`/; sudo make install
+	$(call PKGINSTALL,$@)
+	$(call CPLIB,libbz*)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
+
 .PHONY: ca-cert
 ca-cert: $(ca-cert-ver)
 	$(call SOURCEDIR,$@,xf)
@@ -1209,7 +1225,6 @@ curl: $(curl-ver)
 	cd $@/`cat $@/untar.dir`/; make
 	-cd $@/`cat $@/untar.dir`/; make check || make test
 	$(call PKGINSTALL,$@)
-	$(call CPLIB,libproto*)
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
 
@@ -1224,6 +1239,11 @@ db: $(db-ver)
 	@echo "======= Build of $@ Successful ======="
 
 # binutils check needs more memory
+#
+# First pass, testing binutils is precarious. You are trying to use
+# ld and gas built for the new compiler environment on a possibly
+# older or incompatible compiler. We will wait until we have the
+# first pass compiler built before we test binutils.
 .PHONY: binutils
 binutils: $(binutils-ver)
 	$(call SOURCEDIR,$@,xfz)
@@ -1232,7 +1252,7 @@ binutils: $(binutils-ver)
 	cd $@/$@-build/; readlink -f . | grep $@-build
 	cd $@/$@-build/; ../`cat ../untar.dir`/configure --prefix=/usr/local
 	cd $@/$@-build/; make
-	cd $@/$@-build/; exec make check
+	cd $@/$@-build/; $(PHASE1_NOCHECK) make check || $(PHASE1_NOCHECK) make test
 	$(call PKGINSTALLBUILD,$@)
 
 .PHONY: clisp
@@ -1514,7 +1534,6 @@ intltool: \
 	cd $@/`cat $@/untar.dir`/; make
 	cd $@/`cat $@/untar.dir`/; make check || make test
 	$(call PKGINSTALL,$@)
-	$(call CPLIB,libproto*)
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
 
@@ -1562,7 +1581,6 @@ libarchive : $(libarchive-ver)
 	cd $@/`cat $@/untar.dir`/; make
 	cd $@/`cat $@/untar.dir`/; make check || make test
 	$(call PKGINSTALL,$@)
-	$(call CPLIB,libproto*)
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
 
@@ -1585,7 +1603,6 @@ libevent: $(libevent-ver)
 	cd $@/`cat $@/untar.dir`/; make
 	cd $@/`cat $@/untar.dir`/; make check || make test
 	$(call PKGINSTALL,$@)
-	$(call CPLIB,libproto*)
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
 
@@ -1597,6 +1614,18 @@ libiconv: $(libiconv-ver)
 	cd $@/`cat $@/untar.dir`/; make
 	$(call PKGINSTALL,$@)
 	$(call CPLIB,libcharset.*)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
+
+.PHONY: libsecret
+libsecret : \
+    $(libsecret-ver)
+	$(call SOURCEDIR,$@,xf)
+	# cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local LDFLAGS="-lpthreads"
+	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --disable-manpages
+	cd $@/`cat $@/untar.dir`/; make
+	-cd $@/`cat $@/untar.dir`/; make check || make test
+	$(call PKGINSTALL,$@)
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
 
@@ -1619,9 +1648,22 @@ lua: $(lua-ver)
 	cd $@/`cat $@/untar.dir`/; make check || make test
 	cd $@/`cat $@/untar.dir`/; sudo make INSTALL_TOP=/usr/local TO_LIB="liblua.a" \
 	     INSTALL_DATA="cp -d" INSTALL_MAN=/usr/share/man/man1 install
-	cd $@/`cat $@/untar.dir`/; sudo mkdir -pv /usr/local/share/doc/lua
-	cd $@/`cat $@/untar.dir`/; sudo cp -v doc/*.{html,css,gif,png} /usr/local/share/doc/lua
+	-cd $@/`cat $@/untar.dir`/; sudo mkdir -pv /usr/local/share/doc/lua
+	-cd $@/`cat $@/untar.dir`/; sudo cp -v doc/*.{html,css,gif,png} /usr/local/share/doc/lua
 	@echo "======= Build of $@ Successful ======="
+
+.PHONY: lzo
+lzo: \
+    $(lzo-ver)
+	$(call SOURCEDIR,$@,xf)
+	# cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local LDFLAGS="-lpthreads"
+	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --enable-shared=yes
+	cd $@/`cat $@/untar.dir`/; make
+	cd $@/`cat $@/untar.dir`/; make check || make test
+	$(call PKGINSTALL,$@)
+	$(call CPLIB,libproto*)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
 
 #
 # NetPBM packages itself in a a non-standard way into /tmp/netpbm, so
@@ -1865,6 +1907,22 @@ ncurses: $(ncurses-ver)
 	if test -d /usr/local/include/ncursesw ; then test -d /usr/include/ncursesw || test -L /usr/include/ncursesw || /usr/bin/sudo ln -sf /usr/local/include/ncursesw /usr/include/. ; fi 
 	if test -d /usr/local/include/ncursesw ; then test -d /usr/include/ncurses || test -L /usr/include/ncurses || /usr/bin/sudo ln -sf f/usr/local/include/ncursesw /usr/include/ncurses ; fi 
 
+.PHONY: nettle
+nettle: \
+    $(nettle-ver)
+	$(call SOURCEDIR,$@,xf)
+	# cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local LDFLAGS="-lpthreads"
+	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --libdir=/usr/local/lib
+	cd $@/`cat $@/untar.dir`/; make
+	cd $@/`cat $@/untar.dir`/; make check || make test
+	cd $@/`cat $@/untar.dir`/; sudo make install-here
+	$(call PKGINSTALL,$@)
+	$(call CPLIB,libproto*)
+	$(call CPLIB,libnettle*)
+	$(call CPLIB,libhogweed*)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
+
 .PHONY: ntfs-3g
 ntfs-3g: $(ntfs-3g-ver)
 	$(call SOURCEDIR,$@,xf)
@@ -1912,6 +1970,18 @@ pcre: $(pcre-ver)
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
 
+.PHONY: pinentry
+pinentry: $(pinentry-ver)
+	$(call SOURCEDIR,$@,xf)
+	cd $@; mkdir $@-build
+	cd $@/$@-build/; readlink -f . | grep $@-build
+	cd $@/$@-build/; ../`cat ../untar.dir`/configure --prefix=/usr/local --disable-pinentry-qt5 --enable-pinentry-qt=yes --enable-pinentry-gtk2=yes --enable-pinentry-gnome3=no
+	cd $@/$@-build/; make
+	cd $@/$@-build/; make check || make test
+	$(call PKGINSTALLBUILD,$@)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
+
 .PHONY: pth
 pth: $(pth-ver)
 	$(call SOURCEDIR,$@,xfz)
@@ -1934,7 +2004,7 @@ pth: $(pth-ver)
 .PHONY: Python
 Python: $(Python-ver)
 	$(call SOURCEDIR,$@,xf)
-	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --enabled-shared
+	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --enable-shared
 	cd $@/`cat $@/untar.dir`/; make
 	$(call PKGINSTALL,$@)
 	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo python2.7 setup.py install
@@ -1973,8 +2043,19 @@ p7zip: $(p7zip-ver)
 	cd $@/`cat $@/untar.dir`/; make test
 	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo ./install.sh
 
+# No test suite for readline
+.PHONY: readline
+readline: $(readline-ver)
+	$(call SOURCEDIR,$@,xf)
+	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
+	cd $@/`cat $@/untar.dir`/; make SHLIB_LIBS=-lncursesw
+	# cd $@/`cat $@/untar.dir`/; make check || make test
+	$(call PKGINSTALL,$@)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
+
 .PHONY: ruby
-ruby:
+ruby: $(ruby-ver)
 	$(call SOURCEDIR,$@,xf)
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --enable-shared
 	cd $@/`cat $@/untar.dir`/; LDFLAGS="-L/usr/local/lib -lssp" make
@@ -2100,7 +2181,7 @@ util-linux: $(util-linux-ver)
 .PHONY: util-linux-ng
 util-linux-ng: $(util-linux-ng-ver)
 	$(call SOURCEDIR,$@,xf)
-	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --enable-arch --enable-partx --enable-write
+	cd $@/`cat $@/untar.dir`/; CPPFLAGS="-I/usr/local/include -I/usr/local/include/ncursesw" ./configure --prefix=/usr/local --enable-arch --enable-partx --enable-write
 	# cd $@/`cat $@/untar.dir`/; make CFLAGS=-DO_CLOEXEC=0
 	cd $@/`cat $@/untar.dir`/; make CPPFLAGS="-I/usr/local/include -I/usr/local/include/ncursesw"
 	$(call PKGINSTALL,$@)
@@ -2116,7 +2197,6 @@ vala : \
 	cd $@/`cat $@/untar.dir`/; make
 	-cd $@/`cat $@/untar.dir`/; make check || make test
 	$(call PKGINSTALL,$@)
-	$(call CPLIB,libproto*)
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
 
@@ -2124,7 +2204,7 @@ vala : \
 vim: $(vim-ver)
 	$(call SOURCEDIR,$@,xf)
 	# cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --with-features=huge --enable-perlinterp --enable-pythoninterp --enable-tclinterp --enable-rubyinterp
-	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --with-features=huge --enable-pythoninterp --enable-tclinterp --enable-rubyinterp --with-x --enable-gui
+	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --with-features=huge --enable-pythoninterp --enable-tclinterp --enable-rubyinterp --with-x --enable-gui --with-tlib=ncursesw
 	cd $@/`cat $@/untar.dir`/; LANG=C LC_ALL=C make
 	cd $@/`cat $@/untar.dir`/; LANG=C LC_ALL=C make test || LANG=C LC_ALL=C make check
 	$(call PKGINSTALL,$@)
@@ -2291,6 +2371,7 @@ wget-all: \
     $(ntfs-3g-ver) \
     $(openssl-ver) \
     $(openvpn-ver) \
+    $(p11-kit-ver) \
     $(p7zip-ver) \
     $(pango-ver) \
     $(par2cmdline-ver) \
@@ -2307,6 +2388,8 @@ wget-all: \
     $(pth-ver) \
     $(pygobject-ver) \
     $(Python-ver) \
+    $(readline-ver) \
+    $(ruby-ver) \
     $(Scalar-MoreUtils-ver) \
     $(scons-ver) \
     $(screen-ver) \
@@ -2478,7 +2561,7 @@ $(freetype-ver):
 	$(call SOURCEWGET,"freetype","http://downloads.sourceforge.net/"$(freetype-ver))
 
 $(fuse-ver):
-	$(call SOURCEWGET,"fuse","http://downloads.sourceforge.net/"$(fuse-ver))
+	$(call SOURCEWGET,"fuse","https://github.com/libfuse/libfuse/releases/download/fuse_2_9_4/"$(notdir $(fuse-ver)))
 
 $(gawk-ver):
 	$(call SOURCEWGET,"gawk","https://ftp.gnu.org/gnu/"$(gawk-ver))
@@ -2514,7 +2597,7 @@ $(gnupg-ver):
 	$(call SOURCEWGET,"gnupg","ftp://ftp.gnupg.org/gcrypt/"$(gnupg-ver))
 
 $(gnutls-ver):
-	$(call SOURCEWGET,"gnutls","ftp://ftp.gnutls.org/gcrypt/gnutls/v3.3/gnutls-3.3.13.tar.xz")
+	$(call SOURCEWGET,"gnutls","ftp://ftp.gnutls.org/gcrypt/gnutls/v3.4/"$(notdir $(gnutls-ver)))
 
 $(go-ver):
 	$(call SOURCEWGET,"go","https://storage.googleapis.com/golang/go1.4.2.src.tar.gz")
@@ -2634,7 +2717,7 @@ $(libsecret-ver):
 	$(call SOURCEWGET,"libsecret","http://ftp.gnome.org/pub/gnome/sources/libsecret/0.18/"$(notdir $(libsecret-ver)))
 
 $(libtasn1-ver):
-	$(call SOURCEWGET,"libtasn1","https://ftp.gnu.org/gnu/libtasn1/libtasn1-4.2.tar.gz")
+	$(call SOURCEWGET,"libtasn1","http://ftp.gnu.org/gnu/"$(libtasn1-ver))
 
 $(libtool-ver):
 	$(call SOURCEWGET,"libtool","http://ftpmirror.gnu.org/"$(libtool-ver))
@@ -2717,6 +2800,9 @@ $(openssl-ver):
 $(openvpn-ver):
 	$(call SOURCEWGET,"openvpn","https://swupdate.openvpn.org/community/releases/"$(notdir $(openvpn-ver)))
 
+$(p11-kit-ver):
+	$(call SOURCEWGET,"p11-kit","http://p11-glue.freedesktop.org/releases/"$(notdir $(p11-kit-ver)))
+
 $(pango-ver):
 	$(call SOURCEWGET,"pango","http://ftp.gnome.org/pub/gnome/sources/pango/1.36/"$(notdir $(pango-ver)))
 
@@ -2766,6 +2852,12 @@ $(pygobject-ver):
 $(p7zip-ver):
 	$(call SOURCEWGET,"p7zip","http://downloads.sourceforge.net/project/p7zip/p7zip/9.38.1/p7zip_9.38.1_src_all.tar.bz2")
 
+$(readline-ver):
+	$(call SOURCEWGET,"readline","http://ftp.gnu.org/gnu/"$(readline-ver))
+
+$(ruby-ver):
+	$(call SOURCEWGET,"ruby","http://cache.ruby-lang.org/pub/ruby/2.3/"$(notdir $(ruby-ver)))
+
 $(Scalar-MoreUtils-ver):
 	$(call SOURCEWGET,"Scalar-MoreUtils","http://search.cpan.org/CPAN/authors/id/R/RK/RKRIMEN/"$(notdir $(Scalar-MoreUtils-ver)))
 
@@ -2795,7 +2887,7 @@ $(symlinks-ver):
 	$(call SOURCEWGET,"symlinks","http://pkgs.fedoraproject.org/repo/pkgs/symlinks/symlinks-1.4.tar.gz/c38ef760574c25c8a06fd2b5b141307d/symlinks-1.4.tar.gz")
 
 $(socat-ver):
-	$(call SOURCEWGET, "socat", "http://www.dest-unreach.org/socat/download/socat-1.7.2.2.tar.bz2")
+	$(call SOURCEWGET, "socat", "http://www.dest-unreach.org/socat/download/"$(notdir $(socat-ver)))
 
 $(sparse-ver):
 	$(call SOURCEWGET,"sparse","http://www.kernel.org/pub/software/devel/sparse/dist/sparse-0.5.0.tar.gz")
@@ -2804,7 +2896,7 @@ $(sqlite-ver):
 	$(call SOURCEWGET,"sqlite","http://www.sqlite.org/"$(notdir $(sqlite-ver)))
 
 $(srm-ver):
-	$(call SOURCEWGET,"srm","http://sourceforge.net/projects/srm/files/1.2.13/srm-1.2.13.tar.gz")
+	$(call SOURCEWGET,"srm","http://sourceforge.net/projects/srm/files/1.2.15/$(notdir $(srm-ver)))
 
 $(swig-ver):
 	# (call SOURCEWGET,"swig","http://downloads.sourceforge.net/swig/swig-2.0.11.tar.gz")
