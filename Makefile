@@ -40,12 +40,36 @@ GCC_LANGS=c,c++,fortran,java,objc,obj-c++
 THIS_RUN := $(notdir $(shell mktemp -u))
 
 #
+# The current username
+#
+USERNAME := $(shell whoami)
+
+#
 # variable representations of comma and space
 #
 comma := ,
 
 space :=
 space +=
+
+#
+# Patches, Here Documents
+#
+define COMPILERRTPATCH
+--- sanitizer_platform_limits_posix.cc.orig	2014-03-30 02:07:36.565541221 -0400
++++ sanitizer_platform_limits_posix.cc	2014-03-30 02:08:36.928098455 -0400
+@@ -231,8 +231,8 @@
+   int ptrace_setfpregs = PTRACE_SETFPREGS;
+   int ptrace_getfpxregs = PTRACE_GETFPXREGS;
+   int ptrace_setfpxregs = PTRACE_SETFPXREGS;
+-  int ptrace_getsiginfo = PTRACE_GETSIGINFO;
+-  int ptrace_setsiginfo = PTRACE_SETSIGINFO;
++  int ptrace_getsiginfo = -1;
++  int ptrace_setsiginfo = -1;
+ #if defined(PTRACE_GETREGSET) && defined(PTRACE_SETREGSET)
+   int ptrace_getregset = PTRACE_GETREGSET;
+   int ptrace_setregset = PTRACE_SETREGSET;
+endef
 
 #
 # Function Defines
@@ -91,6 +115,9 @@ endef
 define SOURCECLEAN
 	$(call SOURCEBASE,$1)
 	-cd $1; mkdir -p $$HOME/files/backups/oldpackages
+	-cd $1; sudo mkdir -p $$HOME/files/backups/oldpackages
+	-cd $1; sudo chown $(USERNAME) $$HOME/files/backups/oldpackages
+	-cd $1; /bin/rm -rf `basename $1`
 	-cd $1; /bin/rm -f `basename $2`
 	-cd $1; test ! -e $1-*.tar || /bin/mv $1-*.tar $$HOME/files/backups/oldpackages/.
 	-cd $1; test ! -e $1-*.tgz || /bin/mv $1-*.tgz $$HOME/files/backups/oldpackages/.
@@ -423,7 +450,15 @@ afterllvm: \
     swig \
     httpd \
     subversion \
+    aftersubversion
+
+.PHONY: aftersubversion
+aftersubversion: \
     git \
+    aftergit
+
+.PHONY: aftergit
+aftergit: \
     psmisc \
     tcp_wrappers \
     doxygen \
@@ -494,6 +529,9 @@ afterlibsecret: \
 # ==============================================================
 # Versions
 # ==============================================================
+# start organizing these by the last date they were updated
+# 2016-01-09 Lua
+lua-ver            = lua/lua-5.3.2.tar.gz
 # fontconfig-ver     = fontconfig/fontconfig-2.11.1.tar.bz2
 acl-ver            = acl/acl-2.2.52.src.tar.gz
 apr-util-ver       = apr-util/apr-util-1.5.3.tar.bz2
@@ -538,7 +576,7 @@ fontconfig-ver     = fontconfig/fontconfig-2.11.1.tar.bz2
 freetype-ver       = freetype/freetype-2.6.1.tar.bz2
 fuse-ver           = fuse/fuse-2.9.4.tar.gz
 gawk-ver           = gawk/gawk-4.1.1.tar.gz
-gcc-ver            = gcc/gcc-4.7.4.tar.bz2
+gcc-ver            = gcc/gcc-4.7.3.tar.bz2
 gc-ver             = gc/gc-7.4.2.tar.gz
 gdbm-ver           = gdbm/gdbm-1.10.tar.gz
 gdb-ver            = gdb/gdb-7.9.tar.xz
@@ -599,7 +637,6 @@ libxml2-ver        = libxml2/libxml2-2.9.3.tar.gz
 libxslt-ver        = libxslt/libxslt-1.1.28.tar.gz
 List-MoreUtils-ver = List-MoreUtils/List-MoreUtils-0.413.tar.gz
 llvm-ver           = llvm/llvm-3.4.src.tar.gz
-lua-ver            = lua/lua-5.3.0.tar.gz
 LWP-MediaTypes-ver = LWP-MediaTypes/LWP-MediaTypes-6.02.tar.gz
 lzma-ver           = lzma/lzma-4.32.7.tar.gz
 lzo-ver            = lzo/lzo-2.08.tar.gz
@@ -609,7 +646,7 @@ mosh-ver           = mosh/mosh-1.2.5.tar.gz
 mpc-ver            = mpc/mpc-1.0.1.tar.gz
 mpfr-ver           = mpfr/mpfr-3.1.2.tar.gz
 multitail-ver      = multitail/multitail-6.4.2.tgz
-ncurses-ver        = ncurses/ncurses-5.9.tar.gz
+ncurses-ver        = ncurses/ncurses-6.0.tar.gz
 Net-HTTP-ver       = Net-HTTP/Net-HTTP-6.09.tar.gz
 netpbm-ver         = netpbm/netpbm-10.35.95.tgz
 Net-SSLeay-ver     = Net-SSLeay/Net-SSLeay-1.68.tar.gz
@@ -660,7 +697,7 @@ tcp_wrappers-ver   = tcp_wrappers/tcp_wrappers_7.6.tar.gz
 Test-Pod-Coverage-ver = Test-Pod-Coverage/Test-Pod-Coverage-1.10.tar.gz
 Test-Pod-ver       = Test-Pod/Test-Pod-1.49.tar.gz
 texinfo-ver        = texinfo/texinfo-5.2.tar.gz
-tmux-ver           = tmux/tmux-1.9a.tar.gz
+tmux-ver           = tmux/tmux-2.1.tar.gz
 truecrypt-ver      = truecrypt/truecrypt-7.1a-linux-console-x86.tar.gz
 unrar-ver          = unrar/unrarsrc-5.3.3.tar.gz
 unzip-ver          = unzip/unzip60.tar.gz
@@ -961,7 +998,7 @@ par2cmdline: $(par2cmdline-ver)
 .PHONY: mosh srm wipe socat screen tmux psmisc libusb htop cairo iptraf-ng hwloc
 srm wipe mosh socat screen tmux psmisc libusb htop cairo iptraf-ng hwloc: $(srm-ver) $(libusb-ver) $(htop-ver) $(mosh-ver) $(socat-ver) $(screen-ver) $(tmux-ver) $(psmisc-ver) $(wipe-ver) $(cairo-ver) $(iptraf-ng-ver) $(hwloc-ver)
 	$(call SOURCEDIR,$@,xf)
-	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
+	cd $@/`cat $@/untar.dir`/; CPPFLAGS="-I/usr/local/include -I/usr/local/include/ncursesw" ./configure --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/; make
 	$(call PKGINSTALL,$@)
 	$(call CPLIB,lib$@*)
@@ -1550,6 +1587,7 @@ icu: $(icu-ver)
 inetutils: $(inetutils-ver)
 	$(call SOURCEDIR,$@,xf)
 	cd $@/`cat $@/untar.dir`/; echo '#define PATH_PROCNET_DEV "/proc/net/dev"' >> ifconfig/system/linux.h 
+	-cd $@/`cat $@/untar.dir`/; sed -i -e '/gets is a security/d' lib/stdio.in.h
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local  \
 	        --localstatedir=/usr/local/var   \
 		--disable-logger       \
@@ -1648,8 +1686,6 @@ lua: $(lua-ver)
 	cd $@/`cat $@/untar.dir`/; make check || make test
 	cd $@/`cat $@/untar.dir`/; sudo make INSTALL_TOP=/usr/local TO_LIB="liblua.a" \
 	     INSTALL_DATA="cp -d" INSTALL_MAN=/usr/share/man/man1 install
-	-cd $@/`cat $@/untar.dir`/; sudo mkdir -pv /usr/local/share/doc/lua
-	-cd $@/`cat $@/untar.dir`/; sudo cp -v doc/*.{html,css,gif,png} /usr/local/share/doc/lua
 	@echo "======= Build of $@ Successful ======="
 
 .PHONY: lzo
@@ -1859,10 +1895,15 @@ linux-4.1.tar.xz:
 	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo cp -rv dest/include/* /usr/include/.
 	@echo "======= Build of $@ Successful ======="
 
+export COMPILERRTPATCH
+patches/compiler-rt.patch:
+	-mkdir -p patches
+	echo "$$COMPILERRTPATCH" >> $@
+
 # If the install generates a unable to infer compiler target triple for gcc,
 # the sudo needs a ./SETUP.bash before running it.
 .PHONY: llvm
-llvm: $(llvm-ver) $(clang-ver) $(compiler-rt-ver)
+llvm: $(llvm-ver) $(clang-ver) $(compiler-rt-ver) patches/compiler-rt.patch
 	$(call SOURCEDIR,$@,xf)
 	cd $@/`cat $@/untar.dir`/; tar -xf ../../clang/clang-3.4.src.tar.gz -C tools
 	cd $@/`cat $@/untar.dir`/; tar -xf ../../compiler-rt/compiler-rt-3.4.src.tar.gz -C projects
@@ -1903,6 +1944,12 @@ ncurses: $(ncurses-ver)
 	cd $@/$@-build/; make
 	cd $@/$@-build/; make check || make test
 	$(call PKGINSTALLBUILD,$@)
+	cd $@/$@-build/; for lib in ncurses form panel menu; do \
+	    sudo /bin/rm -vf /usr/local/lib/$${lib}.so ; \
+	    sudo /bin/rm -f /tmp/lib$${lib}.so ; \
+	    echo "INPUT(-l$${lib}w)" > /tmp/lib$${lib}.so ; \
+	    sudo /bin/cp /tmp/lib$${lib}.so /usr/local/lib/lib$${lib}.so ; \
+	done
 	$(call CPLIB,lib$@*)
 	if test -d /usr/local/include/ncursesw ; then test -d /usr/include/ncursesw || test -L /usr/include/ncursesw || /usr/bin/sudo ln -sf /usr/local/include/ncursesw /usr/include/. ; fi 
 	if test -d /usr/local/include/ncursesw ; then test -d /usr/include/ncurses || test -L /usr/include/ncurses || /usr/bin/sudo ln -sf f/usr/local/include/ncursesw /usr/include/ncurses ; fi 
@@ -2570,7 +2617,7 @@ $(gc-ver):
 	$(call SOURCEWGET,"gc","http://www.hboehm.info/gc/gc_source/"$(notdir $(gc-ver)))
 
 $(gcc-ver):
-	$(call SOURCEWGET,"gcc","http://ftp.gnu.org/gnu/gcc/gcc-4.7.4/"$(notdir $(gcc-ver)))
+	$(call SOURCEWGET,"gcc","http://ftp.gnu.org/gnu/gcc/"$(basename $(basename $(notdir $(gcc-ver))))"/"$(notdir $(gcc-ver)))
 
 $(gdb-ver):
 	$(call SOURCEWGET,"gdb","https://ftp.gnu.org/gnu/"$(gdb-ver))
@@ -2744,7 +2791,7 @@ $(llvm-ver):
 	$(call SOURCEWGET,"llvm","http://llvm.org/releases/3.4/llvm-3.4.src.tar.gz")
 
 $(lua-ver):
-	$(call SOURCEWGET,"lua","http://www.lua.org/ftp/lua-5.3.0.tar.gz")
+	$(call SOURCEWGET,"lua","http://www.lua.org/ftp/"$(notdir $(lua-ver)))
 
 $(LWP-MediaTypes-ver):
 	$(call SOURCEWGET,"LWP-MediaTypes","http://search.cpan.org/CPAN/authors/id/G/GA/GAAS/"$(notdir $(LWP-MediaTypes-ver)))
@@ -2780,7 +2827,7 @@ $(nettle-ver):
 	$(call SOURCEWGET,"nettle","https://ftp.gnu.org/gnu/"$(nettle-ver))
 
 $(ncurses-ver):
-	$(call SOURCEWGET,"ncurses","https://ftp.gnu.org/pub/gnu/ncurses/ncurses-5.9.tar.gz")
+	$(call SOURCEWGET,"ncurses","http://ftp.gnu.org/gnu/"$(ncurses-ver))
 
 $(Net-HTTP-ver):
 	$(call SOURCEWGET,"Net-HTTP","http://search.cpan.org/CPAN/authors/id/E/ET/ETHER/"$(notdir $(Net-HTTP-ver)))
@@ -2934,7 +2981,7 @@ $(texinfo-ver):
 	$(call SOURCEWGET,"texinfo","https://ftp.gnu.org/gnu/texinfo/texinfo-5.2.tar.gz")
 
 $(tmux-ver):
-	$(call SOURCEWGET,"tmux","http://downloads.sourceforge.net/tmux/tmux-1.9a.tar.gz")
+	$(call SOURCEWGET,"tmux","https://github.com/tmux/tmux/releases/download/2.1/"$(notdir $(tmux-ver)))
 
 $(truecrypt-ver):
 	$(call SOURCEWGET,"truecrypt","https://www.grc.com/misc/"$(truecrypt-ver))
