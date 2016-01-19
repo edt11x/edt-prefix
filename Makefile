@@ -74,6 +74,7 @@ define COMPILERRTPATCH
    int ptrace_setregset = PTRACE_SETREGSET;
 endef
 
+###################################################################################
 define LUASHAREDLIBPATCH
 Submitted By:            Igor Å½ivkoviÄ‡ <contact@igor-zivkovic.from.hr>
 Date:                    2013-06-19
@@ -138,6 +139,7 @@ diff -Naur lua-5.3.0.orig/src/Makefile lua-5.3.0/src/Makefile
 
 endef
 
+###################################################################################
 define TCPWRAPPERSPATCH
 Submitted By: Tushar Teredesai <tushar@linuxfromscratch.org>
 Date: 2003-10-04
@@ -1342,6 +1344,8 @@ CFLAGS_SHLIB += -fPIC
 TIFFLIB = libtiff.so
 JPEGLIB = libjpeg.so
 ZLIB = libz.so
+ZHDR_DIR = /usr/local/include
+ZLIB_VERSION = "1.2.8"
 X11LIB = /usr/X11R6/lib/libX11.so
 NETPBM_DOCURL = http://netpbm.sourceforge.net/doc/
 endef
@@ -1615,6 +1619,7 @@ afterpatch: \
     gobject-introspection \
     pygobject \
     tcc \
+    jpeg \
     afterlibsecret
 
 # Problem children
@@ -1624,6 +1629,8 @@ afterpatch: \
 .PHONY: afterlibsecret
 afterlibsecret: \
     openvpn \
+    netpbm \
+    vera++ \
     gdb \
     go \
     libpthread \
@@ -1638,9 +1645,17 @@ afterlibsecret: \
 # Versions
 # ==============================================================
 # start organizing these by the last date they were updated
+# 2016-01-17
+vera++-ver         = vera++/vera++-1.3.0.tar.gz
+# 2016-01-17
+# cppcheck-ver       = cppcheck/cppcheck-1.71.tar.bz2
+cppcheck-ver       = cppcheck/cppcheck-1.72.tar.bz2
+# 2016-01-11
+# whois-ver          = whois/whois_5.2.10.tar.xz
+whois-ver          = whois/whois_5.2.11.tar.xz
 # 2016-01-10
 # hashdeep-ver        = hashdeep/master.zip
-hashdeep-ver        = hashdeep/hashdeep-4.4.tar.gz
+hashdeep-ver       = hashdeep/hashdeep-4.4.tar.gz
 # 2016-01-10
 # httpd-ver          = httpd/httpd-2.4.12.tar.bz2
 httpd-ver          = httpd/httpd-2.4.18.tar.bz2
@@ -1672,7 +1687,6 @@ clisp-ver          = clisp/clisp-2.49.tar.gz
 cmake-ver          = cmake/cmake-3.3.2.tar.gz
 compiler-rt-ver    = compiler-rt/compiler-rt-3.4.src.tar.gz
 coreutils-ver      = coreutils/coreutils-8.22.tar.xz
-cppcheck-ver       = cppcheck/cppcheck-1.71.tar.bz2
 curl-ver           = curl/curl-7.41.0.tar.bz2
 db-ver             = db/db-6.1.26.tar
 dejagnu-ver        = dejagnu/dejagnu-1.5.3.tar.gz
@@ -1738,6 +1752,7 @@ libffi-ver         = libffi/libffi-3.2.1.tar.gz
 libgcrypt-ver      = libgcrypt/libgcrypt-1.6.4.tar.bz2
 libgpg-error-ver   = libgpg-error/libgpg-error-1.20.tar.bz2
 libiconv-ver       = libiconv/libiconv-1.14.tar.gz
+jpeg-ver           = jpeg/jpegsrc.v9b.tar.gz
 libksba-ver        = libksba/libksba-1.3.3.tar.bz2
 libpcap-ver        = libpcap/libpcap-1.4.0.tar.gz
 libpng-ver         = libpng/libpng-1.6.16.tar.xz
@@ -1822,7 +1837,6 @@ vala-ver           = vala/vala-0.28.1.tar.xz
 vim-ver            = vim/vim-7.4.tar.bz2
 wget-ver           = wget/wget-1.16.3.tar.xz
 which-ver          = which/which-2.20.tar.gz
-whois-ver          = whois/whois_5.2.10.tar.xz
 wipe-ver           = wipe/wipe-2.3.1.tar.bz2
 WWW-RobotRules-ver = WWW-RobotRules/WWW-RobotRules-6.02.tar.gz
 XML-Parser-ver     = XML-Parser/XML-Parser-2.36.tar.gz
@@ -1975,13 +1989,14 @@ gettext scrypt: $(gettext-ver) $(scrypt-ver)
 .PHONY: apr
 .PHONY: findutils
 .PHONY: gdbm
+.PHONY: jpeg
 .PHONY: libassuan
 .PHONY: libgcrypt
 .PHONY: libgpg-error
 .PHONY: libksba
 .PHONY: libpng
 .PHONY: which
-apr findutils gdbm libgcrypt libgpg-error libassuan libksba libpng which: $(which-ver) $(libpng-ver) $(libgpg-error-ver) $(libassuan-ver) $(libgcrypt-ver) $(libksba-ver) $(apr-ver) $(gdbm-ver) $(findutils-ver)
+apr findutils gdbm jpeg libgcrypt libgpg-error libassuan libksba libpng which: $(which-ver) $(libpng-ver) $(libgpg-error-ver) $(libassuan-ver) $(libgcrypt-ver) $(libksba-ver) $(apr-ver) $(gdbm-ver) $(findutils-ver) $(jpeg-ver)
 	$(call SOURCEDIR,$@,xf)
 	cd $@; mkdir $@-build
 	cd $@/$@-build/; readlink -f . | grep $@-build
@@ -2064,7 +2079,8 @@ libffi texinfo: \
 .PHONY: protobuf
 .PHONY: sharutils
 .PHONY: tcc
-jnettop libxml2 check file protobuf libtasn1 p11-kit gnupg popt sharutils pixman libxslt tcc : \
+.PHONY: vera++
+jnettop libxml2 check file protobuf libtasn1 p11-kit gnupg popt sharutils pixman libxslt tcc vera++ : \
     $(check-ver) \
     $(file-ver) \
     $(gnupg-ver) \
@@ -2077,7 +2093,8 @@ jnettop libxml2 check file protobuf libtasn1 p11-kit gnupg popt sharutils pixman
     $(popt-ver) \
     $(protobuf-ver) \
     $(sharutils-ver) \
-    $(tcc-ver)
+    $(tcc-ver) \
+    $(vera++-ver)
 	$(call SOURCEDIR,$@,xf)
 	# cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local LDFLAGS="-lpthreads"
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
@@ -3394,6 +3411,20 @@ vala : \
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
 
+.PHONY: vera++
+vera++ : \
+    $(tcc-ver) \
+    $(vera++-ver)
+	$(call SOURCEDIR,$@,xf)
+	# cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local LDFLAGS="-lpthreads"
+	cd $@/`cat $@/untar.dir`/; cmake -G "Unix Makefiles" -DLLVM_PATH="/usr/local/lib" -DVERA_USE_SYSTEM_LUA=OFF
+	cd $@/`cat $@/untar.dir`/; make
+	cd $@/`cat $@/untar.dir`/; make check || make test
+	$(call PKGINSTALL,$@)
+	$(call CPLIB,libproto*)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
+
 .PHONY: vim
 vim: $(vim-ver)
 	$(call SOURCEDIR,$@,xf)
@@ -3524,6 +3555,7 @@ wget-all: \
     $(iptraf-ng-ver) \
     $(iwyu-ver) \
     $(jnettop-ver) \
+    $(jpeg-ver) \
     $(libarchive-ver) \
     $(libassuan-ver) \
     $(libatomic_ops-ver) \
@@ -3615,6 +3647,7 @@ wget-all: \
     $(URI-ver) \
     $(util-linux-ver) \
     $(vala-ver) \
+    $(vera++-ver) \
     $(vim-ver) \
     $(wget-ver) \
     $(which-ver) \
@@ -3696,7 +3729,7 @@ $(coreutils-ver):
 	$(call SOURCEWGET,"coreutils","http://ftp.gnu.org/gnu/"$(coreutils-ver))
 
 $(cppcheck-ver):
-	$(call SOURCEWGET,"cppcheck","http://downloads.sourceforge.net/project/cppcheck/cppcheck/1.71/"$(notdir $(cppcheck-ver)))
+	$(call SOURCEWGET,"cppcheck","http://downloads.sourceforge.net/project/cppcheck/cppcheck/1.72/"$(notdir $(cppcheck-ver)))
 
 $(curl-ver):
 	$(call SOURCEWGET,"curl","http://curl.haxx.se/download/curl-7.41.0.tar.bz2")
@@ -3861,6 +3894,9 @@ $(iptraf-ng-ver):
 
 $(iwyu-ver):
 	$(call SOURCEWGET,"include-what-you-use","http://include-what-you-use.com/downloads/include-what-you-use-3.4.src.tar.gz")
+
+$(jpeg-ver):
+	$(call SOURCEWGET,"jpeg","http://www.ijg.org/files/"$(notdir $(jpeg-ver)))
 
 $(IO-Socket-SSL-ver):
 	$(call SOURCEWGET,"IO-Socket-SSL","http://search.cpan.org/CPAN/authors/id/S/SU/SULLR/IO-Socket-SSL-2.012.tar.gz")
@@ -4150,6 +4186,9 @@ $(URI-ver):
 
 $(vala-ver):
 	$(call SOURCEWGET,"vala","http://ftp.gnome.org/pub/gnome/sources/vala/0.28/"$(notdir $(vala-ver)))
+
+$(vera++-ver):
+	$(call SOURCEWGET,"vera++","https://bitbucket.org/verateam/vera/downloads/"$(notdir $(vera++-ver)))
 
 $(vim-ver):
 	$(call SOURCEWGET,"vim","ftp://ftp.vim.org/pub/vim/unix/vim-7.4.tar.bz2")
