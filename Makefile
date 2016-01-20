@@ -1610,7 +1610,6 @@ aftersharutils: \
     hwloc \
     whois \
     patch \
-    e2fsprogs \
     afterpatch
 
 .PHONY: afterpatch
@@ -1629,6 +1628,7 @@ afterpatch: \
 .PHONY: afterlibsecret
 afterlibsecret: \
     openvpn \
+    e2fsprogs \
     netpbm \
     vera++ \
     gdb \
@@ -1645,6 +1645,8 @@ afterlibsecret: \
 # Versions
 # ==============================================================
 # start organizing these by the last date they were updated
+# 2016-01-20
+cmake-ver          = cmake/cmake-3.4.1.tar.gz
 # 2016-01-17
 vera++-ver         = vera++/vera++-1.3.0.tar.gz
 # 2016-01-17
@@ -1684,7 +1686,6 @@ cairo-ver          = cairo/cairo-1.14.2.tar.xz
 check-ver          = check/check-0.9.12.tar.gz
 clang-ver          = clang/clang-3.4.src.tar.gz
 clisp-ver          = clisp/clisp-2.49.tar.gz
-cmake-ver          = cmake/cmake-3.3.2.tar.gz
 compiler-rt-ver    = compiler-rt/compiler-rt-3.4.src.tar.gz
 coreutils-ver      = coreutils/coreutils-8.22.tar.xz
 curl-ver           = curl/curl-7.41.0.tar.bz2
@@ -2393,7 +2394,10 @@ ca-cert: $(ca-cert-ver)
 .PHONY: cmake
 cmake: $(cmake-ver)
 	$(call SOURCEDIR,$@,xf)
-	cd $@/`cat $@/untar.dir`/; ./bootstrap --prefix=/usr/local --system-libs --mandir=/usr/local/share/man --docdir=/usr/local/share/doc/cmake
+	cd $@/`cat $@/untar.dir`/; sed -i '1 i\
+	set(CURSES_LIBRARY "/usr/local/lib/libncursesw.so")\
+	set(CURSES_INCLUDE_PATH "/usr/local/include/ncursesw")' Modules/FindCurses.cmake
+	cd $@/`cat $@/untar.dir`/; ./bootstrap --prefix=/usr/local --system-libs --mandir=/usr/local/share/man --docdir=/usr/local/share/doc/cmake --no-system-jsoncpp
 	cd $@/`cat $@/untar.dir`/; make
 	-cd $@/`cat $@/untar.dir`/; bin/ctest -j2 -O ../cmake-test.log
 	$(call PKGINSTALL,$@)
@@ -2737,7 +2741,8 @@ inetutils: $(inetutils-ver)
 		--disable-logger       \
 		--disable-syslogd      \
 		--disable-whois        \
-		--disable-servers
+		--disable-servers      \
+		--with-ncurses-include-dir=/usr/local/include/ncursesw
 	cd $@/`cat $@/untar.dir`/; make
 	cd $@/`cat $@/untar.dir`/; make check || make test
 	$(call PKGINSTALL,$@)
@@ -3720,7 +3725,7 @@ $(clisp-ver):
 	$(call SOURCEWGET,"clisp","https://ftp.gnu.org/pub/gnu/"$(clisp-ver))
 
 $(cmake-ver):
-	$(call SOURCEWGET,"cmake","http://www.cmake.org/files/v3.1/cmake-3.1.2.tar.gz")
+	$(call SOURCEWGET,"cmake","http://www.cmake.org/files/v3.4/"$(notdir $(cmake-ver)))
 
 $(compiler-rt-ver):
 	$(call SOURCEWGET,"compiler-rt","http://llvm.org/releases/3.4/compiler-rt-3.4.src.tar.gz")
