@@ -2152,7 +2152,6 @@ srm wipe mosh socat screen tmux psmisc libusb htop cairo iptraf-ng hwloc: $(srm-
 # tcpdump fails on PPOE
 # pango needs cairo to test
 # pygobject does not have a working test suite
-.PHONY: autogen
 .PHONY: bison
 .PHONY: gobject-introspection
 .PHONY: libpcap
@@ -2162,8 +2161,7 @@ srm wipe mosh socat screen tmux psmisc libusb htop cairo iptraf-ng hwloc: $(srm-
 .PHONY: pygobject
 .PHONY: sqlite
 .PHONY: tcpdump
-make libpcap sqlite lzma bison autogen pango pygobject tcpdump gobject-introspection : \
-    $(autogen-ver) \
+make libpcap sqlite lzma bison pango pygobject tcpdump gobject-introspection : \
     $(bison-ver) \
     $(make-ver) \
     $(libpcap-ver) \
@@ -2323,6 +2321,19 @@ autoconf: $(autoconf-ver)
 	# messes up one test
 	-cd $@/$@-build/; $(PHASE1_NOCHECK) make check || $(PHASE1_NOCHECK) make test
 	$(call PKGINSTALLBUILD,$@)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
+
+# --disable-shared is specified to avoid the version dependancies
+#  of the share libguile and include files installed with guile
+#  and the ones autogen expects
+.PHONY: autogen
+autogen : \
+    $(autogen-ver)
+	$(call SOURCEDIR,$@,xfz)
+	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --disable-shared
+	cd $@/`cat $@/untar.dir`/; make
+	$(call PKGINSTALL,$@)
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
 
@@ -2986,6 +2997,7 @@ gmp: $(gmp-ver)
 # guile is needed by autogen
 .PHONY: guile
 guile: $(guile-ver)
+	sudo /bin/rm -rf /usr/local/include/libguile
 	$(call SOURCEDIR,$@,xf)
 	cd $@; mkdir $@-build
 	cd $@/$@-build/; readlink -f . | grep $@-build
