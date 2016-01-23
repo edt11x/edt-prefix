@@ -45,12 +45,34 @@ THIS_RUN := $(notdir $(shell mktemp -u))
 USERNAME := $(shell whoami)
 
 #
-# variable representations of comma and space
+# variable representations of comma, space, newline, backslash
 #
 comma := ,
 
 space :=
 space +=
+
+#
+# GNU Make does not like putting backslashes in defines or
+# here documents. We have to jump through a couple hoops to
+# make this happen.
+#
+# http://stackoverflow.com/questions/30099791/backslash-newline-in-a-make-variable
+
+
+# variable containing a newline
+# # there must be two blank lines between the define and endef
+# # (http://stackoverflow.com/a/17055840/2064196)
+define nl
+
+
+endef
+
+# variable containing a backslash
+# https://www.netbsd.org/docs/pkgsrc/makefile.html#makefile.variables
+# backslash !=           echo "\\"
+# the version below avoids $(shell), as suggested by bobbogo's comment
+backslash := \$(strip)
 
 #
 # Patches, Here Documents
@@ -112,8 +134,8 @@ diff -Naur lua-5.3.0.orig/src/Makefile lua-5.3.0/src/Makefile
  
  LUA_A=	liblua.a
 +LUA_SO= liblua.so
- CORE_O=	lapi.o lcode.o lctype.o ldebug.o ldo.o ldump.o lfunc.o lgc.o llex.o \\
- 	lmem.o lobject.o lopcodes.o lparser.o lstate.o lstring.o ltable.o \\
+ CORE_O=	lapi.o lcode.o lctype.o ldebug.o ldo.o ldump.o lfunc.o lgc.o llex.o ${backslash}${nl} \
+ 	lmem.o lobject.o lopcodes.o lparser.o lstate.o lstring.o ltable.o ${backslash}${nl} \
  	ltm.o lundump.o lvm.o lzio.o
 @@ -43,7 +44,7 @@
  LUAC_O=	luac.o
@@ -1507,6 +1529,10 @@ afterbison: \
     apr \
     apr-util \
     lua \
+    afterlua
+
+.PHONY: afterlua
+afterlua: \
     ruby \
     vim \
     aftervim
@@ -2087,8 +2113,7 @@ libffi texinfo: \
 .PHONY: protobuf
 .PHONY: sharutils
 .PHONY: tcc
-.PHONY: vera++
-jnettop libxml2 check file protobuf libtasn1 p11-kit gnupg popt sharutils pixman libxslt tcc vera++ : \
+jnettop libxml2 check file protobuf libtasn1 p11-kit gnupg popt sharutils pixman libxslt tcc : \
     $(check-ver) \
     $(file-ver) \
     $(gnupg-ver) \
@@ -2101,8 +2126,7 @@ jnettop libxml2 check file protobuf libtasn1 p11-kit gnupg popt sharutils pixman
     $(popt-ver) \
     $(protobuf-ver) \
     $(sharutils-ver) \
-    $(tcc-ver) \
-    $(vera++-ver)
+    $(tcc-ver)
 	$(call SOURCEDIR,$@,xf)
 	# cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local LDFLAGS="-lpthreads"
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
