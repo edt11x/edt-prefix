@@ -1616,17 +1616,21 @@ aftersharutils: \
 afterpatch: \
     vala \
     gobject-introspection \
-    pygobject \
     tcc \
     jpeg \
     afterlibsecret
 
 # Problem children
 #
+# pygobject needs pycairo
+# pycairo needs cairo
 # cairo wants libpthreads
 #
 .PHONY: afterlibsecret
 afterlibsecret: \
+    pixman \
+    cairo \
+    pygobject \
     openvpn \
     e2fsprogs \
     netpbm \
@@ -1634,8 +1638,6 @@ afterlibsecret: \
     gdb \
     go \
     libpthread \
-    cairo \
-    pixman \
     pango \
     glibc \
     pinentry \
@@ -1645,6 +1647,12 @@ afterlibsecret: \
 # Versions
 # ==============================================================
 # start organizing these by the last date they were updated
+# 2016-01-23
+# Python-ver         = Python/Python-2.7.10.tar.xz
+Python-ver         = Python/Python-2.7.11.tar.xz
+# 2016-01-21
+# cairo-ver          = cairo/cairo-1.14.2.tar.xz
+cairo-ver          = cairo/cairo-1.14.6.tar.xz
 # 2016-01-20
 cmake-ver          = cmake/cmake-3.4.1.tar.gz
 # 2016-01-17
@@ -1682,7 +1690,6 @@ binutils-ver       = binutils/binutils-2.24.tar.gz
 bison-ver          = bison/bison-3.0.tar.gz
 bzip-ver           = bzip/bzip2-1.0.6.tar.gz
 ca-cert-ver        = ca-cert/ca-cert-1.0
-cairo-ver          = cairo/cairo-1.14.2.tar.xz
 check-ver          = check/check-0.9.12.tar.gz
 clang-ver          = clang/clang-3.4.src.tar.gz
 clisp-ver          = clisp/clisp-2.49.tar.gz
@@ -1801,7 +1808,6 @@ protobuf-ver       = protobuf/protobuf-2.5.0.tar.bz2
 psmisc-ver         = psmisc/psmisc-22.21.tar.gz
 pth-ver            = pth/pth-2.0.7.tar.gz
 pygobject-ver      = pygobject/pygobject-2.28.6.tar.xz
-Python-ver         = Python/Python-2.7.10.tar.xz
 readline-ver       = readline/readline-6.3.tar.gz
 ruby-ver           = ruby/ruby-2.3.0.tar.xz
 Scalar-MoreUtils-ver = Scalar-MoreUtils/Scalar-MoreUtils-0.02.tar.gz
@@ -1893,6 +1899,7 @@ foo:
 	echo -- $(GCC_LANGS)
 	echo -- $(shell perl -e '$$b = "$(grep-ver)"; $$b =~ s/-\d+\.\d.*//; print $$b')
 	echo -- $(shell perl -e 'print map{s/-\d+\.\d.*//;$$_}($$a="$(grep-ver)")')
+	echo -- $(word 2,$(subst -, ,$(basename $(basename $(notdir $(Python-ver))))))
 	true
 
 .PHONY: bundle-scripts
@@ -2454,7 +2461,7 @@ coreutils: $(coreutils-ver)
 	$(call SOURCEDIR,$@,xf)
 	cd $@; mkdir $@-build
 	cd $@/$@-build/; readlink -f . | grep $@-build
-	cd $@/$@-build/; ../`cat ../untar.dir`/configure --prefix=/usr/local --enable-install-program=hostname
+	cd $@/$@-build/; ../`cat ../untar.dir`/configure --prefix=/usr/local --enable-install-program=hostname --without-gmp
 	cd $@/$@-build/; make
 	# Timeout test failed, I think it is the same forking pthread librt
 	# problem I am getting in other tests
@@ -3713,7 +3720,7 @@ $(ca-cert-ver):
 	cd ca-cert; tar cfz ca-cert-1.0.tar.gz ./ca-cert-1.0
 
 $(cairo-ver):
-	$(call SOURCEWGET,"cairo","http://cairographics.org/releases/cairo-1.14.2.tar.xz")
+	$(call SOURCEWGET,"cairo","http://cairographics.org/releases/"$(notdir $(cairo-ver)))
 
 $(check-ver):
 	$(call SOURCEWGET,"check","http://downloads.sourceforge.net/project/check/check/0.9.12/check-0.9.12.tar.gz")
@@ -4079,7 +4086,7 @@ $(pth-ver):
 	$(call SOURCEWGET, "pth", "https://ftp.gnu.org/gnu/pth/pth-2.0.7.tar.gz")
 
 $(Python-ver):
-	$(call SOURCEWGET, "Python", "https://www.python.org/ftp/python/2.7.9/Python-2.7.9.tar.xz")
+	$(call SOURCEWGET, "Python", "https://www.python.org/ftp/python/"$(word 2,$(subst -, ,$(basename $(basename $(notdir $(Python-ver))))))"/"$(notdir $(Python-ver)))
 
 $(pygobject-ver):
 	$(call SOURCEWGET, "pygobject", "http://ftp.gnome.org/pub/gnome/sources/pygobject/2.28/"$(notdir $(pygobject-ver)))
