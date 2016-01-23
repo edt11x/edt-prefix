@@ -2694,10 +2694,14 @@ go: $(go-ver)
 	cd $@; sudo cp -r go /usr/local/.
 	cd /usr/local/go/src; sudo ./all.bash
 
+#
+# Use the included libtasn1, so that we are not dependent on the
+# external library
+#
 .PHONY: gnutls
 gnutls: $(gnutls-ver)
 	$(call SOURCEDIR,$@,xf)
-	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --with-default-trust-store-file=/usr/local/etc/ssl/ca-bundle.crt
+	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --with-default-trust-store-file=/usr/local/etc/ssl/ca-bundle.crt --with-included-libtasn1
 	cd $@/`cat $@/untar.dir`/; make
 	cd $@/`cat $@/untar.dir`/; make check || make test
 	$(call PKGINSTALL,$@)
