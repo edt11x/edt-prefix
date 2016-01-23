@@ -3225,7 +3225,7 @@ Python: $(Python-ver)
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --enable-shared
 	cd $@/`cat $@/untar.dir`/; make
 	$(call PKGINSTALL,$@)
-	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo python2.7 setup.py install
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo LD_LIBRARY_PATH=/usr/local/lib python2.7 setup.py install
 	-cd $@/`cat $@/untar.dir`/; wget https://bootstrap.pypa.io/get-pip.py
 	-cd $@/`cat $@/untar.dir`/; /usr/bin/sudo python2.7 get-pip.py
 	-cd $@/`cat $@/untar.dir`/; /usr/bin/sudo pip install -U setuptools
