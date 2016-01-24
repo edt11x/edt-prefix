@@ -59,7 +59,6 @@ space +=
 #
 # http://stackoverflow.com/questions/30099791/backslash-newline-in-a-make-variable
 
-
 # variable containing a newline
 # # there must be two blank lines between the define and endef
 # # (http://stackoverflow.com/a/17055840/2064196)
@@ -1547,6 +1546,7 @@ aftervim: \
     bcrypt \
     nettle \
     libtasn1 \
+    libidn \
     p11-kit \
     gnutls \
     curl \
@@ -1674,6 +1674,12 @@ afterlibsecret: \
 # ==============================================================
 # start organizing these by the last date they were updated
 # 2016-01-23
+# gnutls-ver         = gnutls/gnutls-3.4.7.tar.xz
+gnutls-ver         = gnutls/gnutls-3.4.8.tar.xz
+# 2016-01-23
+# Adding libidn
+libidn-ver         = libidn/libidn-1.32.tar.gz
+# 2016-01-23
 # Python-ver         = Python/Python-2.7.10.tar.xz
 Python-ver         = Python/Python-2.7.11.tar.xz
 # 2016-01-21
@@ -1752,7 +1758,6 @@ glibc-ver          = glibc/glibc-2.21.tar.gz
 glib-ver           = glib/glib-2.46.1.tar.xz
 gmp-ver            = gmp/gmp-5.1.2.tar.bz2
 gnupg-ver          = gnupg/gnupg-2.0.29.tar.bz2
-gnutls-ver         = gnutls/gnutls-3.4.7.tar.xz
 gobject-introspection-ver = gobject-introspection/gobject-introspection-1.46.0.tar.xz
 go-ver             = go/go1.4.2.src.tar.gz
 grep-ver           = grep/grep-2.21.tar.xz
@@ -2113,15 +2118,15 @@ libffi texinfo: \
 .PHONY: protobuf
 .PHONY: sharutils
 .PHONY: tcc
-jnettop libxml2 check file protobuf libtasn1 p11-kit gnupg popt sharutils pixman libxslt tcc : \
+jnettop libxml2 check file protobuf libtasn1 gnupg popt sharutils pixman libxslt tcc libidn : \
     $(check-ver) \
     $(file-ver) \
     $(gnupg-ver) \
     $(jnettop-ver) \
+    $(libidn-ver) \
     $(libtasn1-ver) \
     $(libxml2-ver) \
     $(libxslt-ver) \
-    $(p11-kit-ver) \
     $(pixman-ver) \
     $(popt-ver) \
     $(protobuf-ver) \
@@ -2537,7 +2542,6 @@ doxygen: $(doxygen-ver)
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
 
-
 .PHONY: e2fsprogs
 e2fsprogs: $(e2fsprogs-ver)
 	$(call SOURCEDIR,$@,xf)
@@ -2701,7 +2705,7 @@ go: $(go-ver)
 .PHONY: gnutls
 gnutls: $(gnutls-ver)
 	$(call SOURCEDIR,$@,xf)
-	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --with-default-trust-store-file=/usr/local/etc/ssl/ca-bundle.crt --with-included-libtasn1
+	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --with-default-trust-store-file=/usr/local/etc/ssl/ca-bundle.crt --with-included-libtasn1 --enable-local-libopts
 	cd $@/`cat $@/untar.dir`/; make
 	cd $@/`cat $@/untar.dir`/; make check || make test
 	$(call PKGINSTALL,$@)
@@ -3216,6 +3220,20 @@ openvpn: $(openvpn-ver)
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
 
+# No trust module, so that test fails
+.PHONY: p11-kit
+p11-kit : \
+    $(p11-kit-ver)
+	$(call SOURCEDIR,$@,xf)
+	# cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local LDFLAGS="-lpthreads"
+	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --without-trust-paths
+	cd $@/`cat $@/untar.dir`/; make
+	-cd $@/`cat $@/untar.dir`/; make check || make test
+	$(call PKGINSTALL,$@)
+	$(call CPLIB,libproto*)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
+
 .PHONY: pcre
 pcre: $(pcre-ver)
 	$(call SOURCEDIR,$@,xf)
@@ -3618,6 +3636,7 @@ wget-all: \
     $(libgcrypt-ver) \
     $(libgpg-error-ver) \
     $(libiconv-ver) \
+    $(libidn-ver) \
     $(libksba-ver) \
     $(libpcap-ver) \
     $(libpng-ver) \
@@ -3794,7 +3813,6 @@ $(Devel-Symdump-ver):
 
 $(dejagnu-ver):
 	$(call SOURCEWGET,"dejagnu","http://ftp.gnu.org/pub/gnu/"$(dejagnu-ver))
-
 
 $(diffutils-ver):
 	$(call SOURCEWGET,"diffutils","http://ftp.gnu.org/gnu/"$(diffutils-ver))
@@ -3976,6 +3994,9 @@ $(libffi-ver):
 
 $(libgcrypt-ver):
 	$(call SOURCEWGET,"libgcrypt","ftp://ftp.gnupg.org/gcrypt/"$(libgcrypt-ver))
+
+$(libidn-ver):
+	$(call SOURCEWGET,"libidn","http://ftp.gnu.org/gnu/"$(libidn-ver))
 
 $(libksba-ver):
 	$(call SOURCEWGET,"libksba","ftp://ftp.gnupg.org/gcrypt/"$(libksba-ver))
