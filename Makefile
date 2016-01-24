@@ -4199,7 +4199,7 @@ $(sqlite-ver):
 	$(call SOURCEWGET,"sqlite","http://www.sqlite.org/"$(notdir $(sqlite-ver)))
 
 $(srm-ver):
-	$(call SOURCEWGET,"srm","http://sourceforge.net/projects/srm/files/1.2.15/$(notdir $(srm-ver)))
+	$(call SOURCEWGET,"srm","http://sourceforge.net/projects/srm/files/1.2.15/"$(notdir $(srm-ver)))
 
 $(swig-ver):
 	# (call SOURCEWGET,"swig","http://downloads.sourceforge.net/swig/swig-2.0.11.tar.gz")
