@@ -1656,6 +1656,7 @@ afterpatch: \
 afterlibsecret: \
     pixman \
     cairo \
+    py2cairo \
     pygobject \
     openvpn \
     e2fsprogs \
@@ -1673,6 +1674,8 @@ afterlibsecret: \
 # Versions
 # ==============================================================
 # start organizing these by the last date they were updated
+# 2016-01-26
+py2cairo-ver       = py2cairo/py2cairo-1.10.0.tar.bz2
 # 2016-01-23
 # gnutls-ver         = gnutls/gnutls-3.4.7.tar.xz
 gnutls-ver         = gnutls/gnutls-3.4.8.tar.xz
@@ -3290,6 +3293,14 @@ Python: $(Python-ver)
 	-cd $@/`cat $@/untar.dir`/; /usr/bin/sudo env LD_LIBRARY_PATH=/usr/local/lib pip install -U pip
 	-cd $@/`cat $@/untar.dir`/; /usr/bin/sudo env LD_LIBRARY_PATH=/usr/local/lib pip install -U cppclean
 
+.PHONY: py2cairo
+py2cairo : \
+    $(py2cairo-ver)
+	$(call SOURCEDIR,$@,xf)
+	cd $@/`cat $@/untar.dir`/; ./waf configure --prefix=/usr/local
+	cd $@/`cat $@/untar.dir`/; ./waf build
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo ./waf install
+
 .PHONY: perl
 perl: $(perl-ver)
 	$(call SOURCEDIR,$@,xzf)
@@ -3684,6 +3695,7 @@ wget-all: \
     $(psmisc-ver) \
     $(pth-ver) \
     $(pygobject-ver) \
+    $(py2cairo-ver) \
     $(Python-ver) \
     $(readline-ver) \
     $(ruby-ver) \
@@ -4145,6 +4157,9 @@ $(psmisc-ver):
 
 $(pth-ver):
 	$(call SOURCEWGET, "pth", "https://ftp.gnu.org/gnu/pth/pth-2.0.7.tar.gz")
+
+$(py2cairo-ver):
+	$(call SOURCEWGET, "py2cairo", "http://cairographics.org/releases/"$(notdir $(py2cairo-ver)))
 
 $(Python-ver):
 	$(call SOURCEWGET, "Python", "https://www.python.org/ftp/python/"$(word 2,$(subst -, ,$(basename $(basename $(notdir $(Python-ver))))))"/"$(notdir $(Python-ver)))
