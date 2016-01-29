@@ -1517,6 +1517,7 @@ afterbison: \
     libcap \
     libxml2 \
     libxslt \
+    libutemper \
     intltool \
     glib \
     libsecret \
@@ -1674,6 +1675,8 @@ afterlibsecret: \
 # Versions
 # ==============================================================
 # start organizing these by the last date they were updated
+# 2016-01-29
+libutempter-ver    = libutempter/libutempter-1.1.6.tar.bz2
 # 2016-01-26
 py2cairo-ver       = py2cairo/py2cairo-1.10.0.tar.bz2
 # 2016-01-23
@@ -2886,6 +2889,19 @@ patches/lua-5.3.2-shared_library-1.patch:
 	-mkdir -p patches
 	echo "$$LUASHAREDLIBPATCH" >> $@
 
+# No configure, no make check or test, does not have a good install
+.PHONY: libutempter
+libutempter : \
+    $(libutempter-ver)
+	$(call SOURCEDIR,$@,xf)
+	cd $@/`cat $@/untar.dir`/; make
+	cd $@/`cat $@/untar.dir`/; sudo cp -av utempter.h /usr/local/include
+	cd $@/`cat $@/untar.dir`/; sudo cp -av libutempter.a /usr/local/lib
+	cd $@/`cat $@/untar.dir`/; sudo cp -av libutempter.so* /usr/local/lib
+	cd $@/`cat $@/untar.dir`/; sudo cp -av utempter /usr/local/bin
+	$(call CPLIB,libutempter*)
+	$(call CPLIB,$@*)
+
 .PHONY: lua
 lua: $(lua-ver) patches/lua-5.3.2-shared_library-1.patch
 	$(call SOURCEDIR,$@,xf)
@@ -3292,6 +3308,7 @@ Python: $(Python-ver)
 	-cd $@/`cat $@/untar.dir`/; /usr/bin/sudo env LD_LIBRARY_PATH=/usr/local/lib pip install -U setuptools
 	-cd $@/`cat $@/untar.dir`/; /usr/bin/sudo env LD_LIBRARY_PATH=/usr/local/lib pip install -U pip
 	-cd $@/`cat $@/untar.dir`/; /usr/bin/sudo env LD_LIBRARY_PATH=/usr/local/lib pip install -U cppclean
+	$(call CPLIB,libpython*)
 
 .PHONY: py2cairo
 py2cairo : \
@@ -3657,6 +3674,7 @@ wget-all: \
     $(libtool-ver) \
     $(libunistring-ver) \
     $(libusb-ver) \
+    $(libutempter-ver) \
     $(libwww-perl-ver) \
     $(libxml2-ver) \
     $(libxslt-ver) \
@@ -4046,6 +4064,9 @@ $(libusb-ver):
 $(libwww-perl-ver):
 	$(call SOURCEWGET,"libwww-perl","http://search.cpan.org/CPAN/authors/id/E/ET/ETHER/"$(notdir $(libwww-perl-ver)))
 
+$(libutempter-ver):
+	$(call SOURCEWGET,"libutempter","http://slackware.cs.utah.edu/pub/slackware/slackware-current/source/a/utempter/"$(notdir $(libutempter-ver)))
+
 $(libxml2-ver):
 	$(call SOURCEWGET,"libxml2","http://xmlsoft.org/sources/"$(notdir $(libxml2-ver)))
 
@@ -4183,7 +4204,7 @@ $(scons-ver):
 	$(call SOURCEWGET, "scons", "http://prdownloads.sourceforge.net/scons/scons-2.3.4.tar.gz")
 
 $(screen-ver):
-	$(call SOURCEWGET,"screen","https://ftp.gnu.org/gnu/screen/screen-4.2.1.tar.gz")
+	$(call SOURCEWGET,"screen","https://ftp.gnu.org/gnu/"$(screen-ver))
 
 $(scrypt-ver):
 	$(call SOURCEWGET, "scrypt","http://www.tarsnap.com/"$(scrypt-ver))
