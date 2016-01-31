@@ -2381,6 +2381,10 @@ afterlibsecret: \
     py2cairo \
     pygobject \
     openvpn \
+    libdnet \
+    daq \
+    snort \
+    mutt \
     e2fsprogs \
     netpbm \
     vera++ \
@@ -2396,6 +2400,16 @@ afterlibsecret: \
 # Versions
 # ==============================================================
 # start organizing these by the last date they were updated
+# 2016-01-31
+mutt-ver           = mutt/mutt-1.5.24.tar.gz
+# 2016-01-31
+libdnet-ver        = libdnet/libdnet-1.12.tar.gz
+# 2016-01-31
+snort-ver          = snort/snort-2.9.8.0.tar.gz
+# 2016-01-31
+daq-ver            = daq/daq-2.0.6.tar.gz
+# 2016-01-40
+Linux-PAM-ver      = Linux-PAM/Linux-PAM-1.2.1.tar.bz2
 # 2016-01-29
 libutempter-ver    = libutempter/libutempter-1.1.6.tar.bz2
 # 2016-01-26
@@ -2835,9 +2849,11 @@ libffi texinfo: \
 
 # Standard build, post tar rule, no separate build directory
 .PHONY: check
+.PHONY: daq
 .PHONY: file
 .PHONY: gnupg
 .PHONY: jnettop
+.PHONY: libdnet
 .PHONY: libxml2
 .PHONY: libxslt
 .PHONY: pixman
@@ -2845,11 +2861,13 @@ libffi texinfo: \
 .PHONY: protobuf
 .PHONY: sharutils
 .PHONY: tcc
-jnettop libxml2 check file protobuf libtasn1 gnupg popt sharutils pixman libxslt tcc libidn : \
+jnettop libxml2 check file protobuf libtasn1 gnupg popt sharutils pixman libxslt tcc libidn daq libdnet : \
     $(check-ver) \
+    $(daq-ver) \
     $(file-ver) \
     $(gnupg-ver) \
     $(jnettop-ver) \
+    $(libdnet-ver) \
     $(libidn-ver) \
     $(libtasn1-ver) \
     $(libxml2-ver) \
@@ -3785,6 +3803,18 @@ libelf: $(libelf-ver)
 	cd $@/`cat $@/untar.dir`/; make check || make test
 	$(call PKGINSTALL,$@)
 
+# Tests aparently write to /etc/pam.d, which we are using
+# Be carefull, installing this may create a system that
+# cannot be logged into.
+.PHONY: Linux-PAM
+Linux-PAM: $(Linux-PAM-ver)
+	$(call SOURCEDIR,$@,xf)
+	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --sysconfdir=/etc --libdir=/usr/local/lib
+	cd $@/`cat $@/untar.dir`/; make
+	$(call PKGINSTALL,$@)
+	$(call CPLIB,lib$@*)
+	@echo "======= Build of $@ Successful ======="
+
 .PHONY: linux-2.6.32.61
 linux-2.6.32.61:
 	$(call SOURCEDIR,$@,xf)
@@ -3880,6 +3910,26 @@ mpfr: $(mpfr-ver)
 	cd $@/`cat $@/untar.dir`/; make check || make test
 	$(call PKGINSTALL,$@)
 
+.PHONY: mutt
+mutt : \
+    $(mutt-ver)
+	$(call SOURCEDIR,$@,xf)
+	cd $@/`cat $@/untar.dir`/; CPPFLAGS="-I/usr/local/include -I/usr/local/include/ncursesw" ./configure --prefix=/usr/local \
+		    --sysconfdir=/usr/local/etc \
+		    --with-docdir=/usr/local/share/doc/mutt-1.5.24 \
+		    --enable-pop      \
+		    --enable-imap     \
+		    --enable-hcache   \
+		    --without-qdbm    \
+		    --with-gdbm       \
+		    --without-bdb     \
+		    --without-tokyocabinet
+	cd $@/`cat $@/untar.dir`/; make
+	cd $@/`cat $@/untar.dir`/; make check || make test
+	$(call PKGINSTALL,$@)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
+
 .PHONY: ncurses
 ncurses: $(ncurses-ver)
 	$(call SOURCEDIR,$@,xfz)
@@ -3951,7 +4001,8 @@ openssl: $(openssl-ver)
 openvpn: $(openvpn-ver)
 	$(call SOURCEDIR,$@,xf)
 	cd $@/`cat $@/untar.dir`/; autoreconf -vi
-	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
+	# cd $@/`cat $@/untar.dir`/; LIBPAM_LIBS="-L/lib/x86_64-linux-gnu -lpam"
+	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --disable-plugin-auth-pam
 	cd $@/`cat $@/untar.dir`/; make
 	$(call PKGINSTALL,$@)
 	$(call CPLIB,lib$@*)
@@ -4134,6 +4185,17 @@ scons: $(scons-ver)
 	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo python setup.py install \
 	    --prefix=/usr/local  --standard-lib --optimize=1 --install-data=/usr/share
 	@echo "======= Build of $@ Successful ======="
+
+.PHONY: snort
+snort : \
+    $(snort-ver)
+	$(call SOURCEDIR,$@,xf)
+	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --enable-sourcefire
+	cd $@/`cat $@/untar.dir`/; make
+	cd $@/`cat $@/untar.dir`/; make check || make test
+	$(call PKGINSTALL,$@)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
 
 .PHONY: sparse
 sparse: $(sparse-ver)
@@ -4334,6 +4396,7 @@ wget-all: \
     $(coreutils-ver) \
     $(cppcheck-ver) \
     $(curl-ver) \
+    $(daq-ver) \
     $(db-ver) \
     $(dejagnu-ver) \
     $(Devel-Symdump-ver) \
@@ -4394,6 +4457,7 @@ wget-all: \
     $(libassuan-ver) \
     $(libatomic_ops-ver) \
     $(libcap-ver) \
+    $(libdnet-ver) \
     $(libelf-ver) \
     $(libevent-ver) \
     $(libffi-ver) \
@@ -4414,6 +4478,7 @@ wget-all: \
     $(libwww-perl-ver) \
     $(libxml2-ver) \
     $(libxslt-ver) \
+    $(Linux-PAM-ver) \
     $(List-MoreUtils-ver) \
     $(lua-ver) \
     $(LWP-MediaTypes-ver) \
@@ -4425,6 +4490,7 @@ wget-all: \
     $(mpc-ver) \
     $(mpfr-ver) \
     $(multitail-ver) \
+    $(mutt-ver) \
     $(ncurses-ver) \
     $(netpbm-ver) \
     $(Net-HTTP-ver) \
@@ -4460,6 +4526,7 @@ wget-all: \
     $(sed-ver) \
     $(serf-ver) \
     $(sharutils-ver) \
+    $(snort-ver) \
     $(socat-ver) \
     $(sparse-ver) \
     $(sqlite-ver) \
@@ -4567,6 +4634,9 @@ $(coreutils-ver):
 
 $(cppcheck-ver):
 	$(call SOURCEWGET,"cppcheck","http://downloads.sourceforge.net/project/cppcheck/cppcheck/1.72/"$(notdir $(cppcheck-ver)))
+
+$(daq-ver):
+	$(call SOURCEWGET,"daq","https://www.snort.org/downloads/snort/"$(notdir $(daq-ver)))
 
 $(curl-ver):
 	$(call SOURCEWGET,"curl","http://curl.haxx.se/download/curl-7.41.0.tar.bz2")
@@ -4749,6 +4819,9 @@ $(libatomic_ops-ver):
 $(libcap-ver):
 	$(call SOURCEWGET,"libcap","https://www.kernel.org/pub/linux/libs/security/linux-privs/libcap2/"$(notdir $(libcap-ver)))
 
+$(libdnet-ver):
+	$(call SOURCEWGET,"libdnet","https://github.com/dugsong/libdnet/archive/"$(notdir $(libdnet-ver)))
+
 $(libelf-ver):
 	$(call SOURCEWGET,"libelf","http://www.mr511.de/software/libelf-0.8.13.tar.gz")
 
@@ -4809,6 +4882,9 @@ $(libxml2-ver):
 $(libxslt-ver):
 	$(call SOURCEWGET,"libxslt","http://xmlsoft.org/sources/"$(notdir $(libxslt-ver)))
 
+$(Linux-PAM-ver):
+	$(call SOURCEWGET,"Linux-PAM","http://linux-pam.org/library/"$(notdir $(Linux-PAM-ver)))
+
 $(List-MoreUtils-ver):
 	$(call SOURCEWGET,"List-MoreUtils","http://search.cpan.org/CPAN/authors/id/R/RE/REHSACK/"$(notdir $(List-MoreUtils-ver)))
 
@@ -4847,6 +4923,9 @@ $(mosh-ver):
 
 $(multitail-ver):
 	$(call SOURCEWGET,"multitail","http://www.vanheusden.com/"$(multitail-ver))
+
+$(mutt-ver):
+	$(call SOURCEWGET,"mutt","ftp://ftp.mutt.org/pub/"$(mutt-ver))
 
 $(nettle-ver):
 	$(call SOURCEWGET,"nettle","https://ftp.gnu.org/gnu/"$(nettle-ver))
@@ -4960,6 +5039,9 @@ $(subversion-ver):
 
 $(symlinks-ver):
 	$(call SOURCEWGET,"symlinks","http://pkgs.fedoraproject.org/repo/pkgs/symlinks/symlinks-1.4.tar.gz/c38ef760574c25c8a06fd2b5b141307d/symlinks-1.4.tar.gz")
+
+$(snort-ver):
+	$(call SOURCEWGET, "snort", "https://www.snort.org/downloads/"$(snort-ver))
 
 $(socat-ver):
 	$(call SOURCEWGET, "socat", "http://www.dest-unreach.org/socat/download/"$(notdir $(socat-ver)))

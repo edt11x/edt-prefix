@@ -6,7 +6,7 @@ set -o pipefail
 ulimit -s 16384
 unset DISPLAY
 unset CFLAGS
-export LD_LIBRARY_PATH="/usr/local/lib:/usr/local/lib64:/lib:/usr/lib:/usr/local/glibc/lib"
+export LD_LIBRARY_PATH="/usr/local/lib:/usr/local/lib64:/lib:/usr/lib:/usr/local/glibc/lib:/lib/x86_64-linux-gnu"
 #
 # If we already built binutils, we need to get /usr/local/bin/ld
 # out of the way so that Perl does not find it.
