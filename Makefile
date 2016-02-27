@@ -2400,6 +2400,12 @@ afterlibsecret: \
 # Versions
 # ==============================================================
 # start organizing these by the last date they were updated
+# 2016-02-12
+# autossh-ver        = autossh/autossh-1.4c.tgz
+autossh-ver        = autossh/autossh-1.4e.tgz
+# 2016-02-09
+# socat-ver          = socat/socat-1.7.3.0.tar.gz
+socat-ver          = socat/socat-1.7.3.1.tar.gz
 # 2016-01-31
 mutt-ver           = mutt/mutt-1.5.24.tar.gz
 # 2016-01-31
@@ -2456,7 +2462,6 @@ attr-ver           = attr/attr-2.4.47.src.tar.gz
 autoconf-ver       = autoconf/autoconf-2.69.tar.xz
 autogen-ver        = autogen/autogen-5.18.7.tar.xz
 automake-ver       = automake/automake-1.14.tar.xz
-autossh-ver        = autossh/autossh-1.4c.tgz
 bash-ver           = bash/bash-4.3.30.tar.gz
 bcrypt-ver         = bcrypt/bcrypt-1.1.tar.gz
 binutils-ver       = binutils/binutils-2.24.tar.gz
@@ -2589,7 +2594,6 @@ scrypt-ver         = scrypt/scrypt-1.1.6.tgz
 sed-ver            = sed/sed-4.2.2.tar.gz
 serf-ver           = serf/serf-1.3.5.tar.bz2
 sharutils-ver      = sharutils/sharutils-4.15.1.tar.xz
-socat-ver          = socat/socat-1.7.3.0.tar.gz
 sparse-ver         = sparse/sparse-0.5.0.tar.gz
 sqlite-ver         = sqlite/sqlite-autoconf-3071502.tar.gz
 srm-ver            = srm/srm-1.2.15.tar.gz
