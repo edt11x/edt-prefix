@@ -2911,8 +2911,8 @@ par2cmdline: $(par2cmdline-ver)
 #
 # we should have a good version of tar that automatically
 # detects file type
-.PHONY: mosh srm wipe socat screen tmux psmisc libusb htop cairo iptraf-ng hwloc
-srm wipe mosh socat screen tmux psmisc libusb htop cairo iptraf-ng hwloc: $(srm-ver) $(libusb-ver) $(htop-ver) $(mosh-ver) $(socat-ver) $(screen-ver) $(tmux-ver) $(psmisc-ver) $(wipe-ver) $(cairo-ver) $(iptraf-ng-ver) $(hwloc-ver)
+.PHONY: mosh srm wipe socat tmux psmisc libusb htop cairo iptraf-ng hwloc
+srm wipe mosh socat tmux psmisc libusb htop cairo iptraf-ng hwloc: $(srm-ver) $(libusb-ver) $(htop-ver) $(mosh-ver) $(socat-ver) $(tmux-ver) $(psmisc-ver) $(wipe-ver) $(cairo-ver) $(iptraf-ng-ver) $(hwloc-ver)
 	$(call SOURCEDIR,$@,xf)
 	cd $@/`cat $@/untar.dir`/; CPPFLAGS="-I/usr/local/include -I/usr/local/include/ncursesw" ./configure --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/; make
@@ -4157,6 +4157,17 @@ ruby: $(ruby-ver)
 	cd $@/`cat $@/untar.dir`/; LDFLAGS="-L/usr/local/lib -lssp" make check || make test
 	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo make LDFLAGS="-L/usr/local/lib -lssp" install
 	@echo "======= Build of $@ Successful ======="
+
+.PHONY: screen
+screen : $(screen-ver)
+	$(call SOURCEDIR,$@,xf)
+	-cd $@/`cat $@/untar.dir`/; sed -i -e '/gets is a security/d' lib/stdio.in.h
+	cd $@/`cat $@/untar.dir`/; sed -i -e "/^# if defined(SVR4) && !defined(DGUX) && !defined(__hpux)/s/$$/  \&\& !defined(linux)/" os.h
+	cd $@/`cat $@/untar.dir`/; CPPFLAGS="-I/usr/local/include -I/usr/local/include/ncursesw" ./configure --prefix=/usr/local
+	cd $@/`cat $@/untar.dir`/; make
+	$(call PKGINSTALL,$@)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
 
 .PHONY: sed
 sed: $(sed-ver)
