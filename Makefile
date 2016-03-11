@@ -2400,6 +2400,8 @@ afterlibsecret: \
 # Versions
 # ==============================================================
 # start organizing these by the last date they were updated
+# 2016-02-27
+cmake-ver          = cmake/cmake-3.4.3.tar.gz
 # 2016-02-12
 # autossh-ver        = autossh/autossh-1.4c.tgz
 autossh-ver        = autossh/autossh-1.4e.tgz
@@ -2433,7 +2435,7 @@ Python-ver         = Python/Python-2.7.11.tar.xz
 # cairo-ver          = cairo/cairo-1.14.2.tar.xz
 cairo-ver          = cairo/cairo-1.14.6.tar.xz
 # 2016-01-20
-cmake-ver          = cmake/cmake-3.4.1.tar.gz
+# cmake-ver          = cmake/cmake-3.4.1.tar.gz
 # 2016-01-17
 vera++-ver         = vera++/vera++-1.3.0.tar.gz
 # 2016-01-17
