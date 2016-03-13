@@ -26,7 +26,7 @@ then
     echo "Old Compiler build failed."
     exit 1
 fi
-PATH=/usr/sbin:/usr/bin:/bin:/usr/local/sbin:/usr/local/bin make GCC_LANGS="c,c++" SHELL=/bin/bash PHASE1_NOCHECK="echo Not going to -- " phase1 2>&1 | /usr/bin/tee make1.out
+PATH=/usr/sbin:/usr/bin:/bin:/usr/local/sbin:/usr/local/bin:/usr/local/qt5/bin make GCC_LANGS="c,c++" SHELL=/bin/bash PHASE1_NOCHECK="echo Not going to -- " phase1 2>&1 | /usr/bin/tee make1.out
 export RETVAL=$?
 echo Look Here XXX XXX XXX - $RETVAL
 if [ $RETVAL -ne 0 ]
@@ -35,7 +35,7 @@ then
     exit 1
 fi
 unset CFLAGS
-PATH=/usr/local/bin:/usr/local/sbin:/usr/sbin:/usr/bin:/bin /usr/local/bin/make SHELL=/bin/bash all 2>&1 | /usr/bin/tee make2.out
+PATH=/usr/local/bin:/usr/local/sbin:/usr/sbin:/usr/bin:/bin:/usr/local/qt5/bin /usr/local/bin/make SHELL=/bin/bash all 2>&1 | /usr/bin/tee make2.out
 export RETVAL=$?
 echo Look Here XXX XXX XXX - $RETVAL
 if [ $RETVAL -ne 0 ]

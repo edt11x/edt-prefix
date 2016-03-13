@@ -2385,6 +2385,7 @@ afterlibsecret: \
     daq \
     snort \
     mutt \
+    qt-everywhere-opensource-src \
     e2fsprogs \
     netpbm \
     vera++ \
@@ -2400,6 +2401,13 @@ afterlibsecret: \
 # Versions
 # ==============================================================
 # start organizing these by the last date they were updated
+# 2016-03-12
+dbus-ver           = dbus/dbus-1.10.6.tar.gz
+# 2016-03-12
+qt-everywhere-opensource-src-ver            = qt-everywhere-opensource-src/qt-everywhere-opensource-src-5.5.1.tar.xz
+# openssl-ver        = openssl/openssl-1.0.2e.tar.gz
+# 2016-03-11
+openssl-ver        = openssl/openssl-1.0.2g.tar.gz
 # 2016-02-27
 cmake-ver          = cmake/cmake-3.4.3.tar.gz
 # 2016-02-12
@@ -2569,7 +2577,6 @@ netpbm-ver         = netpbm/netpbm-10.35.95.tgz
 Net-SSLeay-ver     = Net-SSLeay/Net-SSLeay-1.68.tar.gz
 nettle-ver         = nettle/nettle-3.1.1.tar.gz
 ntfs-3g-ver        = ntfs-3g/ntfs-3g_ntfsprogs-2013.1.13.tgz
-openssl-ver        = openssl/openssl-1.0.2e.tar.gz
 openvpn-ver        = openvpn/openvpn-2.3.8.tar.xz
 p11-kit-ver        = p11-kit/p11-kit-0.23.2.tar.gz
 p7zip-ver          = p7zip/p7zip_9.38.1_src_all.tar.bz2
@@ -3263,6 +3270,25 @@ cppcheck: $(cppcheck-ver)
 	$(call SOURCEDIR,$@,xf)
 	cd $@/`cat $@/untar.dir`/; make HAVE_RULES=yes
 	$(call PKGINSTALL,$@)
+
+.PHONY: dbus
+dbus : $(dbus-ver)
+	$(call SOURCEDIR,$@,xf)
+	cd $@/`cat $@/untar.dir`/; CPPFLAGS="-I/usr/local/include -I/usr/local/include/ncursesw" \
+			./configure --prefix=/usr/local \
+	                --sysconfdir=/usr/local/etc              \
+			--localstatedir=/usr/local/var           \
+			--disable-doxygen-docs         \
+			--disable-xml-docs             \
+			--disable-static               \
+			--disable-systemd              \
+			--without-systemdsystemunitdir \
+			--with-console-auth-dir=/usr/local/var/run/console/ \
+			--docdir=/usr/local/share/doc/dbus-1.10.6
+	cd $@/`cat $@/untar.dir`/; make
+	$(call PKGINSTALL,$@)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
 
 .PHONY: dejagnu
 dejagnu: $(dejagnu-ver)
@@ -4140,6 +4166,27 @@ p7zip: $(p7zip-ver)
 	cd $@/`cat $@/untar.dir`/; make test
 	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo ./install.sh
 
+.PHONY: qt-everywhere-opensource-src
+qt-everywhere-opensource-src : \
+    $(qt-everywhere-opensource-src-ver)
+	$(call SOURCEDIR,$@,xfz)
+	cd $@/`cat $@/untar.dir`/; ./configure -prefix /usr/local/qt5 \
+	            -sysconfdir     /etc/xdg   \
+		    -confirm-license           \
+		    -opensource                \
+		    -dbus-linked               \
+		    -openssl-linked            \
+		    -system-harfbuzz           \
+		    -system-sqlite             \
+		    -nomake examples           \
+		    -no-rpath                  \
+		    -optimized-qmake           \
+		    -skip qtwebengine
+	cd $@/`cat $@/untar.dir`/; make
+	$(call PKGINSTALL,$@)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
+
 # No test suite for readline
 .PHONY: readline
 readline: $(readline-ver)
@@ -4415,6 +4462,7 @@ wget-all: \
     $(curl-ver) \
     $(daq-ver) \
     $(db-ver) \
+    $(dbus-ver) \
     $(dejagnu-ver) \
     $(Devel-Symdump-ver) \
     $(diffutils-ver) \
@@ -4534,6 +4582,7 @@ wget-all: \
     $(pygobject-ver) \
     $(py2cairo-ver) \
     $(Python-ver) \
+    $(qt-everywhere-opensource-src-ver) \
     $(readline-ver) \
     $(ruby-ver) \
     $(Scalar-MoreUtils-ver) \
@@ -4663,6 +4712,9 @@ $(db-ver):
 
 $(Devel-Symdump-ver):
 	$(call SOURCEWGET,"Devel-Symdump","http://search.cpan.org/CPAN/authors/id/A/AN/ANDK/"$(notdir $(Devel-Symdump-ver)))
+
+$(dbus-ver):
+	$(call SOURCEWGET,"dbus","http://dbus.freedesktop.org/releases/"$(dbus-ver))
 
 $(dejagnu-ver):
 	$(call SOURCEWGET,"dejagnu","http://ftp.gnu.org/pub/gnu/"$(dejagnu-ver))
@@ -5022,6 +5074,9 @@ $(pygobject-ver):
 
 $(p7zip-ver):
 	$(call SOURCEWGET,"p7zip","http://downloads.sourceforge.net/project/p7zip/p7zip/9.38.1/p7zip_9.38.1_src_all.tar.bz2")
+
+$(qt-everywhere-opensource-src-ver):
+	$(call SOURCEWGET,"qt-everywhere-opensource-src","http://download.qt.io/archive/qt/5.5/5.5.1/single/qt-everywhere-opensource-src-5.5.1.tar.xz")
 
 $(readline-ver):
 	$(call SOURCEWGET,"readline","http://ftp.gnu.org/gnu/"$(readline-ver))
