@@ -2401,6 +2401,9 @@ afterlibsecret: \
 # Versions
 # ==============================================================
 # start organizing these by the last date they were updated
+# 2016-03-25
+# curl-ver           = curl/curl-7.41.0.tar.bz2
+curl-ver           = curl/curl-7.48.0.tar.bz2
 # 2016-03-12
 dbus-ver           = dbus/dbus-1.10.6.tar.gz
 # 2016-03-12
@@ -2483,7 +2486,6 @@ clang-ver          = clang/clang-3.4.src.tar.gz
 clisp-ver          = clisp/clisp-2.49.tar.gz
 compiler-rt-ver    = compiler-rt/compiler-rt-3.4.src.tar.gz
 coreutils-ver      = coreutils/coreutils-8.22.tar.xz
-curl-ver           = curl/curl-7.41.0.tar.bz2
 db-ver             = db/db-6.1.26.tar
 dejagnu-ver        = dejagnu/dejagnu-1.5.3.tar.gz
 Devel-Symdump-ver  = Devel-Symdump/Devel-Symdump-2.15.tar.gz
