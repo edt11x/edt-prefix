@@ -2366,6 +2366,7 @@ afterpatch: \
     gobject-introspection \
     tcc \
     jpeg \
+    lxsplit \
     afterlibsecret
 
 # Problem children
@@ -2376,6 +2377,7 @@ afterpatch: \
 #
 .PHONY: afterlibsecret
 afterlibsecret: \
+    node \
     pixman \
     cairo \
     py2cairo \
@@ -2401,6 +2403,16 @@ afterlibsecret: \
 # Versions
 # ==============================================================
 # start organizing these by the last date they were updated
+# 2016-04-08
+# grep-ver           = grep/grep-2.21.tar.xz
+grep-ver           = grep/grep-2.24.tar.xz
+# 2016-04-08
+# git-ver            = git/git-2.2.1.tar.xz
+git-ver            = git/git-2.8.1.tar.xz
+# 2016-04-08
+lxsplit-ver        = lxsplit/lxsplit-0.2.4.tar.gz
+# 2016-04-03
+node-ver           = node/node-v4.4.2.tar.gz
 # 2016-03-25
 # curl-ver           = curl/curl-7.41.0.tar.bz2
 curl-ver           = curl/curl-7.48.0.tar.bz2
@@ -2510,7 +2522,6 @@ gc-ver             = gc/gc-7.4.2.tar.gz
 gdbm-ver           = gdbm/gdbm-1.10.tar.gz
 gdb-ver            = gdb/gdb-7.9.tar.xz
 gettext-ver        = gettext/gettext-0.19.7.tar.gz
-git-ver            = git/git-2.2.1.tar.xz
 glibc-ver          = glibc/glibc-2.21.tar.gz
 # glib-ver           = glib/glib-2.44.1.tar.xz
 glib-ver           = glib/glib-2.46.1.tar.xz
@@ -2518,7 +2529,6 @@ gmp-ver            = gmp/gmp-5.1.2.tar.bz2
 gnupg-ver          = gnupg/gnupg-2.0.29.tar.bz2
 gobject-introspection-ver = gobject-introspection/gobject-introspection-1.46.0.tar.xz
 go-ver             = go/go1.4.2.src.tar.gz
-grep-ver           = grep/grep-2.21.tar.xz
 guile-ver          = guile/guile-2.0.11.tar.xz
 gzip-ver           = gzip/gzip-1.6.tar.gz
 harfbuzz-ver       = harfbuzz/harfbuzz-0.9.38.tar.bz2
@@ -2923,7 +2933,7 @@ par2cmdline: $(par2cmdline-ver)
 # we should have a good version of tar that automatically
 # detects file type
 .PHONY: mosh srm wipe socat tmux psmisc libusb htop cairo iptraf-ng hwloc
-srm wipe mosh socat tmux psmisc libusb htop cairo iptraf-ng hwloc: $(srm-ver) $(libusb-ver) $(htop-ver) $(mosh-ver) $(socat-ver) $(tmux-ver) $(psmisc-ver) $(wipe-ver) $(cairo-ver) $(iptraf-ng-ver) $(hwloc-ver)
+srm wipe mosh socat tmux psmisc libusb htop cairo iptraf-ng hwloc node: $(srm-ver) $(libusb-ver) $(htop-ver) $(mosh-ver) $(socat-ver) $(tmux-ver) $(psmisc-ver) $(wipe-ver) $(cairo-ver) $(iptraf-ng-ver) $(hwloc-ver)
 	$(call SOURCEDIR,$@,xf)
 	cd $@/`cat $@/untar.dir`/; CPPFLAGS="-I/usr/local/include -I/usr/local/include/ncursesw" ./configure --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/; make
@@ -2973,7 +2983,8 @@ make libpcap sqlite lzma bison pango tcpdump gobject-introspection : \
 .PHONY: symlinks
 .PHONY: multitail
 .PHONY: unrar
-bcrypt libcap multitail symlinks unrar: $(bcrypt-ver) $(multitail-ver) $(symlinks-ver) $(unrar-ver) $(libcap-ver)
+.PHONY: lxsplit
+bcrypt libcap multitail symlinks unrar lxsplit: $(bcrypt-ver) $(multitail-ver) $(symlinks-ver) $(unrar-ver) $(libcap-ver) $(lxsplit-ver)
 	$(call SOURCEDIR,$@,xfz)
 	cd $@/`cat $@/untar.dir`/; make
 	$(call PKGINSTALL,$@)
@@ -3717,6 +3728,15 @@ netpbm: $(netpbm-ver)
 	cd $@/`cat $@/untar.dir`/; sudo cp -a -v /tmp/netpbm/link/* /usr/local/lib/.
 	cd $@/`cat $@/untar.dir`/; sudo cp -a -v /tmp/netpbm/man/* /usr/local/man/.
 	cd $@/`cat $@/untar.dir`/; sudo cp -a -v /tmp/netpbm/misc/* /usr/local/share/netpbm/.
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
+
+.PHONY: node
+node: $(node-ver)
+	$(call SOURCEDIR,$@,xf)
+	cd $@/`cat $@/untar.dir`/; CC=/usr/local/bin/gcc CPPFLAGS="-I/usr/local/include -I/usr/local/include/ncursesw" ./configure --prefix=/usr/local --without-snapshot
+	cd $@/`cat $@/untar.dir`/; make
+	$(call PKGINSTALL,$@)
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
 
@@ -4549,6 +4569,7 @@ wget-all: \
     $(List-MoreUtils-ver) \
     $(lua-ver) \
     $(LWP-MediaTypes-ver) \
+    $(lxsplit-ver) \
     $(lzma-ver) \
     $(lzo-ver) \
     $(m4-ver) \
@@ -4563,6 +4584,7 @@ wget-all: \
     $(Net-HTTP-ver) \
     $(Net-SSLeay-ver) \
     $(nettle-ver) \
+    $(node-ver) \
     $(ntfs-3g-ver) \
     $(openssl-ver) \
     $(openvpn-ver) \
@@ -4968,6 +4990,9 @@ $(lua-ver):
 $(LWP-MediaTypes-ver):
 	$(call SOURCEWGET,"LWP-MediaTypes","http://search.cpan.org/CPAN/authors/id/G/GA/GAAS/"$(notdir $(LWP-MediaTypes-ver)))
 
+$(lxsplit-ver):
+	$(call SOURCEWGET,"lxsplit","http://downloads.sourceforge.net/"$(lxsplit-ver))
+
 $(make-ver):
 	$(call SOURCEWGET,"make","https://ftp.gnu.org/gnu/make/make-4.1.tar.gz")
 
@@ -5012,6 +5037,9 @@ $(Net-SSLeay-ver):
 
 $(netpbm-ver):
 	$(call SOURCEWGET,"netpbm","http://downloads.sourceforge.net/project/netpbm/super_stable/10.35.95/netpbm-10.35.95.tgz")
+
+$(node-ver):
+	$(call SOURCEWGET,"node","https://nodejs.org/dist/v4.4.2/"$(notdir $(node-ver)))
 
 $(ntfs-3g-ver):
 	$(call SOURCEWGET,"ntfs-3g","http://tuxera.com/opensource/ntfs-3g_ntfsprogs-2013.1.13.tgz")
