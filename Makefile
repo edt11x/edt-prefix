@@ -2367,6 +2367,7 @@ afterpatch: \
     tcc \
     jpeg \
     lxsplit \
+    node \
     afterlibsecret
 
 # Problem children
@@ -2377,7 +2378,6 @@ afterpatch: \
 #
 .PHONY: afterlibsecret
 afterlibsecret: \
-    node \
     pixman \
     cairo \
     py2cairo \
@@ -3734,7 +3734,7 @@ netpbm: $(netpbm-ver)
 .PHONY: node
 node: $(node-ver)
 	$(call SOURCEDIR,$@,xf)
-	cd $@/`cat $@/untar.dir`/; CC=/usr/local/bin/gcc CPPFLAGS="-I/usr/local/include -I/usr/local/include/ncursesw" ./configure --prefix=/usr/local --without-snapshot
+	cd $@/`cat $@/untar.dir`/; CC=clang CXX=clang++ CPPFLAGS="-I/usr/local/include -I/usr/local/include/ncursesw" ./configure --prefix=/usr/local --without-snapshot
 	cd $@/`cat $@/untar.dir`/; make
 	$(call PKGINSTALL,$@)
 	$(call CPLIB,lib$@*)
