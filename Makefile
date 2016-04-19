@@ -2370,6 +2370,7 @@ afterpatch: \
     crosextrafonts \
     crosextrafonts-carlito \
     pngnq \
+    ack \
     node \
     afterlibsecret
 
@@ -2406,6 +2407,8 @@ afterlibsecret: \
 # Versions
 # ==============================================================
 # start organizing these by the last date they were updated
+# 2016-04-19
+ack-ver            = ack/ack-2.14-single-file
 # 2016-04-18
 pngnq-ver          = pngnq/pngnq-1.1.tar.gz
 # 2016-04-18
@@ -2967,7 +2970,6 @@ srm wipe mosh socat tmux psmisc libusb htop cairo iptraf-ng hwloc: \
 	$(iptraf-ng-ver) \
 	$(hwloc-ver)
 	$(call SOURCEDIR,$@,xf)
-	cd $@/`cat $@/untar.dir`/src; sed -i -e '/"png.h"/ i #include "zlib.h"' rwpng.c
 	cd $@/`cat $@/untar.dir`/; CPPFLAGS="-I/usr/local/include -I/usr/local/include/ncursesw" ./configure --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/; make
 	$(call PKGINSTALL,$@)
@@ -3093,6 +3095,12 @@ Net-SSLeay: $(Net-SSLeay-ver)
 	$(call PKGINSTALL,$@)
 
 # Begin special cases
+
+.PHONY: ack
+ack: $(ack-ver)
+	cd $@; cp $(notdir $(ack-ver)) ack
+	cd $@; sudo /usr/local/bin/install -m 755 -D ack /usr/local/bin
+
 
 .PHONY: acl
 acl: $(acl-ver)
@@ -4509,6 +4517,7 @@ zlib: $(zlib-ver)
 
 .PHONY: wget-all
 wget-all: \
+    $(ack-ver) \
     $(acl-ver) \
     $(apr-util-ver) \
     $(apr-ver) \
@@ -4706,6 +4715,9 @@ wget-all: \
     $(zip-ver) \
     $(zlib-ver) \
     $(util-linux-ng-ver)
+
+$(ack-ver):
+	$(call SOURCEWGET,"ack","http://beyondgrep.com/"$(notdir $(ack-ver)))
 
 $(acl-ver):
 	$(call SOURCEWGET,"acl","http://download.savannah.gnu.org/releases/"$(acl-ver))
