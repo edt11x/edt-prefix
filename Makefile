@@ -2408,6 +2408,9 @@ afterlibsecret: \
 # ==============================================================
 # start organizing these by the last date they were updated
 # 2016-04-19
+# tmux-ver           = tmux/tmux-2.1.tar.gz
+tmux-ver           = tmux/tmux-2.2.tar.gz
+# 2016-04-19
 # gzip-ver           = gzip/gzip-1.6.tar.gz
 gzip-ver           = gzip/gzip-1.7.tar.gz
 # 2016-04-19
@@ -2646,7 +2649,6 @@ tcp_wrappers-ver   = tcp_wrappers/tcp_wrappers_7.6.tar.gz
 Test-Pod-Coverage-ver = Test-Pod-Coverage/Test-Pod-Coverage-1.10.tar.gz
 Test-Pod-ver       = Test-Pod/Test-Pod-1.49.tar.gz
 texinfo-ver        = texinfo/texinfo-5.2.tar.gz
-tmux-ver           = tmux/tmux-2.1.tar.gz
 truecrypt-ver      = truecrypt/truecrypt-7.1a-linux-console-x86.tar.gz
 unrar-ver          = unrar/unrarsrc-5.3.3.tar.gz
 unzip-ver          = unzip/unzip60.tar.gz
@@ -5270,7 +5272,7 @@ $(texinfo-ver):
 	$(call SOURCEWGET,"texinfo","https://ftp.gnu.org/gnu/texinfo/texinfo-5.2.tar.gz")
 
 $(tmux-ver):
-	$(call SOURCEWGET,"tmux","https://github.com/tmux/tmux/releases/download/2.1/"$(notdir $(tmux-ver)))
+	$(call SOURCEWGET,"tmux","https://github.com/tmux/tmux/releases/download/2.2/"$(notdir $(tmux-ver)))
 
 $(truecrypt-ver):
 	$(call SOURCEWGET,"truecrypt","https://www.grc.com/misc/"$(truecrypt-ver))
