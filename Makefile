@@ -2408,6 +2408,9 @@ afterlibsecret: \
 # ==============================================================
 # start organizing these by the last date they were updated
 # 2016-04-19
+# gzip-ver           = gzip/gzip-1.6.tar.gz
+gzip-ver           = gzip/gzip-1.7.tar.gz
+# 2016-04-19
 ack-ver            = ack/ack-2.14-single-file
 # 2016-04-18
 pngnq-ver          = pngnq/pngnq-1.1.tar.gz
@@ -2544,7 +2547,6 @@ gnupg-ver          = gnupg/gnupg-2.0.29.tar.bz2
 gobject-introspection-ver = gobject-introspection/gobject-introspection-1.46.0.tar.xz
 go-ver             = go/go1.4.2.src.tar.gz
 guile-ver          = guile/guile-2.0.11.tar.xz
-gzip-ver           = gzip/gzip-1.6.tar.gz
 harfbuzz-ver       = harfbuzz/harfbuzz-0.9.38.tar.bz2
 HTML-Parser-ver    = HTML-Parser/HTML-Parser-3.71.tar.gz
 HTML-Tagset-ver    = HTML-Tagset/HTML-Tagset-3.20.tar.gz
