@@ -2367,6 +2367,9 @@ afterpatch: \
     tcc \
     jpeg \
     lxsplit \
+    crosextrafonts \
+    crosextrafonts-carlito \
+    pngnq \
     node \
     afterlibsecret
 
@@ -2403,6 +2406,15 @@ afterlibsecret: \
 # Versions
 # ==============================================================
 # start organizing these by the last date they were updated
+# 2016-04-18
+pngnq-ver          = pngnq/pngnq-1.1.tar.gz
+# 2016-04-18
+crosextrafonts-carlito-ver = crosextrafonts-carlito/crosextrafonts-carlito-20130920.tar.gz
+# 2016-04-18
+crosextrafonts-ver = crosextrafonts/crosextrafonts-20130214.tar.gz
+# 2016-04-18
+# freetype-ver       = freetype/freetype-2.6.1.tar.bz2
+freetype-ver       = freetype/freetype-2.6.3.tar.bz2
 # 2016-04-08
 # grep-ver           = grep/grep-2.21.tar.xz
 grep-ver           = grep/grep-2.24.tar.xz
@@ -2514,7 +2526,6 @@ file-ver           = file/file-5.17.tar.gz
 findutils-ver      = findutils/findutils-4.4.2.tar.gz
 flex-ver           = flex/flex-2.5.39.tar.gz
 fontconfig-ver     = fontconfig/fontconfig-2.11.1.tar.bz2
-freetype-ver       = freetype/freetype-2.6.1.tar.bz2
 fuse-ver           = fuse/fuse-2.9.4.tar.gz
 gawk-ver           = gawk/gawk-4.1.1.tar.gz
 gcc-ver            = gcc/gcc-4.7.3.tar.bz2
@@ -2932,9 +2943,31 @@ par2cmdline: $(par2cmdline-ver)
 #
 # we should have a good version of tar that automatically
 # detects file type
-.PHONY: mosh srm wipe socat tmux psmisc libusb htop cairo iptraf-ng hwloc
-srm wipe mosh socat tmux psmisc libusb htop cairo iptraf-ng hwloc node: $(srm-ver) $(libusb-ver) $(htop-ver) $(mosh-ver) $(socat-ver) $(tmux-ver) $(psmisc-ver) $(wipe-ver) $(cairo-ver) $(iptraf-ng-ver) $(hwloc-ver)
+.PHONY: mosh
+.PHONY: srm
+.PHONY: wipe
+.PHONY: socat
+.PHONY: tmux
+.PHONY: psmisc
+.PHONY: libusb
+.PHONY: htop
+.PHONY: cairo
+.PHONY: iptraf-ng
+.PHONY: hwloc
+srm wipe mosh socat tmux psmisc libusb htop cairo iptraf-ng hwloc: \
+	$(srm-ver) \
+	$(libusb-ver) \
+	$(htop-ver) \
+	$(mosh-ver) \
+	$(socat-ver) \
+	$(tmux-ver) \
+	$(psmisc-ver) \
+	$(wipe-ver) \
+	$(cairo-ver) \
+	$(iptraf-ng-ver) \
+	$(hwloc-ver)
 	$(call SOURCEDIR,$@,xf)
+	cd $@/`cat $@/untar.dir`/src; sed -i -e '/"png.h"/ i #include "zlib.h"' rwpng.c
 	cd $@/`cat $@/untar.dir`/; CPPFLAGS="-I/usr/local/include -I/usr/local/include/ncursesw" ./configure --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/; make
 	$(call PKGINSTALL,$@)
@@ -3216,6 +3249,14 @@ cmake: $(cmake-ver)
 	cd $@/`cat $@/untar.dir`/; make
 	-cd $@/`cat $@/untar.dir`/; bin/ctest -j2 -O ../cmake-test.log
 	$(call PKGINSTALL,$@)
+
+.PHONY: crosextrafonts
+.PHONY: crosextrafonts-carlito
+crosextrafonts-carlito crosextrafonts: $(crosextrafonts-ver) $(crosextrafonts-carlito-ver)
+	$(call SOURCEDIR,$@,xf)
+	cd $@/`cat $@/untar.dir`/; sudo /usr/local/bin/install -d /usr/local/share/fonts/truetype
+	cd $@/`cat $@/untar.dir`/; sudo /usr/local/bin/install -m 644 -D *.ttf /usr/local/share/fonts/truetype
+	cd $@/`cat $@/untar.dir`/; sudo /usr/local/bin/fc-cache -f -v /usr/local/share/fonts
 
 .PHONY: curl
 curl: $(curl-ver)
@@ -4105,6 +4146,16 @@ patches/pygobject-2.28.6-fixes-1.patch:
 	-mkdir -p patches
 	echo "$$PYGOBJECT_PATCH" >> $@
 
+.PHONY: pngnq
+pngnq: $(pngnq-ver)
+	$(call SOURCEDIR,$@,xf)
+	cd $@/`cat $@/untar.dir`/src; sed -i -e '/"png.h"/ i #include "zlib.h"' rwpng.c
+	cd $@/`cat $@/untar.dir`/; CPPFLAGS="-I/usr/local/include -I/usr/local/include/ncursesw" ./configure --prefix=/usr/local
+	cd $@/`cat $@/untar.dir`/; make
+	$(call PKGINSTALL,$@)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
+
 # pygobject does not have a working test suite
 .PHONY: pygobject
 pygobject : \
@@ -4481,6 +4532,8 @@ wget-all: \
     $(compiler-rt-ver) \
     $(coreutils-ver) \
     $(cppcheck-ver) \
+    $(crosextrafonts-ver) \
+    $(crosextrafonts-carlito-ver) \
     $(curl-ver) \
     $(daq-ver) \
     $(db-ver) \
@@ -4598,6 +4651,7 @@ wget-all: \
     $(pinentry-ver) \
     $(pixman-ver) \
     $(pkg-config-ver) \
+    $(pngnq-ver) \
     $(Pod-Coverage-ver) \
     $(popt-ver) \
     $(protobuf-ver) \
@@ -4724,6 +4778,12 @@ $(coreutils-ver):
 
 $(cppcheck-ver):
 	$(call SOURCEWGET,"cppcheck","http://downloads.sourceforge.net/project/cppcheck/cppcheck/1.72/"$(notdir $(cppcheck-ver)))
+
+$(crosextrafonts-ver):
+	$(call SOURCEWGET,"crosextrafonts","http://commondatastorage.googleapis.com/chromeos-localmirror/distfiles/"$(notdir $(crosextrafonts-ver)))
+
+$(crosextrafonts-carlito-ver):
+	$(call SOURCEWGET,"crosextrafonts-carlito","http://commondatastorage.googleapis.com/chromeos-localmirror/distfiles/"$(notdir $(crosextrafonts-carlito-ver)))
 
 $(daq-ver):
 	$(call SOURCEWGET,"daq","https://www.snort.org/downloads/snort/"$(notdir $(daq-ver)))
@@ -5076,6 +5136,9 @@ $(pixman-ver):
 
 $(pkg-config-ver):
 	$(call SOURCEWGET,"pkg-config","http://pkgconfig.freedesktop.org/releases/"$(notdir $(pkg-config-ver)))
+
+$(pngnq-ver):
+	$(call SOURCEWGET,"pngnq","http://downloads.sourceforge.net/pngnq/1.1/"$(notdir $(pngnq-ver)))
 
 $(Pod-Coverage-ver):
 	$(call SOURCEWGET,"Pod-Coverage","http://search.cpan.org/CPAN/authors/id/R/RC/RCLAMP/"$(notdir $(Pod-Coverage-ver)))
