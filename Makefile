@@ -2371,6 +2371,7 @@ afterpatch: \
     crosextrafonts-carlito \
     pngnq \
     ack \
+    mercurial \
     node \
     afterlibsecret
 
@@ -2407,6 +2408,8 @@ afterlibsecret: \
 # Versions
 # ==============================================================
 # start organizing these by the last date they were updated
+# 2016-04-20
+mercurial-ver      = mercurial/mercurial-3.7.3.tar.gz
 # 2016-04-19
 # tmux-ver           = tmux/tmux-2.1.tar.gz
 tmux-ver           = tmux/tmux-2.2.tar.gz
@@ -4001,6 +4004,12 @@ llvm: $(llvm-ver) $(clang-ver) $(compiler-rt-ver) patches/compiler-rt.patch
 	cd $@/`cat $@/untar.dir`/; make check || make test
 	$(call PKGINSTALL,$@)
 
+.PHONY: mercurial
+mercurial: $(mercurial-ver)
+	$(call SOURCEDIR,$@,xfz)
+	cd $@/`cat $@/untar.dir`/; make build
+	cd $@/`cat $@/untar.dir`/; sudo make PREFIX=/usr/local install-bin
+
 .PHONY: mpc
 mpc: $(mpc-ver)
 	$(call SOURCEDIR,$@,xfz)
@@ -4640,6 +4649,7 @@ wget-all: \
     $(lzo-ver) \
     $(m4-ver) \
     $(make-ver) \
+    $(mercurial-ver) \
     $(mosh-ver) \
     $(mpc-ver) \
     $(mpfr-ver) \
@@ -5083,6 +5093,9 @@ $(lzo-ver):
 
 $(m4-ver):
 	$(call SOURCEWGET,"m4","http://ftp.gnu.org/gnu/m4/m4-1.4.17.tar.gz")
+
+$(mercurial-ver):
+	$(call SOURCEWGET,"mercurial","https://www.mercurial-scm.org/release/"$(notdir $(mercurial-ver)))
 
 $(mpc-ver):
 	$(call SOURCEWGET,"mpc","ftp://ftp.gnu.org/gnu/"$(mpc-ver))
