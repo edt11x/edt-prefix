@@ -2794,13 +2794,8 @@ gawk xz tar: $(xz-ver) $(gawk-ver) $(tar-ver)
 
 # Standard build in the source directory
 #
-# We need to build gettext, then iconv, then gettext again
-# The second time we build it, the tests will work, so
-# we check for the presence of gettext in /usr/local/bin
-# before we try to run the tests
-#
-.PHONY: scrypt gettext
-gettext scrypt: $(gettext-ver) $(scrypt-ver)
+.PHONY: scrypt
+scrypt: $(scrypt-ver)
 	$(call SOURCEDIR,$@,xfz)
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/; make
@@ -3532,6 +3527,24 @@ gcc48:
 	cd $@/$@-build/; make
 	cd $@/$@-build/; make check || make test
 	$(call PKGINSTALLBUILD,$@)
+
+# 
+# Linux from scratch lets us know 9 tests will fail and do under some conditions
+#
+# We need to build gettext, then iconv, then gettext again
+# The second time we build it, the tests will work, so
+# we check for the presence of gettext in /usr/local/bin
+# before we try to run the tests
+#
+.PHONY: gettext
+gettext: $(gettext-ver)
+	$(call SOURCEDIR,$@,xfz)
+	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
+	cd $@/`cat $@/untar.dir`/; make
+	-cd $@/`cat $@/untar.dir`/; $(PHASE1_NOCHECK) make check || $(PHASE1_NOCHECK) make test
+	$(call PKGINSTALL,$@)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
 
 .PHONY: go
 go: $(go-ver)
