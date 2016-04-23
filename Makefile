@@ -2393,6 +2393,7 @@ afterlibsecret: \
     snort \
     mutt \
     qt-everywhere-opensource-src \
+    gcc-5.3 \
     e2fsprogs \
     netpbm \
     vera++ \
@@ -2408,6 +2409,8 @@ afterlibsecret: \
 # Versions
 # ==============================================================
 # start organizing these by the last date they were updated
+# 2016-04-22
+gcc-5.3-ver        = gcc-5.3/gcc-5.3.0.tar.bz2
 # 2016-04-20
 mercurial-ver      = mercurial/mercurial-3.7.3.tar.gz
 # 2016-04-19
@@ -3509,24 +3512,24 @@ gcc: $(gcc-ver)
 	$(call CPLIB,libstdc*)
 	@echo "======= Build of $@ Successful ======="
 
-.PHONY: gcc48
-gcc48:
+.PHONY: gcc-5.3
+gcc-5.3: $(gcc-5.3-ver)
 	$(call SOURCEDIR,$@,xf)
-	# use this for gcc 4.8 cd $@/`cat $@/untar.dir`/gcc; patch < ../../../patches/gcc.Makefile.in.patch
-	cd $@/`cat $@/untar.dir`/gcc; patch < ../../../patches/gcc.Makefile.in.patch
-	cd $@/`cat $@/untar.dir`; tar xf ../../mpfr/mpfr*.tar*
-	cd $@/`cat $@/untar.dir`; ln -sf mpfr-* mpfr
-	cd $@/`cat $@/untar.dir`; tar xf ../../gmp/gmp*.tar*
-	cd $@/`cat $@/untar.dir`; ln -sf gmp-* gmp
-	cd $@/`cat $@/untar.dir`; tar xf ../../mpc/mpc*.tar*
-	cd $@/`cat $@/untar.dir`; ln -sf mpc-* mpc
 	cd $@; mkdir $@-build
 	cd $@/$@-build/; readlink -f . | grep $@-build
-	cd $@/$@-build/; ../`cat ../untar.dir`/configure --prefix=/usr/local \
-                    --enable-languages=c,c++,fortran,java,objc,obj-c++ 
+	cd $@/$@-build/; ../`cat ../untar.dir`/configure \
+		    --enable-shared \
+		    --disable-multilib \
+		    --prefix=/usr/local \
+                    --enable-languages=$(GCC_LANGS) \
+		    --with-ecj-jar=/usr/local/share/java/ecj.jar
 	cd $@/$@-build/; make
-	cd $@/$@-build/; make check || make test
+	-cd $@/$@-build/; C_INCLUDE_PATH=/usr/local/include LIBRARY_PATH=/usr/local/lib make check
+	test -e /usr/local/bin/cc || /usr/bin/sudo ln -sf /usr/local/bin/gcc /usr/local/bin/cc
 	$(call PKGINSTALLBUILD,$@)
+	$(call CPLIB,libssp*)
+	$(call CPLIB,libstdc*)
+	@echo "======= Build of $@ Successful ======="
 
 # 
 # Linux from scratch lets us know 9 tests will fail and do under some conditions
@@ -4592,6 +4595,7 @@ wget-all: \
     $(fuse-ver) \
     $(gawk-ver) \
     $(gcc-ver) \
+    $(gcc-5.3-ver) \
     $(gc-ver) \
     $(gdbm-ver) \
     $(gdb-ver) \
@@ -4895,6 +4899,9 @@ $(gc-ver):
 
 $(gcc-ver):
 	$(call SOURCEWGET,"gcc","http://ftp.gnu.org/gnu/gcc/"$(basename $(basename $(notdir $(gcc-ver))))"/"$(notdir $(gcc-ver)))
+
+$(gcc-5.3-ver):
+	$(call SOURCEWGET,"gcc-5.3","http://ftp.gnu.org/gnu/gcc/"$(basename $(basename $(notdir $(gcc-5.3-ver))))"/"$(notdir $(gcc-5.3-ver)))
 
 $(gdb-ver):
 	$(call SOURCEWGET,"gdb","https://ftp.gnu.org/gnu/"$(gdb-ver))
