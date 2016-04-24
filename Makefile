@@ -4067,7 +4067,7 @@ ncurses: $(ncurses-ver)
 	$(call SOURCEDIR,$@,xfz)
 	cd $@; mkdir $@-build
 	cd $@/$@-build/; readlink -f . | grep $@-build
-	cd $@/$@-build/; ../`cat ../untar.dir`/configure --prefix=/usr/local --with-shared --enable-widec
+	cd $@/$@-build/; CPPFLAGS="-P" ../`cat ../untar.dir`/configure --prefix=/usr/local --with-shared --enable-widec
 	cd $@/$@-build/; make
 	cd $@/$@-build/; make check || make test
 	$(call PKGINSTALLBUILD,$@)
