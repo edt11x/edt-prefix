@@ -2274,7 +2274,7 @@ aftervim: \
     curl \
     wipe \
     srm \
-    util-linux-ng \
+    util-linux \
     afterlibxml2
 
 .PHONY: afterlibxml2
@@ -2409,6 +2409,13 @@ afterlibsecret: \
 # Versions
 # ==============================================================
 # start organizing these by the last date they were updated
+# openssl-ver        = openssl/openssl-1.0.2e.tar.gz
+# 2016-03-11
+# openssl-ver        = openssl/openssl-1.0.2g.tar.gz
+# 2016-05-06
+openssl-ver        = openssl/openssl-1.0.2h.tar.gz
+# 2016-05-06
+util-linux-ver     = util-linux/util-linux-2.28.tar.gz
 # 2016-04-22
 gcc-5.3-ver        = gcc-5.3/gcc-5.3.0.tar.bz2
 # 2016-04-20
@@ -2447,9 +2454,6 @@ curl-ver           = curl/curl-7.48.0.tar.bz2
 dbus-ver           = dbus/dbus-1.10.6.tar.gz
 # 2016-03-12
 qt-everywhere-opensource-src-ver            = qt-everywhere-opensource-src/qt-everywhere-opensource-src-5.5.1.tar.xz
-# openssl-ver        = openssl/openssl-1.0.2e.tar.gz
-# 2016-03-11
-openssl-ver        = openssl/openssl-1.0.2g.tar.gz
 # 2016-02-27
 cmake-ver          = cmake/cmake-3.4.3.tar.gz
 # 2016-02-12
@@ -2660,7 +2664,6 @@ unrar-ver          = unrar/unrarsrc-5.3.3.tar.gz
 unzip-ver          = unzip/unzip60.tar.gz
 URI-ver            = URI/URI-1.69.tar.gz
 util-linux-ng-ver  = util-linux-ng/util-linux-ng-2.18.tar.xz
-util-linux-ver     = util-linux/util-linux-2.24.tar.gz
 vala-ver           = vala/vala-0.28.1.tar.xz
 vim-ver            = vim/vim-7.4.tar.bz2
 wget-ver           = wget/wget-1.16.3.tar.xz
@@ -4011,7 +4014,7 @@ llvm: $(llvm-ver) $(clang-ver) $(compiler-rt-ver) patches/compiler-rt.patch
 	cd $@/`cat $@/untar.dir`/; mv tools/clang-3.4 tools/clang
 	cd $@/`cat $@/untar.dir`/; mv projects/compiler-rt-3.4 projects/compiler-rt
 	cd $@/`cat $@/untar.dir`/projects/compiler-rt/lib/sanitizer_common; patch < ../../../../../../patches/compiler-rt.patch
-	cd $@/`cat $@/untar.dir`/; CC=gcc CXX=g++ ./configure --prefix=/usr/local \
+	cd $@/`cat $@/untar.dir`/; CC=gcc CXX=g++ CPPFLAGS="-I/usr/local/include -I/usr/include" LDFLAGS="-L/usr/local/lib" ./configure --prefix=/usr/local \
 	    --sysconfdir=/usr/local/etc --enable-libffi --enable-optimized --enable-shared \
 	    --enable-targets=all \
 	    --with-c-include-dirs="/usr/local/include:/usr/include" --with-gcc-toolchain=/usr/local
@@ -4451,14 +4454,35 @@ unzip: $(unzip-ver)
 	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo make prefix=/usr/local MANDIR=/usr/local/man/man1 -f unix/Makefile install
 	@echo "======= Build of $@ Successful ======="
 
+# From http://www.linuxfromscratch.org/lfs/view/development/chapter06/util-linux.html
+# Warning Running the test suite as the root user can be harmful to your system.
 .PHONY: util-linux
 util-linux: $(util-linux-ver)
 	$(call SOURCEDIR,$@,xf)
-	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --enable-arch --enable-partx --enable-write
+	cd $@/`cat $@/untar.dir`/; CPPFLAGS="-I/usr/local/include -I/usr/local/include/ncursesw" \
+	    ./configure \
+	    ADJTIME_PATH=/usr/local/var/lib/hwclock/adjtime   \
+	    --prefix=/usr/local --enable-arch --enable-partx --enable-write \
+	    --docdir=/usr/local/share/doc/util-linux-2.28 \
+	    --disable-chfn-chsh  \
+	    --disable-login      \
+	    --disable-nologin    \
+	    --disable-su         \
+	    --disable-setpriv    \
+	    --disable-runuser    \
+	    --disable-pylibmount \
+	    --disable-static     \
+	    --without-systemd    \
+	    --without-systemdsystemunitdir
 	# cd $@/`cat $@/untar.dir`/; make CFLAGS=-DO_CLOEXEC=0
-	cd $@/`cat $@/untar.dir`/; make
+	cd $@/`cat $@/untar.dir`/; make CPPFLAGS="-I/usr/local/include -I/usr/local/include/ncursesw"
 	$(call PKGINSTALL,$@)
+	$(call CPLIB,libuuid*)
 
+# From https://en.wikipedia.org/wiki/Util-linux
+# A fork, util-linux-ng—with ng meaning "next generation"—was created when
+# development stalled,[3] but as of January 2011 has been renamed back to
+# util-linux, and is the official version of the package.
 .PHONY: util-linux-ng
 util-linux-ng: $(util-linux-ng-ver)
 	$(call SOURCEDIR,$@,xf)
@@ -5311,7 +5335,7 @@ $(truecrypt-ver):
 	$(call SOURCEWGET,"truecrypt","https://www.grc.com/misc/"$(truecrypt-ver))
 
 $(util-linux-ver):
-	$(call SOURCEWGET,"util-linux","ftp://ftp.kernel.org/pub/linux/utils/util-linux/v2.24/util-linux-2.24.tar.gz")
+	$(call SOURCEWGET,"util-linux","https://www.kernel.org/pub/linux/utils/util-linux/v2.28/"$(notdir $(util-linux-ver)))
 
 $(util-linux-ng-ver):
 	$(call SOURCEWGET,"util-linux-ng","ftp://ftp.kernel.org/pub/linux/utils/util-linux/v2.18/util-linux-ng-2.18.tar.xz")
