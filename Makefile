@@ -2274,7 +2274,7 @@ aftervim: \
     curl \
     wipe \
     srm \
-    util-linux \
+    util-linux-ng \
     afterlibxml2
 
 .PHONY: afterlibxml2
@@ -2925,7 +2925,6 @@ jnettop libxml2 check file protobuf libtasn1 gnupg popt sharutils pixman libxslt
     $(sharutils-ver) \
     $(tcc-ver)
 	$(call SOURCEDIR,$@,xf)
-	# cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local LDFLAGS="-lpthreads"
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/; make
 	cd $@/`cat $@/untar.dir`/; make check || make test
@@ -3676,7 +3675,6 @@ include-what-you-use: $(iwyu-ver)
 .PHONY: libarchive
 libarchive : $(libarchive-ver)
 	$(call SOURCEDIR,$@,xf)
-	# cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local LDFLAGS="-lpthreads"
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/; make
 	cd $@/`cat $@/untar.dir`/; make check || make test
@@ -3698,7 +3696,6 @@ libatomic_ops: $(libatomic_ops-ver)
 .PHONY: libevent
 libevent: $(libevent-ver)
 	$(call SOURCEDIR,$@,xf)
-	# cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local LDFLAGS="-lpthreads"
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/; make
 	cd $@/`cat $@/untar.dir`/; make check || make test
@@ -3721,7 +3718,6 @@ libiconv: $(libiconv-ver)
 libsecret : \
     $(libsecret-ver)
 	$(call SOURCEDIR,$@,xf)
-	# cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local LDFLAGS="-lpthreads"
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --disable-manpages
 	cd $@/`cat $@/untar.dir`/; make
 	-cd $@/`cat $@/untar.dir`/; make check || make test
@@ -3774,7 +3770,6 @@ lua: $(lua-ver) patches/lua-5.3.2-shared_library-1.patch
 lzo: \
     $(lzo-ver)
 	$(call SOURCEDIR,$@,xf)
-	# cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local LDFLAGS="-lpthreads"
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --enable-shared=yes
 	cd $@/`cat $@/untar.dir`/; make
 	cd $@/`cat $@/untar.dir`/; make check || make test
@@ -3809,7 +3804,7 @@ netpbm: $(netpbm-ver)
 .PHONY: node
 node: $(node-ver)
 	$(call SOURCEDIR,$@,xf)
-	cd $@/`cat $@/untar.dir`/; CC=clang CXX=clang++ CPPFLAGS="-I/usr/local/include -I/usr/local/include/ncursesw" ./configure --prefix=/usr/local --without-snapshot
+	cd $@/`cat $@/untar.dir`/; CC=clang CXX=clang++ CPPFLAGS="-I/usr/local/include -I/usr/local/include/ncursesw" LDFLAGS="-L/usr/local/lib -lpth" ./configure --prefix=/usr/local --without-snapshot
 	cd $@/`cat $@/untar.dir`/; make
 	$(call PKGINSTALL,$@)
 	$(call CPLIB,lib$@*)
@@ -4095,7 +4090,6 @@ ncurses: $(ncurses-ver)
 nettle: \
     $(nettle-ver)
 	$(call SOURCEDIR,$@,xf)
-	# cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local LDFLAGS="-lpthreads"
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --libdir=/usr/local/lib
 	cd $@/`cat $@/untar.dir`/; make
 	cd $@/`cat $@/untar.dir`/; make check || make test
@@ -4148,7 +4142,6 @@ openvpn: $(openvpn-ver)
 p11-kit : \
     $(p11-kit-ver)
 	$(call SOURCEDIR,$@,xf)
-	# cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local LDFLAGS="-lpthreads"
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --without-trust-paths
 	cd $@/`cat $@/untar.dir`/; make
 	-cd $@/`cat $@/untar.dir`/; make check || make test
@@ -4462,15 +4455,16 @@ util-linux: $(util-linux-ver)
 	cd $@/`cat $@/untar.dir`/; CPPFLAGS="-I/usr/local/include -I/usr/local/include/ncursesw" \
 	    ./configure \
 	    ADJTIME_PATH=/usr/local/var/lib/hwclock/adjtime   \
-	    --prefix=/usr/local --enable-arch --enable-partx --enable-write \
+	    --prefix=/usr/local --enable-arch --disable-partx --enable-write \
 	    --docdir=/usr/local/share/doc/util-linux-2.28 \
 	    --disable-chfn-chsh  \
 	    --disable-login      \
+	    --enable-mount       \
 	    --disable-nologin    \
 	    --disable-su         \
 	    --disable-setpriv    \
 	    --disable-runuser    \
-	    --disable-pylibmount \
+	    --enable-pylibmount  \
 	    --disable-static     \
 	    --without-systemd    \
 	    --without-systemdsystemunitdir
@@ -4497,7 +4491,6 @@ util-linux-ng: $(util-linux-ng-ver)
 vala : \
     $(vala-ver)
 	$(call SOURCEDIR,$@,xf)
-	# cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local LDFLAGS="-lpthreads"
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/; make
 	-cd $@/`cat $@/untar.dir`/; make check || make test
@@ -4510,7 +4503,6 @@ vera++ : \
     $(tcc-ver) \
     $(vera++-ver)
 	$(call SOURCEDIR,$@,xf)
-	# cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local LDFLAGS="-lpthreads"
 	cd $@/`cat $@/untar.dir`/; cmake -G "Unix Makefiles" -DLLVM_PATH="/usr/local/lib" -DVERA_USE_SYSTEM_LUA=OFF
 	cd $@/`cat $@/untar.dir`/; make
 	cd $@/`cat $@/untar.dir`/; make check || make test
