@@ -4856,7 +4856,7 @@ $(daq-ver):
 	$(call SOURCEWGET,"daq","https://www.snort.org/downloads/snort/"$(notdir $(daq-ver)))
 
 $(curl-ver):
-	$(call SOURCEWGET,"curl","http://curl.haxx.se/download/curl-7.41.0.tar.bz2")
+	$(call SOURCEWGET,"curl","http://curl.haxx.se/download/"$(notdir $(curl-ver)))
 
 $(db-ver):
 	$(call SOURCEWGET,"db","http://download.oracle.com/otn/berkeley-"$(db-ver))
