@@ -4468,7 +4468,6 @@ util-linux: $(util-linux-ver)
 	    --disable-static     \
 	    --without-systemd    \
 	    --without-systemdsystemunitdir
-	# cd $@/`cat $@/untar.dir`/; make CFLAGS=-DO_CLOEXEC=0
 	cd $@/`cat $@/untar.dir`/; make CPPFLAGS="-I/usr/local/include -I/usr/local/include/ncursesw"
 	$(call PKGINSTALL,$@)
 	$(call CPLIB,libuuid*)
@@ -4481,7 +4480,6 @@ util-linux: $(util-linux-ver)
 util-linux-ng: $(util-linux-ng-ver)
 	$(call SOURCEDIR,$@,xf)
 	cd $@/`cat $@/untar.dir`/; CPPFLAGS="-I/usr/local/include -I/usr/local/include/ncursesw" ./configure --prefix=/usr/local --enable-arch --enable-partx --enable-write
-	# cd $@/`cat $@/untar.dir`/; make CFLAGS=-DO_CLOEXEC=0
 	cd $@/`cat $@/untar.dir`/; make CPPFLAGS="-I/usr/local/include -I/usr/local/include/ncursesw"
 	$(call PKGINSTALL,$@)
 	$(call CPLIB,libuuid*)
@@ -4848,7 +4846,7 @@ $(daq-ver):
 	$(call SOURCEWGET,"daq","https://www.snort.org/downloads/snort/"$(notdir $(daq-ver)))
 
 $(curl-ver):
-	$(call SOURCEWGET,"curl","http://curl.haxx.se/download/curl-7.41.0.tar.bz2")
+	$(call SOURCEWGET,"curl","http://curl.haxx.se/download/"$(notdir $(curl-ver)))
 
 $(db-ver):
 	$(call SOURCEWGET,"db","http://download.oracle.com/otn/berkeley-"$(db-ver))
