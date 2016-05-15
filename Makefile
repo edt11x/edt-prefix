@@ -2925,7 +2925,6 @@ jnettop libxml2 check file protobuf libtasn1 gnupg popt sharutils pixman libxslt
     $(sharutils-ver) \
     $(tcc-ver)
 	$(call SOURCEDIR,$@,xf)
-	# cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local LDFLAGS="-lpthreads"
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/; make
 	cd $@/`cat $@/untar.dir`/; make check || make test
@@ -3676,7 +3675,6 @@ include-what-you-use: $(iwyu-ver)
 .PHONY: libarchive
 libarchive : $(libarchive-ver)
 	$(call SOURCEDIR,$@,xf)
-	# cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local LDFLAGS="-lpthreads"
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/; make
 	cd $@/`cat $@/untar.dir`/; make check || make test
@@ -3698,7 +3696,6 @@ libatomic_ops: $(libatomic_ops-ver)
 .PHONY: libevent
 libevent: $(libevent-ver)
 	$(call SOURCEDIR,$@,xf)
-	# cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local LDFLAGS="-lpthreads"
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/; make
 	cd $@/`cat $@/untar.dir`/; make check || make test
@@ -3721,7 +3718,6 @@ libiconv: $(libiconv-ver)
 libsecret : \
     $(libsecret-ver)
 	$(call SOURCEDIR,$@,xf)
-	# cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local LDFLAGS="-lpthreads"
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --disable-manpages
 	cd $@/`cat $@/untar.dir`/; make
 	-cd $@/`cat $@/untar.dir`/; make check || make test
@@ -3774,7 +3770,6 @@ lua: $(lua-ver) patches/lua-5.3.2-shared_library-1.patch
 lzo: \
     $(lzo-ver)
 	$(call SOURCEDIR,$@,xf)
-	# cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local LDFLAGS="-lpthreads"
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --enable-shared=yes
 	cd $@/`cat $@/untar.dir`/; make
 	cd $@/`cat $@/untar.dir`/; make check || make test
@@ -4095,7 +4090,6 @@ ncurses: $(ncurses-ver)
 nettle: \
     $(nettle-ver)
 	$(call SOURCEDIR,$@,xf)
-	# cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local LDFLAGS="-lpthreads"
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --libdir=/usr/local/lib
 	cd $@/`cat $@/untar.dir`/; make
 	cd $@/`cat $@/untar.dir`/; make check || make test
@@ -4148,7 +4142,6 @@ openvpn: $(openvpn-ver)
 p11-kit : \
     $(p11-kit-ver)
 	$(call SOURCEDIR,$@,xf)
-	# cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local LDFLAGS="-lpthreads"
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --without-trust-paths
 	cd $@/`cat $@/untar.dir`/; make
 	-cd $@/`cat $@/untar.dir`/; make check || make test
@@ -4474,7 +4467,6 @@ util-linux: $(util-linux-ver)
 	    --disable-static     \
 	    --without-systemd    \
 	    --without-systemdsystemunitdir
-	# cd $@/`cat $@/untar.dir`/; make CFLAGS=-DO_CLOEXEC=0
 	cd $@/`cat $@/untar.dir`/; make CPPFLAGS="-I/usr/local/include -I/usr/local/include/ncursesw"
 	$(call PKGINSTALL,$@)
 	$(call CPLIB,libuuid*)
@@ -4487,7 +4479,6 @@ util-linux: $(util-linux-ver)
 util-linux-ng: $(util-linux-ng-ver)
 	$(call SOURCEDIR,$@,xf)
 	cd $@/`cat $@/untar.dir`/; CPPFLAGS="-I/usr/local/include -I/usr/local/include/ncursesw" ./configure --prefix=/usr/local --enable-arch --enable-partx --enable-write
-	# cd $@/`cat $@/untar.dir`/; make CFLAGS=-DO_CLOEXEC=0
 	cd $@/`cat $@/untar.dir`/; make CPPFLAGS="-I/usr/local/include -I/usr/local/include/ncursesw"
 	$(call PKGINSTALL,$@)
 	$(call CPLIB,libuuid*)
@@ -4497,7 +4488,6 @@ util-linux-ng: $(util-linux-ng-ver)
 vala : \
     $(vala-ver)
 	$(call SOURCEDIR,$@,xf)
-	# cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local LDFLAGS="-lpthreads"
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/; make
 	-cd $@/`cat $@/untar.dir`/; make check || make test
@@ -4510,7 +4500,6 @@ vera++ : \
     $(tcc-ver) \
     $(vera++-ver)
 	$(call SOURCEDIR,$@,xf)
-	# cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local LDFLAGS="-lpthreads"
 	cd $@/`cat $@/untar.dir`/; cmake -G "Unix Makefiles" -DLLVM_PATH="/usr/local/lib" -DVERA_USE_SYSTEM_LUA=OFF
 	cd $@/`cat $@/untar.dir`/; make
 	cd $@/`cat $@/untar.dir`/; make check || make test
