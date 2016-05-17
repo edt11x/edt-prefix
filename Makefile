@@ -2274,7 +2274,7 @@ aftervim: \
     curl \
     wipe \
     srm \
-    util-linux \
+    util-linux-ng \
     afterlibxml2
 
 .PHONY: afterlibxml2
@@ -3848,7 +3848,7 @@ netpbm: $(netpbm-ver)
 .PHONY: node
 node: $(node-ver)
 	$(call SOURCEDIR,$@,xf)
-	cd $@/`cat $@/untar.dir`/; CC=clang CXX=clang++ CPPFLAGS="-I/usr/local/include -I/usr/local/include/ncursesw" ./configure --prefix=/usr/local --without-snapshot
+	cd $@/`cat $@/untar.dir`/; CC=clang CXX=clang++ CPPFLAGS="-I/usr/local/include -I/usr/local/include/ncursesw" LDFLAGS="-L/usr/local/lib -lpth" ./configure --prefix=/usr/local --without-snapshot
 	cd $@/`cat $@/untar.dir`/; make
 	$(call PKGINSTALL,$@)
 	$(call CPLIB,lib$@*)
@@ -4507,15 +4507,16 @@ util-linux: $(util-linux-ver)
 	cd $@/`cat $@/untar.dir`/; CPPFLAGS="-I/usr/local/include -I/usr/local/include/ncursesw" \
 	    ./configure \
 	    ADJTIME_PATH=/usr/local/var/lib/hwclock/adjtime   \
-	    --prefix=/usr/local --enable-arch --enable-partx --enable-write \
+	    --prefix=/usr/local --enable-arch --disable-partx --enable-write \
 	    --docdir=/usr/local/share/doc/util-linux-2.28 \
 	    --disable-chfn-chsh  \
 	    --disable-login      \
+	    --enable-mount       \
 	    --disable-nologin    \
 	    --disable-su         \
 	    --disable-setpriv    \
 	    --disable-runuser    \
-	    --disable-pylibmount \
+	    --enable-pylibmount  \
 	    --disable-static     \
 	    --without-systemd    \
 	    --without-systemdsystemunitdir
