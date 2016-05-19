@@ -2376,6 +2376,7 @@ afterpatch: \
     ImageMagick \
     valgrind \
     jq \
+    gnuplot \
     afterlibsecret
 
 # Problem children
@@ -2411,6 +2412,8 @@ afterlibsecret: \
 # ==============================================================
 # Versions
 # ==============================================================
+# 2016-05-18
+gnuplot-ver        = gnuplot/gnuplot-5.0.3.tar.gz
 # 2016-05-17
 # ruby-ver           = ruby/ruby-2.3.0.tar.xz
 ruby-ver           = ruby/ruby-2.3.1.tar.xz
@@ -3572,6 +3575,18 @@ go: $(go-ver)
 	cd $@; sudo cp -r go /usr/local/.
 	cd /usr/local/go/src; sudo ./all.bash
 
+.PHONY: gnuplot
+gnuplot : \
+    $(gnuplot-ver)
+	$(call SOURCEDIR,$@,xf)
+	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local LDFLAGS="-L/usr/local/lib -liconv"
+	cd $@/`cat $@/untar.dir`/; make
+	cd $@/`cat $@/untar.dir`/; make check || make test
+	$(call PKGINSTALL,$@)
+	$(call CPLIB,libproto*)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
+
 #
 # Use the included libtasn1, so that we are not dependent on the
 # external library
@@ -4686,6 +4701,7 @@ wget-all: \
     $(gmp-ver) \
     $(gntls-ver) \
     $(gnupg-ver) \
+    $(gnuplot-ver) \
     $(gobject-introspection) \
     $(go-ver) \
     $(grep-ver) \
@@ -5009,6 +5025,9 @@ $(gmp-ver):
 
 $(gnupg-ver):
 	$(call SOURCEWGET,"gnupg","ftp://ftp.gnupg.org/gcrypt/"$(gnupg-ver))
+
+$(gnuplot-ver):
+	$(call SOURCEWGET,"gnuplot","https://downloads.sourceforge.net/gnuplot/5.0.3/"$(notdir $(gnuplot-ver)))
 
 $(gnutls-ver):
 	$(call SOURCEWGET,"gnutls","ftp://ftp.gnutls.org/gcrypt/gnutls/v3.4/"$(notdir $(gnutls-ver)))
