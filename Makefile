@@ -2195,6 +2195,11 @@ aftergettext: \
 afteropenssl: \
     check_sudo \
     Python \
+    afterpython
+
+.PHONY: afterpython
+afterpython: \
+    check_sudo \
     Archive-Zip \
     Digest-SHA1 \
     Scalar-MoreUtils \
@@ -2217,6 +2222,52 @@ afteropenssl: \
     HTTP-Cookies \
     HTTP-Negotiate \
     Net-HTTP \
+    afternethttp
+
+.PHONY: afternethttp
+afternethttp: \
+    inc-latest \
+    PAR-Dist \
+    Module-Build \
+    Module-Build-XSUtil \
+    Test-Exception \
+    Sub-Uplevel \
+    Test-Fatal \
+    Try-Tiny \
+    Test-Requires \
+    Test-LeakTrace \
+    Class-Loader \
+    pari \
+    Math-Pari \
+    Mouse \
+    Any-Moose \
+    Capture-Tiny \
+    Module-Find \
+    Module-Runtime \
+    Class-Method-Modifiers \
+    Sub-Exporter-Progressive \
+    Role-Tiny \
+    Devel-GlobalDestruction \
+    Moo \
+    Sub-Exporter \
+    Params-Util \
+    Sub-Install \
+    Exporter-Tiny \
+    Type-Tiny \
+    Data-OptList \
+    Variable-Magic \
+    Module-Implementation \
+    B-Hooks-EndOfScope \
+    Package-Stash-XS \
+    Dist-CheckConflicts \
+    Package-Stash \
+    namespace-clean \
+    Crypt-Random-Source \
+    List-MoreUtils \
+    Math-Random-Secure \
+    Test-NoWarnings \
+    Math-Random-ISAAC \
+    Test-Warn \
     libwww-perl \
     bison \
     afterbison
@@ -2412,14 +2463,104 @@ afterlibsecret: \
 # ==============================================================
 # Versions
 # ==============================================================
+# 2016-06-05
+Test-Warn-ver         = Test-Warn/Test-Warn-0.30.tar.gz
+# 2016-06-05
+Test-NoWarnings-ver   = Test-NoWarnings/Test-NoWarnings-1.04.tar.gz
+# 2016-06-05
+Math-Random-ISAAC-ver = Math-Random-ISAAC/Math-Random-ISAAC-1.004.tar.gz
+# 2016-06-05
+# List-MoreUtils-ver = List-MoreUtils/List-MoreUtils-0.413.tar.gz
+List-MoreUtils-ver = List-MoreUtils/List-MoreUtils-0.415.tar.gz
+# 2016-06-05
+Dist-CheckConflicts-ver = Dist-CheckConflicts/Dist-CheckConflicts-0.11.tar.gz
+# 2016-06-05
+Package-Stash-XS-ver = Package-Stash-XS/Package-Stash-XS-0.28.tar.gz
+# 2016-06-05
+Package-Stash-ver  = Package-Stash/Package-Stash-0.37.tar.gz
+# 2016-06-05
+Variable-Magic-ver = Variable-Magic/Variable-Magic-0.59.tar.gz
+# 2016-06-05
+Module-Implementation-ver = Module-Implementation/Module-Implementation-0.09.tar.gz
+# 2016-06-05
+B-Hooks-EndOfScope-ver = B-Hooks-EndOfScope/B-Hooks-EndOfScope-0.21.tar.gz
+# 2016-06-05
+namespace-clean-ver = namespace-clean/namespace-clean-0.27.tar.gz
+# 2016-06-05
+Exporter-Tiny-ver = Exporter-Tiny/Exporter-Tiny-0.042.tar.gz
+# 2016-06-05
+Type-Tiny-ver    = Type-Tiny/Type-Tiny-1.000005.tar.gz
+# 2016-06-05
+Sub-Install-ver  = Sub-Install/Sub-Install-0.928.tar.gz
+# 2016-06-05
+Params-Util-ver  = Params-Util/Params-Util-1.07.tar.gz
+# 2016-06-05
+Data-OptList-ver = Data-OptList/Data-OptList-0.110.tar.gz
+# 2016-06-05
+Sub-Exporter-ver = Sub-Exporter/Sub-Exporter-0.987.tar.gz
+# 2016-06-05
+Role-Tiny-ver    = Role-Tiny/Role-Tiny-2.000003.tar.gz
+# 2016-06-05
+Sub-Exporter-Progressive-ver = Sub-Exporter-Progressive/Sub-Exporter-Progressive-0.001011.tar.gz
+# 2016-06-05
+Devel-GlobalDestruction-ver = Devel-GlobalDestruction/Devel-GlobalDestruction-0.13.tar.gz
+# 2016-06-05
+Class-Method-Modifiers-ver = Class-Method-Modifiers/Class-Method-Modifiers-2.12.tar.gz
+# 2016-06-05
+Moo-ver          = Moo/Moo-2.001001.tar.gz
+# 2016-06-05
+Module-Runtime-ver = Module-Runtime/Module-Runtime-0.014.tar.gz
+# 2016-06-05
+Module-Find-ver  = Module-Find/Module-Find-0.13.tar.gz
+# 2016-06-05
+Capture-Tiny-ver = Capture-Tiny/Capture-Tiny-0.42.tar.gz
+# 2016-06-05
+Crypt-Random-Source-ver = Crypt-Random-Source/Crypt-Random-Source-0.12.tar.gz
+# 2016-06-04
+pari-ver         = pari/pari-2.3.5.tar.gz
+# 2016-06-04
+Math-Pari-ver    = Math-Pari/Math-Pari-2.01080900.zip
+# 2016-06-04
+Class-Loader-ver = Class-Loader/Class-Loader-2.03.tar.gz
+# 2016-06-04
+Crypt-Random-ver = Crypt-Random/Crypt-Random-1.25.tar.gz
+# 2016-06-04
+Test-LeakTrace-ver = Test-LeakTrace/Test-LeakTrace-0.15.tar.gz
+# 2016-06-04
+Test-Requires-ver = Test-Requires/Test-Requires-0.10.tar.gz
+# 2016-06-04
+Try-Tiny-ver      = Try-Tiny/Try-Tiny-0.24.tar.gz
+# 2016-06-04
+Test-Fatal-ver    = Test-Fatal/Test-Fatal-0.014.tar.gz
+# 2016-06-04
+Sub-Uplevel-ver   = Sub-Uplevel/Sub-Uplevel-0.25.tar.gz
+# 2016-06-04
+Test-Exception-ver = Test-Exception/Test-Exception-0.43.tar.gz
+# 2016-06-04
+Module-Build-XSUtil-ver = Module-Build-XSUtil/Module-Build-XSUtil-0.16.tar.gz
+# 2016-06-04
+PAR-Dist-ver      = PAR-Dist/PAR-Dist-0.11.tar.gz
+# 2016-06-04
+inc-latest-ver    = inc-latest/inc-latest-0.500.tar.gz
+# 2016-06-04
+Module-Build-ver  = Module-Build/Module-Build-0.4218.tar.gz
+# 2016-06-04
+Mouse-ver         = Mouse/Mouse-v2.4.5.tar.gz
+# 2016-06-04
+Any-Moose-ver     = Any-Moose/Any-Moose-0.26.tar.gz
+# 2016-06-04
+Math-Random-Secure-ver = Math-Random-Secure/Math-Random-Secure-0.06.tar.gz
+# 2016-05-19
+# p7zip-ver          = p7zip/p7zip_9.38.1_src_all.tar.bz2
+p7zip-ver         = p7zip/p7zip_15.14.1_src_all.tar.bz2
 # 2016-05-18
-gnuplot-ver        = gnuplot/gnuplot-5.0.3.tar.gz
+gnuplot-ver       = gnuplot/gnuplot-5.0.3.tar.gz
 # 2016-05-17
 # ruby-ver           = ruby/ruby-2.3.0.tar.xz
-ruby-ver           = ruby/ruby-2.3.1.tar.xz
+ruby-ver          = ruby/ruby-2.3.1.tar.xz
 # 2016-05-15
 # gdb-ver            = gdb/gdb-7.9.tar.xz
-gdb-ver            = gdb/gdb-7.11.tar.xz
+gdb-ver           = gdb/gdb-7.11.tar.xz
 # 2016-05-15
 valgrind-ver      = valgrind/valgrind-3.11.0.tar.bz2
 # 2016-05-15
@@ -2618,7 +2759,6 @@ libusb-ver         = libusb/libusb-1.0.19.tar.bz2
 libwww-perl-ver    = libwww-perl/libwww-perl-6.15.tar.gz
 libxml2-ver        = libxml2/libxml2-2.9.3.tar.gz
 libxslt-ver        = libxslt/libxslt-1.1.28.tar.gz
-List-MoreUtils-ver = List-MoreUtils/List-MoreUtils-0.413.tar.gz
 llvm-ver           = llvm/llvm-3.4.src.tar.gz
 LWP-MediaTypes-ver = LWP-MediaTypes/LWP-MediaTypes-6.02.tar.gz
 lzma-ver           = lzma/lzma-4.32.7.tar.gz
@@ -2637,7 +2777,6 @@ nettle-ver         = nettle/nettle-3.1.1.tar.gz
 ntfs-3g-ver        = ntfs-3g/ntfs-3g_ntfsprogs-2013.1.13.tgz
 openvpn-ver        = openvpn/openvpn-2.3.8.tar.xz
 p11-kit-ver        = p11-kit/p11-kit-0.23.2.tar.gz
-p7zip-ver          = p7zip/p7zip_9.38.1_src_all.tar.bz2
 pango-ver          = pango/pango-1.36.8.tar.xz
 par2cmdline-ver    = par2cmdline/master.zip
 patch-ver          = patch/patch-2.7.tar.gz
@@ -3049,11 +3188,22 @@ bcrypt libcap multitail symlinks unrar lxsplit: $(bcrypt-ver) $(multitail-ver) $
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
 
-# Perl Rule
+# Perl Rule using Make
+.PHONY: Any-Moose
 .PHONY: Archive-Zip
+.PHONY: B-Hooks-EndOfScope
+.PHONY: Capture-Tiny
+.PHONY: Class-Loader
+.PHONY: Class-Method-Modifiers
+.PHONY: Crypt-Random
+.PHONY: Crypt-Random-Source
+.PHONY: Data-OptList
+.PHONY: Devel-GlobalDestruction
 .PHONY: Devel-Symdump
 .PHONY: Digest-SHA1
+.PHONY: Dist-CheckConflicts
 .PHONY: Encode-Locale
+.PHONY: Exporter-Tiny
 .PHONY: File-Listing
 .PHONY: HTML-Parser
 .PHONY: HTML-Tagset
@@ -3062,24 +3212,63 @@ bcrypt libcap multitail symlinks unrar lxsplit: $(bcrypt-ver) $(multitail-ver) $
 .PHONY: HTTP-Date
 .PHONY: HTTP-Message
 .PHONY: HTTP-Negotiate
+.PHONY: inc-latest
 .PHONY: IO-HTML
 .PHONY: IO-Socket-SSL
 .PHONY: libwww-perl
 .PHONY: List-MoreUtils
 .PHONY: LWP-MediaTypes
+.PHONY: Math-Random-ISAAC
+.PHONY: Math-Random-Secure
+.PHONY: Module-Build
+.PHONY: Module-Build-XSUtil
+.PHONY: Module-Find
+.PHONY: Module-Implementation
+.PHONY: Module-Runtime
+.PHONY: Moo
+.PHONY: Mouse
+.PHONY: namespace-clean
 .PHONY: Net-HTTP
+.PHONY: Package-Stash
+.PHONY: Package-Stash-XS
+.PHONY: PAR-Dist
+.PHONY: Params-Util
 .PHONY: Pod-Coverage
+.PHONY: Role-Tiny
 .PHONY: Scalar-MoreUtils
+.PHONY: Sub-Exporter
+.PHONY: Sub-Exporter-Progressive
+.PHONY: Sub-Install
+.PHONY: Sub-Uplevel
+.PHONY: Test-Fatal
+.PHONY: Test-LeakTrace
+.PHONY: Test-NoWarnings
 .PHONY: Test-Pod
 .PHONY: Test-Pod-Coverage
+.PHONY: Test-Requires
+.PHONY: Test-Warn
+.PHONY: Try-Tiny
+.PHONY: Type-Tiny
 .PHONY: URI
+.PHONY: Variable-Magic
 .PHONY: WWW-RobotRules
 .PHONY: XML-Parser
-Archive-Zip Digest-SHA1 Encode-Locale File-Listing Scalar-MoreUtils URI HTML-Tagset HTML-Parser HTTP-Daemon HTTP-Cookies HTTP-Date WWW-RobotRules HTTP-Message HTTP-Negotiate IO-HTML IO-Socket-SSL LWP-MediaTypes Net-HTTP Devel-Symdump List-MoreUtils Pod-Coverage Test-Pod Test-Pod-Coverage libwww-perl XML-Parser : \
+Any-Moose Archive-Zip Capture-Tiny B-Hooks-EndOfScope Class-Loader Class-Method-Modifiers Crypt-Random Crypt-Random-Source Data-OptList Devel-GlobalDestruction Digest-SHA1 Dist-CheckConflicts Encode-Locale Exporter-Tiny File-Listing Scalar-MoreUtils URI HTML-Tagset HTML-Parser HTTP-Daemon HTTP-Cookies HTTP-Date WWW-RobotRules HTTP-Message HTTP-Negotiate inc-latest IO-HTML IO-Socket-SSL LWP-MediaTypes Module-Find Module-Implementation Module-Runtime Math-Random-ISAAC Math-Random-Secure Module-Build Moo Net-HTTP Devel-Symdump List-MoreUtils namespace-clean Package-Stash Package-Stash-XS PAR-Dist Params-Util Pod-Coverage Role-Tiny Sub-Exporter Sub-Exporter-Progressive Sub-Install Sub-Uplevel Test-Fatal Test-LeakTrace Test-NoWarnings Test-Pod Test-Pod-Coverage Test-Requires Test-Warn Type-Tiny Try-Tiny Variable-Magic libwww-perl XML-Parser : \
+    $(Any-Moose-ver) \
     $(Archive-Zip-ver) \
+    $(B-Hooks-EndOfScope-ver) \
+    $(Capture-Tiny-ver) \
+    $(Class-Loader-ver) \
+    $(Class-Method-Modifiers-ver) \
+    $(Crypt-Random-ver) \
+    $(Crypt-Random-Source-ver) \
+    $(Data-OptList-ver) \
+    $(Devel-GlobalDestruction-ver) \
     $(Devel-Symdump-ver) \
     $(Digest-SHA1-ver) \
+    $(Dist-CheckConflicts-ver) \
     $(Encode-Locale-ver) \
+    $(Exporter-Tiny-ver) \
     $(File-Listing-ver) \
     $(HTML-Parser-ver) \
     $(HTML-Tagset-ver) \
@@ -3088,15 +3277,41 @@ Archive-Zip Digest-SHA1 Encode-Locale File-Listing Scalar-MoreUtils URI HTML-Tag
     $(HTTP-Date-ver) \
     $(HTTP-Message-ver) \
     $(HTTP-Negotiate-ver) \
+    $(inc-latest-ver) \
     $(IO-HTML-ver) \
     $(List-MoreUtils-ver) \
     $(LWP-MediaTypes-ver) \
+    $(Math-Random-ISAAC-ver) \
+    $(Math-Random-Secure-ver) \
+    $(Module-Build-ver) \
+    $(Module-Find-ver) \
+    $(Module-Implementation-ver) \
+    $(Module-Runtime-ver) \
+    $(Moo-ver) \
+    $(namespace-clean-ver) \
     $(Net-HTTP-ver) \
+    $(Package-Stash-ver) \
+    $(Package-Stash-XS-ver) \
+    $(PAR-Dist-ver) \
+    $(Params-Util-ver) \
     $(Pod-Coverage-ver) \
+    $(Role-Tiny-ver) \
     $(Scalar-MoreUtils-ver) \
+    $(Sub-Exporter-ver) \
+    $(Sub-Exporter-Progressive-ver) \
+    $(Sub-Install-ver) \
+    $(Sub-Uplevel-ver) \
+    $(Test-Fatal-ver) \
+    $(Test-LeakTrace-ver) \
+    $(Test-NoWarnings-ver) \
     $(Test-Pod-Coverage-ver) \
     $(Test-Pod-ver) \
+    $(Test-Requires-ver) \
+    $(Test-Warn-ver) \
+    $(Try-Tiny-ver) \
+    $(Type-Tiny-ver) \
     $(URI-ver) \
+    $(Variable-Magic-ver) \
     $(WWW-RobotRules-ver) \
     $(XML-Parser-ver) \
     $(libwww-perl-ver)
@@ -3106,12 +3321,28 @@ Archive-Zip Digest-SHA1 Encode-Locale File-Listing Scalar-MoreUtils URI HTML-Tag
 	cd $@/`cat $@/untar.dir`/; OPENSSL_DIR=/usr/local OPENSSL_PREFIX=/usr/local LD_LIBRARY_PATH=:/usr/local/lib:/usr/lib make test || make check
 	$(call PKGINSTALL,$@)
 
+# Perl Rule using Build
+.PHONY: Module-Build-XSUtil
+.PHONY: Mouse
+Module-Build-XSUtil Mouse :\
+    $(Module-Build-XSUtil-ver) \
+    $(Mouse-ver)
+	$(call SOURCEDIR,$@,xfz)
+	cd $@/`cat $@/untar.dir`/; perl Build.PL LIBS='-L/usr/local/lib -L/usr/lib -L/lib' INC='-I/usr/local/include -I/usr/include'
+	cd $@/`cat $@/untar.dir`/; ./Build
+	cd $@/`cat $@/untar.dir`/; OPENSSL_DIR=/usr/local OPENSSL_PREFIX=/usr/local LD_LIBRARY_PATH=:/usr/local/lib:/usr/lib ./Build test
+	cd $@/`cat $@/untar.dir`/; sudo ./Build install
+
 # Perl Rule, no test
 # Net-SSLeay seems to be failing because of thread problems
 # PERL_MM_USE_DEFAULT=1 is the way to answer 'no' to 
 # Makefile.PL for external tests question.
+# Test-Exception needs Test-Exception installed to run its tests
 .PHONY: Net-SSLeay
-Net-SSLeay: $(Net-SSLeay-ver)
+.PHONY: Test-Exception
+Net-SSLeay Test-Exception : \
+    $(Net-SSLeay-ver) \
+    $(Test-Exception-ver)
 	$(call SOURCEDIR,$@,xfz)
 	cd $@/`cat $@/untar.dir`/; PERL_MM_USE_DEFAULT=1 perl Makefile.PL
 	cd $@/`cat $@/untar.dir`/; make
@@ -3536,7 +3767,9 @@ gcc-5.3: $(gcc-5.3-ver)
 	cd $@; mkdir $@-build
 	cd $@/$@-build/; readlink -f . | grep $@-build
 	cd $@/$@-build/; ../`cat ../untar.dir`/configure \
+		    LDFLAGS="-L/usr/local/lib -lpth" \
 		    --enable-shared \
+		    --disable-threads \
 		    --disable-multilib \
 		    --prefix=/usr/local \
                     --enable-languages=$(GCC_LANGS) \
@@ -3948,7 +4181,13 @@ glibc: $(glibc-ver)
 	cd $@/`cat $@/untar.dir`/; sed -e '/tst-audit2-ENV/i CFLAGS-tst-audit2.c += -fno-builtin' -i elf/Makefile
 	# cd $@/$@-build/; ../`cat ../untar.dir`/configure --prefix=/usr/local/glibc --disable-profile --enable-kernel=2.6.32 --libexecdir=/usr/local/lib/glibc --with-headers=/usr/local/include CFLAGS="-march=i686 -g -O2 -fno-stack-protector"
 	# cd $@/$@-build/; ../`cat ../untar.dir`/configure --prefix=/usr/local/glibc --disable-profile --libexecdir=/usr/local/lib/glibc --with-headers=/usr/local/include -without-selinux -enable-obsolete-rpc CFLAGS="-fno-stack-protector -march=i686 -O2"
-	cd $@/$@-build/; ../`cat ../untar.dir`/configure --prefix=/usr/local/glibc --disable-profile --libexecdir=/usr/local/lib/glibc --with-headers=/usr/local/include -without-selinux -enable-obsolete-rpc
+	cd $@/$@-build/; ../`cat ../untar.dir`/configure \
+	    --prefix=/usr/local/glibc \
+	    --disable-profile \
+	    --libexecdir=/usr/local/lib/glibc \
+	    --with-headers=/usr/local/include \
+	    -without-selinux \
+	    -enable-obsolete-rpc
 	cd $@/$@-build/; make
 	-cd $@/$@-build/; make check || make test
 	-sudo mkdir -p /usr/local/glibc/etc
@@ -4078,6 +4317,15 @@ llvm: $(llvm-ver) $(clang-ver) $(compiler-rt-ver) patches/compiler-rt.patch
 	cd $@/`cat $@/untar.dir`/; make check || make test
 	$(call PKGINSTALL,$@)
 
+.PHONY: Math-Pari
+Math-Pari : \
+    $(Math-Pari-ver)
+	$(call SOURCEDIR,$@,xfz)
+	cd $@/`cat $@/untar.dir`/; perl Makefile.PL LIBS='-L/usr/local/lib -L/usr/lib -L/lib' INC='-I/usr/local/include -I/usr/include -I../../pari/pari-2.3.5/src' pari_tgz=../../pari/pari-2.3.5.tar.gz version23_ok=1
+	cd $@/`cat $@/untar.dir`/; make
+	cd $@/`cat $@/untar.dir`/; OPENSSL_DIR=/usr/local OPENSSL_PREFIX=/usr/local LD_LIBRARY_PATH=:/usr/local/lib:/usr/lib make test || make check
+	$(call PKGINSTALL,$@)
+
 .PHONY: mercurial
 mercurial: $(mercurial-ver)
 	$(call SOURCEDIR,$@,xfz)
@@ -4205,6 +4453,27 @@ p11-kit : \
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --without-trust-paths
 	cd $@/`cat $@/untar.dir`/; make
 	-cd $@/`cat $@/untar.dir`/; make check || make test
+	$(call PKGINSTALL,$@)
+	$(call CPLIB,libproto*)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
+
+.PHONY: pari
+pari : \
+    $(pari-ver)
+	$(call SOURCEDIR,$@,xf)
+	cd $@/`cat $@/untar.dir`/; ./Configure --prefix=/usr/local
+	cd $@/`cat $@/untar.dir`/; make all
+	cd $@/`cat $@/untar.dir`/; make gp
+	cd $@/`cat $@/untar.dir`/; make bench
+	cd $@/`cat $@/untar.dir`/; sudo cp misc/gprc.dft /etc/gprc
+	cd $@/`cat $@/untar.dir`/; sudo ln -sf /usr/local/include/pari/* /usr/local/include/
+	cd $@/`cat $@/untar.dir`/; sudo mkdir -p /usr/local/include/gp
+	cd $@/`cat $@/untar.dir`/; sudo mkdir -p /usr/local/include/graph
+	cd $@/`cat $@/untar.dir`/; sudo mkdir -p /usr/local/include/language
+	cd $@/`cat $@/untar.dir`/; sudo cp src/gp/*.h /usr/local/include/gp/.
+	cd $@/`cat $@/untar.dir`/; sudo cp src/graph/*.h /usr/local/include/graph/.
+	cd $@/`cat $@/untar.dir`/; sudo cp src/language/*.h /usr/local/include/language/.
 	$(call PKGINSTALL,$@)
 	$(call CPLIB,libproto*)
 	$(call CPLIB,lib$@*)
@@ -4643,6 +4912,7 @@ zlib: $(zlib-ver)
 wget-all: \
     $(ack-ver) \
     $(acl-ver) \
+    $(Any-Moose-ver) \
     $(apr-util-ver) \
     $(apr-ver) \
     $(Archive-Zip-ver) \
@@ -4651,6 +4921,7 @@ wget-all: \
     $(autogen-ver) \
     $(automake-ver) \
     $(autossh-ver) \
+    $(B-Hooks-EndOfScope-ver) \
     $(bash-ver) \
     $(bcrypt-ver) \
     $(binutils-ver) \
@@ -4658,8 +4929,11 @@ wget-all: \
     $(bzip-ver) \
     $(ca-cert-ver) \
     $(cairo-ver) \
+    $(Capture-Tiny-ver) \
     $(check-ver) \
     $(clang-ver) \
+    $(Class-Loader-ver) \
+    $(Class-Method-Modifiers-ver) \
     $(clisp-ver) \
     $(cmake-ver) \
     $(compiler-rt-ver) \
@@ -4667,20 +4941,26 @@ wget-all: \
     $(cppcheck-ver) \
     $(crosextrafonts-ver) \
     $(crosextrafonts-carlito-ver) \
+    $(Crypt-Random-ver) \
+    $(Crypt-Random-Source-ver) \
     $(curl-ver) \
     $(daq-ver) \
+    $(Data-OptList-ver) \
     $(db-ver) \
     $(dbus-ver) \
     $(dejagnu-ver) \
+    $(Devel-GlobalDestruction-ver) \
     $(Devel-Symdump-ver) \
     $(diffutils-ver) \
     $(Digest-SHA1-ver) \
+    $(Dist-CheckConflicts-ver) \
     $(doxygen-ver) \
     $(e2fsprogs-ver) \
     $(ecj-ver) \
     $(Encode-Locale-ver) \
     $(expat-ver) \
     $(expect-ver) \
+    $(Exporter-Tiny-ver) \
     $(File-Listing-ver) \
     $(file-ver) \
     $(findutils-ver) \
@@ -4722,6 +5002,7 @@ wget-all: \
     $(icu-ver) \
     $(ImageMagick-ver) \
     $(inetutils-ver) \
+    $(inc-latest-ver) \
     $(intltool-ver) \
     $(IO-HTML-ver) \
     $(IO-Socket-SSL-ver) \
@@ -4764,12 +5045,23 @@ wget-all: \
     $(lzo-ver) \
     $(m4-ver) \
     $(make-ver) \
+    $(Math-Pari-ver) \
+    $(Math-Random-ISAAC-ver) \
+    $(Math-Random-Secure-ver) \
     $(mercurial-ver) \
+    $(Module-Build-ver) \
+    $(Module-Build-XSUtil-ver) \
+    $(Module-Find-ver) \
+    $(Module-Implementation-ver) \
+    $(Module-Runtime-ver) \
+    $(Moo-ver) \
     $(mosh-ver) \
+    $(Mouse-ver) \
     $(mpc-ver) \
     $(mpfr-ver) \
     $(multitail-ver) \
     $(mutt-ver) \
+    $(namespace-clean-ver) \
     $(ncurses-ver) \
     $(netpbm-ver) \
     $(Net-HTTP-ver) \
@@ -4781,7 +5073,12 @@ wget-all: \
     $(openvpn-ver) \
     $(p11-kit-ver) \
     $(p7zip-ver) \
+    $(Package-Stash-ver) \
+    $(Package-Stash-XS-ver) \
     $(pango-ver) \
+    $(pari-ver) \
+    $(PAR-Dist-ver) \
+    $(Params-Util-ver) \
     $(par2cmdline-ver) \
     $(patch-ver) \
     $(pcre-ver) \
@@ -4800,6 +5097,7 @@ wget-all: \
     $(Python-ver) \
     $(qt-everywhere-opensource-src-ver) \
     $(readline-ver) \
+    $(Role-Tiny-ver) \
     $(ruby-ver) \
     $(Scalar-MoreUtils-ver) \
     $(scons-ver) \
@@ -4813,6 +5111,10 @@ wget-all: \
     $(sparse-ver) \
     $(sqlite-ver) \
     $(srm-ver) \
+    $(Sub-Exporter-ver) \
+    $(Sub-Exporter-Progressive-ver) \
+    $(Sub-Install-ver) \
+    $(Sub-Uplevel-ver) \
     $(subversion-ver) \
     $(swig-ver) \
     $(symlinks-ver) \
@@ -4823,17 +5125,26 @@ wget-all: \
     $(tclx-ver) \
     $(tcpdump-ver) \
     $(tcp_wrappers-ver) \
+    $(Test-Exception-ver) \
+    $(Test-Fatal-ver) \
+    $(Test-LeakTrace-ver) \
+    $(Test-NoWarnings-ver) \
     $(Test-Pod-Coverage-ver) \
     $(Test-Pod-ver) \
+    $(Test-Requires-ver) \
+    $(Test-Warn-ver) \
     $(texinfo-ver) \
     $(tmux-ver) \
     $(truecrypt-ver) \
+    $(Try-Tiny-ver) \
+    $(Type-Tiny-ver) \
     $(unrar-ver) \
     $(unzip-ver) \
     $(URI-ver) \
     $(util-linux-ver) \
     $(vala-ver) \
     $(valgrind-ver) \
+    $(Variable-Magic-ver) \
     $(vera++-ver) \
     $(vim-ver) \
     $(wget-ver) \
@@ -4851,6 +5162,9 @@ $(ack-ver):
 
 $(acl-ver):
 	$(call SOURCEWGET,"acl","http://download.savannah.gnu.org/releases/"$(acl-ver))
+
+$(Any-Moose-ver):
+	$(call SOURCEWGET,"Any-Moose","http://search.cpan.org/CPAN/authors/id/E/ET/ETHER/"$(notdir $(Any-Moose-ver)))
 
 $(apr-ver):
 	$(call SOURCEWGET,"apr","http://archive.apache.org/dist/apr/apr-1.4.8.tar.bz2")
@@ -4876,6 +5190,9 @@ $(automake-ver):
 $(autossh-ver):
 	$(call SOURCEWGET,"autossh","http://www.harding.motd.ca/"$(autossh-ver))
 
+$(B-Hooks-EndOfScope-ver):
+	$(call SOURCEWGET,"B-Hooks-EndOfScope","http://search.cpan.org/CPAN/authors/id/E/ET/ETHER/"$(notdir $(B-Hooks-EndOfScope-ver)))
+
 $(bash-ver):
 	$(call SOURCEWGET,"bash","https://ftp.gnu.org/gnu/"$(bash-ver))
 
@@ -4900,11 +5217,20 @@ $(ca-cert-ver):
 $(cairo-ver):
 	$(call SOURCEWGET,"cairo","http://cairographics.org/releases/"$(notdir $(cairo-ver)))
 
+$(Capture-Tiny-ver):
+	$(call SOURCEWGET,"Capture-Tiny","http://search.cpan.org/CPAN/authors/id/D/DA/DAGOLDEN/"$(notdir $(Capture-Tiny-ver)))
+
 $(check-ver):
 	$(call SOURCEWGET,"check","http://downloads.sourceforge.net/project/check/check/0.9.12/check-0.9.12.tar.gz")
 
 $(clang-ver):
 	$(call SOURCEWGET,"clang","http://llvm.org/releases/3.4/clang-3.4.src.tar.gz")
+
+$(Class-Loader-ver):
+	$(call SOURCEWGET,"Class-Loader","http://search.cpan.org/CPAN/authors/id/V/VI/VIPUL/"$(notdir $(Class-Loader-ver)))
+
+$(Class-Method-Modifiers-ver):
+	$(call SOURCEWGET,"Class-Method-Modifiers","http://search.cpan.org/CPAN/authors/id/E/ET/ETHER/"$(notdir $(Class-Method-Modifiers-ver)))
 
 $(clisp-ver):
 	$(call SOURCEWGET,"clisp","https://ftp.gnu.org/pub/gnu/"$(clisp-ver))
@@ -4927,14 +5253,26 @@ $(crosextrafonts-ver):
 $(crosextrafonts-carlito-ver):
 	$(call SOURCEWGET,"crosextrafonts-carlito","http://commondatastorage.googleapis.com/chromeos-localmirror/distfiles/"$(notdir $(crosextrafonts-carlito-ver)))
 
-$(daq-ver):
-	$(call SOURCEWGET,"daq","https://www.snort.org/downloads/snort/"$(notdir $(daq-ver)))
+$(Crypt-Random-ver):
+	$(call SOURCEWGET,"Crypt-Random","http://search.cpan.org/CPAN/authors/id/V/VI/VIPUL/"$(notdir $(Crypt-Random-ver)))
+
+$(Crypt-Random-Source-ver):
+	$(call SOURCEWGET,"Crypt-Random-Source","http://search.cpan.org/CPAN/authors/id/E/ET/ETHER/"$(notdir $(Crypt-Random-Source-ver)))
 
 $(curl-ver):
 	$(call SOURCEWGET,"curl","http://curl.haxx.se/download/"$(notdir $(curl-ver)))
 
+$(daq-ver):
+	$(call SOURCEWGET,"daq","https://www.snort.org/downloads/snort/"$(notdir $(daq-ver)))
+
+$(Data-OptList-ver):
+	$(call SOURCEWGET,"Data-OptList","http://search.cpan.org/CPAN/authors/id/R/RJ/RJBS/"$(notdir $(Data-OptList-ver)))
+
 $(db-ver):
 	$(call SOURCEWGET,"db","http://download.oracle.com/otn/berkeley-"$(db-ver))
+
+$(Devel-GlobalDestruction-ver):
+	$(call SOURCEWGET,"Devel-GlobalDestruction","http://search.cpan.org/CPAN/authors/id/H/HA/HAARG/"$(notdir $(Devel-GlobalDestruction-ver)))
 
 $(Devel-Symdump-ver):
 	$(call SOURCEWGET,"Devel-Symdump","http://search.cpan.org/CPAN/authors/id/A/AN/ANDK/"$(notdir $(Devel-Symdump-ver)))
@@ -4950,6 +5288,9 @@ $(diffutils-ver):
 
 $(Digest-SHA1-ver):
 	$(call SOURCEWGET,"Digest-SHA1","http://search.cpan.org/CPAN/authors/id/G/GA/GAAS/"$(notdir $(Digest-SHA1-ver)))
+
+$(Dist-CheckConflicts-ver):
+	$(call SOURCEWGET,"Dist-CheckConflicts","http://search.cpan.org/CPAN/authors/id/D/DO/DOY/"$(notdir $(Dist-CheckConflicts-ver)))
 
 $(doxygen-ver):
 	$(call SOURCEWGET,"doxygen","http://ftp.stack.nl/pub/"$(doxygen-ver))
@@ -4971,6 +5312,9 @@ $(expat-ver):
 
 $(expect-ver):
 	$(call SOURCEWGET,"expect","http://prdownloads.sourceforge.net/"$(expect-ver))
+
+$(Exporter-Tiny-ver):
+	$(call SOURCEWGET,"Exporter-Tiny","http://search.cpan.org/CPAN/authors/id/T/TO/TOBYINK/"$(notdir $(Exporter-Tiny-ver)))
 
 $(file-ver):
 	$(call SOURCEWGET,"file","ftp://ftp.astron.com/pub/"$(file-ver))
@@ -5093,6 +5437,9 @@ $(ImageMagick-ver):
 $(IO-HTML-ver):
 	$(call SOURCEWGET,"IO-HTML","http://search.cpan.org/CPAN/authors/id/C/CJ/CJM/"$(notdir $(IO-HTML-ver)))
 
+$(inc-latest-ver):
+	$(call SOURCEWGET,"inc-latest","http://search.cpan.org/CPAN/authors/id/D/DA/DAGOLDEN/"$(notdir $(inc-latest-ver)))
+
 $(inetutils-ver):
 	$(call SOURCEWGET,"inetutils","https://ftp.gnu.org/gnu/"$(inetutils-ver))
 
@@ -5210,6 +5557,12 @@ $(lxsplit-ver):
 $(make-ver):
 	$(call SOURCEWGET,"make","https://ftp.gnu.org/gnu/make/make-4.1.tar.gz")
 
+$(Math-Random-ISAAC-ver):
+	$(call SOURCEWGET,"Math-Random-ISAAC","http://search.cpan.org/CPAN/authors/id/J/JA/JAWNSY/"$(notdir $(Math-Random-ISAAC-ver)))
+
+$(Math-Random-Secure-ver):
+	$(call SOURCEWGET,"Math-Random-Secure","http://search.cpan.org/CPAN/authors/id/M/MK/MKANAT/"$(notdir $(Math-Random-Secure-ver)))
+
 $(jnettop-ver):
 	$(call SOURCEWGET,"jnettop","http://jnettop.kubs.info/dist/jnettop-0.13.0.tar.gz")
 
@@ -5222,8 +5575,35 @@ $(lzo-ver):
 $(m4-ver):
 	$(call SOURCEWGET,"m4","http://ftp.gnu.org/gnu/m4/m4-1.4.17.tar.gz")
 
+$(Math-Pari-ver):
+	$(call SOURCEWGET,"Math-Pari","http://search.cpan.org/CPAN/authors/id/I/IL/ILYAZ/modules/"$(notdir $(Math-Pari-ver)))
+
 $(mercurial-ver):
 	$(call SOURCEWGET,"mercurial","https://www.mercurial-scm.org/release/"$(notdir $(mercurial-ver)))
+
+$(Module-Build-ver):
+	$(call SOURCEWGET,"Module-Build","http://search.cpan.org/CPAN/authors/id/L/LE/LEONT/"$(notdir $(Module-Build-ver)))
+
+$(Module-Build-XSUtil-ver):
+	$(call SOURCEWGET,"Module-Build-XSUtil","http://search.cpan.org/CPAN/authors/id/H/HI/HIDEAKIO/"$(notdir $(Module-Build-XSUtil-ver)))
+
+$(Module-Find-ver):
+	$(call SOURCEWGET,"Module-Find","http://search.cpan.org/CPAN/authors/id/C/CR/CRENZ/"$(notdir $(Module-Find-ver)))
+
+$(Module-Implementation-ver):
+	$(call SOURCEWGET,"Module-Implementation","http://search.cpan.org/CPAN/authors/id/D/DR/DROLSKY/"$(notdir $(Module-Implementation-ver)))
+
+$(Module-Runtime-ver):
+	$(call SOURCEWGET,"Module-Runtime","http://search.cpan.org/CPAN/authors/id/Z/ZE/ZEFRAM/"$(notdir $(Module-Runtime-ver)))
+
+$(Moo-ver):
+	$(call SOURCEWGET,"Moo","http://search.cpan.org/CPAN/authors/id/H/HA/HAARG/"$(notdir $(Moo-ver)))
+
+$(Mouse-ver):
+	$(call SOURCEWGET,"Mouse","http://search.cpan.org/CPAN/authors/id/S/SY/SYOHEX/"$(notdir $(Mouse-ver)))
+
+$(mosh-ver):
+	$(call SOURCEWGET,"mosh","http://mosh.mit.edu/"$(notdir $(mosh-ver)))
 
 $(mpc-ver):
 	$(call SOURCEWGET,"mpc","ftp://ftp.gnu.org/gnu/"$(mpc-ver))
@@ -5231,14 +5611,14 @@ $(mpc-ver):
 $(mpfr-ver):
 	$(call SOURCEWGET,"mpfr","http://ftp.gnu.org/gnu/"$(mpfr-ver))
 
-$(mosh-ver):
-	$(call SOURCEWGET,"mosh","http://mosh.mit.edu/"$(notdir $(mosh-ver)))
-
 $(multitail-ver):
 	$(call SOURCEWGET,"multitail","http://www.vanheusden.com/"$(multitail-ver))
 
 $(mutt-ver):
 	$(call SOURCEWGET,"mutt","ftp://ftp.mutt.org/pub/"$(mutt-ver))
+
+$(namespace-clean-ver):
+	$(call SOURCEWGET,"namespace-clean","http://search.cpan.org/CPAN/authors/id/R/RI/RIBASUSHI/"$(notdir $(namespace-clean-ver)))
 
 $(nettle-ver):
 	$(call SOURCEWGET,"nettle","https://ftp.gnu.org/gnu/"$(nettle-ver))
@@ -5270,8 +5650,23 @@ $(openvpn-ver):
 $(p11-kit-ver):
 	$(call SOURCEWGET,"p11-kit","http://p11-glue.freedesktop.org/releases/"$(notdir $(p11-kit-ver)))
 
+$(Package-Stash-ver):
+	$(call SOURCEWGET,"Package-Stash","http://search.cpan.org/CPAN/authors/id/D/DO/DOY/"$(notdir $(Package-Stash-ver)))
+
+$(Package-Stash-XS-ver):
+	$(call SOURCEWGET,"Package-Stash-XS","http://search.cpan.org/CPAN/authors/id/D/DO/DOY/"$(notdir $(Package-Stash-XS-ver)))
+
 $(pango-ver):
 	$(call SOURCEWGET,"pango","http://ftp.gnome.org/pub/gnome/sources/pango/1.36/"$(notdir $(pango-ver)))
+
+$(pari-ver):
+	$(call SOURCEWGET,"pari","http://pari.math.u-bordeaux.fr/pub/pari/unix/OLD/2.3/"$(notdir $(pari-ver)))
+
+$(PAR-Dist-ver):
+	$(call SOURCEWGET,"PAR-Dist","http://search.cpan.org/CPAN/authors/id/A/AU/AUDREYT/"$(notdir $(PAR-Dist-ver)))
+
+$(Params-Util-ver):
+	$(call SOURCEWGET,"Params-Util","http://search.cpan.org/CPAN/authors/id/A/AD/ADAMK/"$(notdir $(Params-Util-ver)))
 
 $(par2cmdline-ver):
 	$(call SOURCEWGET,"par2cmdline","https://github.com/Parchive/par2cmdline/archive/master.zip")
@@ -5323,13 +5718,16 @@ $(pygobject-ver):
 	$(call SOURCEWGET, "pygobject", "http://ftp.gnome.org/pub/gnome/sources/pygobject/2.28/"$(notdir $(pygobject-ver)))
 
 $(p7zip-ver):
-	$(call SOURCEWGET,"p7zip","http://downloads.sourceforge.net/project/p7zip/p7zip/9.38.1/p7zip_9.38.1_src_all.tar.bz2")
+	$(call SOURCEWGET,"p7zip","http://downloads.sourceforge.net/project/p7zip/p7zip/15.14.1/"$(notdir $(p7zip-ver)))
 
 $(qt-everywhere-opensource-src-ver):
 	$(call SOURCEWGET,"qt-everywhere-opensource-src","http://download.qt.io/archive/qt/5.5/5.5.1/single/qt-everywhere-opensource-src-5.5.1.tar.xz")
 
 $(readline-ver):
 	$(call SOURCEWGET,"readline","http://ftp.gnu.org/gnu/"$(readline-ver))
+
+$(Role-Tiny-ver):
+	$(call SOURCEWGET,"Role-Tiny","http://search.cpan.org/CPAN/authors/id/H/HA/HAARG/"$(notdir $(Role-Tiny-ver)))
 
 $(ruby-ver):
 	$(call SOURCEWGET,"ruby","http://cache.ruby-lang.org/pub/ruby/2.3/"$(notdir $(ruby-ver)))
@@ -5355,6 +5753,18 @@ $(serf-ver):
 # sharutils needed for cryptsetup
 $(sharutils-ver):
 	$(call SOURCEWGET, "sharutils", "http://ftp.gnu.org/gnu/sharutils/sharutils-4.15.1.tar.xz")
+
+$(Sub-Uplevel-ver):
+	$(call SOURCEWGET,"Sub-Uplevel","http://search.cpan.org/CPAN/authors/id/D/DA/DAGOLDEN/"$(notdir $(Sub-Uplevel-ver)))
+
+$(Sub-Exporter-ver):
+	$(call SOURCEWGET,"Sub-Exporter","http://search.cpan.org/CPAN/authors/id/R/RJ/RJBS/"$(notdir $(Sub-Exporter-ver)))
+
+$(Sub-Exporter-Progressive-ver):
+	$(call SOURCEWGET,"Sub-Exporter-Progressive","http://search.cpan.org/CPAN/authors/id/F/FR/FREW/"$(notdir $(Sub-Exporter-Progressive-ver)))
+
+$(Sub-Install-ver):
+	$(call SOURCEWGET,"Sub-Install","http://search.cpan.org/CPAN/authors/id/R/RJ/RJBS/"$(notdir $(Sub-Install-ver)))
 
 $(subversion-ver):
 	$(call SOURCEWGET,"subversion","http://www.us.apache.org/dist/"$(subversion-ver))
@@ -5403,11 +5813,29 @@ $(tcp_wrappers-patch-ver):
 $(tcpdump-ver):
 	$(call SOURCEWGET,"tcpdump","http://www.tcpdump.org/release/tcpdump-4.5.1.tar.gz")
 
+$(Test-Exception-ver):
+	$(call SOURCEWGET,"Test-Exception","http://search.cpan.org/CPAN/authors/id/E/EX/EXODIST/"$(notdir $(Test-Exception-ver)))
+
+$(Test-Fatal-ver):
+	$(call SOURCEWGET,"Test-Fatal","http://search.cpan.org/CPAN/authors/id/R/RJ/RJBS/"$(notdir $(Test-Fatal-ver)))
+
+$(Test-LeakTrace-ver):
+	$(call SOURCEWGET,"Test-LeakTrace","http://search.cpan.org/CPAN/authors/id/G/GF/GFUJI/"$(notdir $(Test-LeakTrace-ver)))
+
+$(Test-NoWarnings-ver):
+	$(call SOURCEWGET,"Test-NoWarnings","http://search.cpan.org/CPAN/authors/id/A/AD/ADAMK/"$(notdir $(Test-NoWarnings-ver)))
+
+$(Test-Warn-ver):
+	$(call SOURCEWGET,"Test-Warn","http://search.cpan.org/CPAN/authors/id/C/CH/CHORNY/"$(notdir $(Test-Warn-ver)))
+
 $(Test-Pod-ver):
 	$(call SOURCEWGET,"Test-Pod","http://search.cpan.org/CPAN/authors/id/D/DW/DWHEELER/"$(notdir $(Test-Pod-ver)))
 
 $(Test-Pod-Coverage-ver):
 	$(call SOURCEWGET,"Test-Pod-Coverage","http://search.cpan.org/CPAN/authors/id/N/NE/NEILB/"$(notdir $(Test-Pod-Coverage-ver)))
+
+$(Test-Requires-ver):
+	$(call SOURCEWGET,"Test-Requires","http://search.cpan.org/CPAN/authors/id/T/TO/TOKUHIROM/"$(notdir $(Test-Requires-ver)))
 
 $(texinfo-ver):
 	$(call SOURCEWGET,"texinfo","https://ftp.gnu.org/gnu/texinfo/texinfo-5.2.tar.gz")
@@ -5417,6 +5845,12 @@ $(tmux-ver):
 
 $(truecrypt-ver):
 	$(call SOURCEWGET,"truecrypt","https://www.grc.com/misc/"$(truecrypt-ver))
+
+$(Try-Tiny-ver):
+	$(call SOURCEWGET,"Try-Tiny","http://search.cpan.org/CPAN/authors/id/E/ET/ETHER/"$(notdir $(Try-Tiny-ver)))
+
+$(Type-Tiny-ver):
+	$(call SOURCEWGET,"Type-Tiny","http://search.cpan.org/CPAN/authors/id/T/TO/TOBYINK/"$(notdir $(Type-Tiny-ver)))
 
 $(util-linux-ver):
 	$(call SOURCEWGET,"util-linux","https://www.kernel.org/pub/linux/utils/util-linux/v2.28/"$(notdir $(util-linux-ver)))
@@ -5438,6 +5872,9 @@ $(vala-ver):
 
 $(valgrind-ver):
 	$(call SOURCEWGET,"valgrind","http://valgrind.org/downloads/"$(notdir $(valgrind-ver)))
+
+$(Variable-Magic-ver):
+	$(call SOURCEWGET,"Variable-Magic","http://search.cpan.org/CPAN/authors/id/V/VP/VPIT/"$(notdir $(Variable-Magic-ver)))
 
 $(vera++-ver):
 	$(call SOURCEWGET,"vera++","https://bitbucket.org/verateam/vera/downloads/"$(notdir $(vera++-ver)))
