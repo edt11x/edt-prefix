@@ -2464,6 +2464,9 @@ afterlibsecret: \
 # Versions
 # ==============================================================
 # 2016-06-05
+# libgcrypt-ver      = libgcrypt/libgcrypt-1.6.4.tar.bz2
+libgcrypt-ver      = libgcrypt/libgcrypt-1.7.0.tar.bz2
+# 2016-06-05
 Test-Warn-ver         = Test-Warn/Test-Warn-0.30.tar.gz
 # 2016-06-05
 Test-NoWarnings-ver   = Test-NoWarnings/Test-NoWarnings-1.04.tar.gz
@@ -2743,7 +2746,6 @@ libcap-ver         = libcap/libcap-2.24.tar.xz
 libelf-ver         = libelf/libelf-0.8.13.tar.gz
 libevent-ver       = libevent/libevent-2.0.21-stable.tar.gz
 libffi-ver         = libffi/libffi-3.2.1.tar.gz
-libgcrypt-ver      = libgcrypt/libgcrypt-1.6.4.tar.bz2
 libgpg-error-ver   = libgpg-error/libgpg-error-1.20.tar.bz2
 libiconv-ver       = libiconv/libiconv-1.14.tar.gz
 jpeg-ver           = jpeg/jpegsrc.v9b.tar.gz
@@ -2973,12 +2975,11 @@ scrypt: $(scrypt-ver)
 .PHONY: gdbm
 .PHONY: jpeg
 .PHONY: libassuan
-.PHONY: libgcrypt
 .PHONY: libgpg-error
 .PHONY: libksba
 .PHONY: libpng
 .PHONY: which
-apr findutils gdbm jpeg libgcrypt libgpg-error libassuan libksba libpng which: $(which-ver) $(libpng-ver) $(libgpg-error-ver) $(libassuan-ver) $(libgcrypt-ver) $(libksba-ver) $(apr-ver) $(gdbm-ver) $(findutils-ver) $(jpeg-ver)
+apr findutils gdbm jpeg libgpg-error libassuan libksba libpng which: $(which-ver) $(libpng-ver) $(libgpg-error-ver) $(libassuan-ver) $(libksba-ver) $(apr-ver) $(gdbm-ver) $(findutils-ver) $(jpeg-ver)
 	$(call SOURCEDIR,$@,xf)
 	cd $@; mkdir $@-build
 	cd $@/$@-build/; readlink -f . | grep $@-build
@@ -3995,6 +3996,18 @@ libevent: $(libevent-ver)
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
 
+.PHONY: libgcrypt
+libgcrypt : $(libgcrypt-ver)
+	$(call SOURCEDIR,$@,xf)
+	cd $@; mkdir $@-build
+	cd $@/$@-build/; readlink -f . | grep $@-build
+	cd $@/$@-build/; ../`cat ../untar.dir`/configure --prefix=/usr/local --disable-aesni-support
+	cd $@/$@-build/; make
+	cd $@/$@-build/; make check || make test
+	$(call PKGINSTALLBUILD,$@)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
+
 .PHONY: libiconv
 libiconv: $(libiconv-ver)
 	$(call SOURCEDIR,$@,xfz)
@@ -4649,12 +4662,15 @@ ruby: $(ruby-ver)
 	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo make LDFLAGS="-L/usr/local/lib -lssp" install
 	@echo "======= Build of $@ Successful ======="
 
+# I want to link screen as statically as possible, since
+# we will likely be building libraries that screen depends on while
+# running inside of screen.
 .PHONY: screen
 screen : $(screen-ver)
 	$(call SOURCEDIR,$@,xf)
 	-cd $@/`cat $@/untar.dir`/; sed -i -e '/gets is a security/d' lib/stdio.in.h
 	cd $@/`cat $@/untar.dir`/; sed -i -e "/^# if defined(SVR4) && !defined(DGUX) && !defined(__hpux)/s/$$/  \&\& !defined(linux)/" os.h
-	cd $@/`cat $@/untar.dir`/; CPPFLAGS="-I/usr/local/include -I/usr/local/include/ncursesw" ./configure --prefix=/usr/local
+	cd $@/`cat $@/untar.dir`/; CPPFLAGS="-I/usr/local/include -I/usr/local/include/ncursesw" ./configure --prefix=/usr/local LDFLAGS="-static"
 	cd $@/`cat $@/untar.dir`/; make
 	$(call PKGINSTALL,$@)
 	$(call CPLIB,lib$@*)
@@ -5486,7 +5502,7 @@ $(libffi-ver):
 	$(call SOURCEWGET,"libffi","ftp://sourceware.org/pub/"$(libffi-ver))
 
 $(libgcrypt-ver):
-	$(call SOURCEWGET,"libgcrypt","ftp://ftp.gnupg.org/gcrypt/"$(libgcrypt-ver))
+	$(call SOURCEWGET,"libgcrypt","https://www.gnupg.org/ftp/gcrypt/"$(libgcrypt-ver))
 
 $(libidn-ver):
 	$(call SOURCEWGET,"libidn","http://ftp.gnu.org/gnu/"$(libidn-ver))
