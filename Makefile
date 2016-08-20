@@ -1958,7 +1958,7 @@ define SOURCEDIR
 	echo ---###---
 	cd $1; tar $2 $1*.tar* || tar $2 $1*.tgz || tar $2 $1*.tar || tar xf $1*.tar* || /usr/local/bin/tar xf $1*.tar* || unzip $1*.zip || unzip master.zip || ( mkdir $1; cd $1; tar xf ../master.tar.gz ) || test -d $1
 	echo ---###---
-	cd $1; /bin/rm -f untar.dir
+	-cd $1; /bin/rm -f untar.dir
 	cd $1; find . -maxdepth 1 -type d -name $1\* -print > untar.dir
 	cd $1/`cat $1/untar.dir`/; readlink -f . | grep `cat ../untar.dir`
 endef
@@ -2005,23 +2005,23 @@ define RENEXE
 endef
 
 define PKGFROMSTAGE
-	cd $1/$2/; /usr/bin/sudo /bin/rm -rf /tmp/packaged
-	cd $1/$2/; /usr/bin/sudo /bin/mkdir -p /tmp/packaged
+	-cd $1/$2/; /usr/bin/sudo /bin/rm -rf /tmp/packaged
+	-cd $1/$2/; /usr/bin/sudo /bin/mkdir -p /tmp/packaged
 	/bin/mkdir -p packages
 	cd $1/$2/; /usr/bin/sudo tar -C /tmp/$3 -czf /tmp/packaged/$1.tar.gz .
-	/bin/rm -f packages/$1.tar.gz
+	-/bin/rm -f packages/$1.tar.gz
 	/bin/cp /tmp/packaged/$1.tar.gz packages
-	cd $1/$2/; /usr/bin/sudo /bin/rm -rf /tmp/packaged
+	-cd $1/$2/; /usr/bin/sudo /bin/rm -rf /tmp/packaged
 endef
 
 define PKGINSTALLTO
 	@echo "======= Start of $1 Successful ======="
 	cd $1/$2/; /usr/bin/sudo make install || /usr/bin/sudo make LD_LIBRARY_PATH="/usr/local/lib:/usr/local/lib64:/lib:/usr/lib:/usr/local/glibc/lib" install
-	cd $1/$2/; /usr/bin/sudo /bin/rm -rf /tmp/stage
+	-cd $1/$2/; /usr/bin/sudo /bin/rm -rf /tmp/stage
 	cd $1/$2/; /usr/bin/sudo /bin/mkdir -p /tmp/stage
 	cd $1/$2/; /usr/bin/sudo make DESTDIR=/tmp/stage install || /usr/bin/sudo make LD_LIBRARY_PATH="/usr/local/lib:/usr/local/lib64:/lib:/usr/lib:/usr/local/glibc/lib" DESTDIR=/tmp/stage install
 	$(call PKGFROMSTAGE,$1,$2,stage)
-	cd $1/$2/; /usr/bin/sudo /bin/rm -rf /tmp/stage
+	-cd $1/$2/; /usr/bin/sudo /bin/rm -rf /tmp/stage
 	@echo "======= Install of $1 Successful ======="
 endef
 
@@ -2030,11 +2030,11 @@ endef
 define PKGINSTALLTOPREFIX
 	@echo "======= Start of $1 Successful ======="
 	cd $1/$2/; /usr/bin/sudo make PREFIX=/usr/local install || /usr/bin/sudo make LD_LIBRARY_PATH="/usr/local/lib:/usr/local/lib64:/lib:/usr/lib:/usr/local/glibc/lib" PREFIX=/usr/local install
-	cd $1/$2/; /usr/bin/sudo /bin/rm -rf /tmp/stage
+	-cd $1/$2/; /usr/bin/sudo /bin/rm -rf /tmp/stage
 	cd $1/$2/; /usr/bin/sudo /bin/mkdir -p /tmp/stage
 	cd $1/$2/; /usr/bin/sudo make PREFIX=/usr/local DESTDIR=/tmp/stage install || /usr/bin/sudo make LD_LIBRARY_PATH="/usr/local/lib:/usr/local/lib64:/lib:/usr/lib:/usr/local/glibc/lib" PREFIX=/usr/local DESTDIR=/tmp/stage install
 	$(call PKGFROMSTAGE,$1,$2,stage)
-	cd $1/$2/; /usr/bin/sudo /bin/rm -rf /tmp/stage
+	-cd $1/$2/; /usr/bin/sudo /bin/rm -rf /tmp/stage
 	@echo "======= Install of $1 Successful ======="
 endef
 
@@ -2268,6 +2268,7 @@ afternethttp: \
     Test-NoWarnings \
     Math-Random-ISAAC \
     Test-Warn \
+    Net-SSLeay \
     libwww-perl \
     bison \
     afterbison
@@ -2286,6 +2287,7 @@ afterbison: \
     libgcrypt \
     libassuan \
     libksba \
+    npth \
     libcap \
     libxml2 \
     libxslt \
@@ -2423,6 +2425,7 @@ afterpatch: \
     pngnq \
     ack \
     mercurial \
+    rakudo-star \
     node \
     ImageMagick \
     valgrind \
@@ -2463,9 +2466,36 @@ afterlibsecret: \
 # ==============================================================
 # Versions
 # ==============================================================
-# 2016-06-05
+# 2016-08-20
+# pinentry-ver       = pinentry/pinentry-0.9.5.tar.bz2
+pinentry-ver       = pinentry/pinentry-0.9.7.tar.bz2
+# 2016-08-20
+npth-ver      = npth/npth-1.2.tar.bz2
+# 2016-08-20
+# libassuan-ver      = libassuan/libassuan-2.3.0.tar.bz2
+libassuan-ver      = libassuan/libassuan-2.4.3.tar.bz2
+# 2016-08-20
+# libksba-ver        = libksba/libksba-1.3.3.tar.bz2
+libksba-ver        = libksba/libksba-1.3.4.tar.bz2
+# 2016-08-20
 # libgcrypt-ver      = libgcrypt/libgcrypt-1.6.4.tar.bz2
-libgcrypt-ver      = libgcrypt/libgcrypt-1.7.0.tar.bz2
+# libgcrypt-ver      = libgcrypt/libgcrypt-1.7.0.tar.bz2
+libgcrypt-ver      = libgcrypt/libgcrypt-1.7.3.tar.bz2
+# 2016-08-20
+# libgpg-error-ver   = libgpg-error/libgpg-error-1.20.tar.bz2
+libgpg-error-ver   = libgpg-error/libgpg-error-1.24.tar.bz2
+# 2016-08-20
+# gnupg-ver          = gnupg/gnupg-2.0.29.tar.bz2
+gnupg-ver          = gnupg/gnupg-2.0.30.tar.bz2
+# 2016-07-24
+rakudo-star-ver    = rakudo-star/rakudo-star-2016.07.tar.gz
+# 2016-07-16
+# gnutls-ver         = gnutls/gnutls-3.4.7.tar.xz
+# gnutls-ver         = gnutls/gnutls-3.4.8.tar.xz
+gnutls-ver         = gnutls/gnutls-3.4.14.tar.xz
+# 2016-06-17
+# Net-SSLeay-ver     = Net-SSLeay/Net-SSLeay-1.68.tar.gz
+Net-SSLeay-ver     = Net-SSLeay/Net-SSLeay-1.74.tar.gz
 # 2016-06-05
 Test-Warn-ver         = Test-Warn/Test-Warn-0.30.tar.gz
 # 2016-06-05
@@ -2639,9 +2669,6 @@ libutempter-ver    = libutempter/libutempter-1.1.6.tar.bz2
 # 2016-01-26
 py2cairo-ver       = py2cairo/py2cairo-1.10.0.tar.bz2
 # 2016-01-23
-# gnutls-ver         = gnutls/gnutls-3.4.7.tar.xz
-gnutls-ver         = gnutls/gnutls-3.4.8.tar.xz
-# 2016-01-23
 # Adding libidn
 libidn-ver         = libidn/libidn-1.32.tar.gz
 # 2016-01-23
@@ -2717,7 +2744,6 @@ glibc-ver          = glibc/glibc-2.21.tar.gz
 # glib-ver           = glib/glib-2.44.1.tar.xz
 glib-ver           = glib/glib-2.46.1.tar.xz
 gmp-ver            = gmp/gmp-5.1.2.tar.bz2
-gnupg-ver          = gnupg/gnupg-2.0.29.tar.bz2
 gobject-introspection-ver = gobject-introspection/gobject-introspection-1.46.0.tar.xz
 go-ver             = go/go1.4.2.src.tar.gz
 guile-ver          = guile/guile-2.0.11.tar.xz
@@ -2740,16 +2766,13 @@ iptraf-ng-ver      = iptraf-ng/iptraf-ng-1.1.4.tar.gz
 iwyu-ver           = include-what-you-use/include-what-you-use-3.4.src.tar.gz
 jnettop-ver        = jnettop/jnettop-0.13.0.tar.gz
 libarchive-ver     = libarchive/libarchive-3.1.2.tar.gz
-libassuan-ver      = libassuan/libassuan-2.3.0.tar.bz2
 libatomic_ops-ver  = libatomic_ops/libatomic_ops-7.4.2.tar.gz
 libcap-ver         = libcap/libcap-2.24.tar.xz
 libelf-ver         = libelf/libelf-0.8.13.tar.gz
 libevent-ver       = libevent/libevent-2.0.21-stable.tar.gz
 libffi-ver         = libffi/libffi-3.2.1.tar.gz
-libgpg-error-ver   = libgpg-error/libgpg-error-1.20.tar.bz2
 libiconv-ver       = libiconv/libiconv-1.14.tar.gz
 jpeg-ver           = jpeg/jpegsrc.v9b.tar.gz
-libksba-ver        = libksba/libksba-1.3.3.tar.bz2
 libpcap-ver        = libpcap/libpcap-1.4.0.tar.gz
 libpng-ver         = libpng/libpng-1.6.16.tar.xz
 libpthread-ver     = libpthread/master.zip
@@ -2774,7 +2797,6 @@ multitail-ver      = multitail/multitail-6.4.2.tgz
 ncurses-ver        = ncurses/ncurses-6.0.tar.gz
 Net-HTTP-ver       = Net-HTTP/Net-HTTP-6.09.tar.gz
 netpbm-ver         = netpbm/netpbm-10.35.95.tgz
-Net-SSLeay-ver     = Net-SSLeay/Net-SSLeay-1.68.tar.gz
 nettle-ver         = nettle/nettle-3.1.1.tar.gz
 ntfs-3g-ver        = ntfs-3g/ntfs-3g_ntfsprogs-2013.1.13.tgz
 openvpn-ver        = openvpn/openvpn-2.3.8.tar.xz
@@ -2784,7 +2806,6 @@ par2cmdline-ver    = par2cmdline/master.zip
 patch-ver          = patch/patch-2.7.tar.gz
 pcre-ver           = pcre/pcre-8.38.tar.bz2
 perl-ver           = perl/perl-5.22.1.tar.gz
-pinentry-ver       = pinentry/pinentry-0.9.5.tar.bz2
 pixman-ver         = pixman/pixman-0.32.6.tar.gz
 pkg-config-ver     = pkg-config/pkg-config-0.29.tar.gz
 Pod-Coverage-ver   = Pod-Coverage/Pod-Coverage-0.23.tar.gz
@@ -2978,8 +2999,9 @@ scrypt: $(scrypt-ver)
 .PHONY: libgpg-error
 .PHONY: libksba
 .PHONY: libpng
+.PHONY: npth
 .PHONY: which
-apr findutils gdbm jpeg libgpg-error libassuan libksba libpng which: $(which-ver) $(libpng-ver) $(libgpg-error-ver) $(libassuan-ver) $(libksba-ver) $(apr-ver) $(gdbm-ver) $(findutils-ver) $(jpeg-ver)
+apr findutils gdbm jpeg libgpg-error libassuan libksba libpng npth which: $(which-ver) $(libpng-ver) $(libgpg-error-ver) $(libassuan-ver) $(libksba-ver) $(apr-ver) $(gdbm-ver) $(findutils-ver) $(jpeg-ver) $(npth-ver)
 	$(call SOURCEDIR,$@,xf)
 	cd $@; mkdir $@-build
 	cd $@/$@-build/; readlink -f . | grep $@-build
@@ -4642,6 +4664,17 @@ qt-everywhere-opensource-src : \
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
 
+.PHONY: rakudo-star
+rakudo-star: $(rakudo-star-ver)
+	$(call SOURCEDIR,$@,xf)
+	cd $@/`cat $@/untar.dir`/; perl Configure.pl --gen-moar --gen-nqp --backend=moar
+	cd $@/`cat $@/untar.dir`/; make
+	cd $@/`cat $@/untar.dir`/; make rakudo-test
+	cd $@/`cat $@/untar.dir`/; make rakudo-spectest
+	$(call PKGINSTALL,$@)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
+
 # No test suite for readline
 .PHONY: readline
 readline: $(readline-ver)
@@ -5084,6 +5117,7 @@ wget-all: \
     $(Net-SSLeay-ver) \
     $(nettle-ver) \
     $(node-ver) \
+    $(npth-ver) \
     $(ntfs-3g-ver) \
     $(openssl-ver) \
     $(openvpn-ver) \
@@ -5112,6 +5146,7 @@ wget-all: \
     $(py2cairo-ver) \
     $(Python-ver) \
     $(qt-everywhere-opensource-src-ver) \
+    $(rakudo-star-ver) \
     $(readline-ver) \
     $(Role-Tiny-ver) \
     $(ruby-ver) \
@@ -5646,13 +5681,16 @@ $(Net-HTTP-ver):
 	$(call SOURCEWGET,"Net-HTTP","http://search.cpan.org/CPAN/authors/id/E/ET/ETHER/"$(notdir $(Net-HTTP-ver)))
 
 $(Net-SSLeay-ver):
-	$(call SOURCEWGET,"Net-SSLeay","http://search.cpan.org/CPAN/authors/id/M/MI/MIKEM/$(notdir $(Net-SSLeay-ver)))
+	$(call SOURCEWGET,"Net-SSLeay","http://search.cpan.org/CPAN/authors/id/M/MI/MIKEM/"$(notdir $(Net-SSLeay-ver)))
 
 $(netpbm-ver):
 	$(call SOURCEWGET,"netpbm","http://downloads.sourceforge.net/project/netpbm/super_stable/10.35.95/netpbm-10.35.95.tgz")
 
 $(node-ver):
 	$(call SOURCEWGET,"node","https://nodejs.org/dist/v4.4.2/"$(notdir $(node-ver)))
+
+$(npth-ver):
+	$(call SOURCEWGET,"npth","https://gnupg.org/ftp/gcrypt/"$(npth-ver))
 
 $(ntfs-3g-ver):
 	$(call SOURCEWGET,"ntfs-3g","http://tuxera.com/opensource/ntfs-3g_ntfsprogs-2013.1.13.tgz")
@@ -5738,6 +5776,9 @@ $(p7zip-ver):
 
 $(qt-everywhere-opensource-src-ver):
 	$(call SOURCEWGET,"qt-everywhere-opensource-src","http://download.qt.io/archive/qt/5.5/5.5.1/single/qt-everywhere-opensource-src-5.5.1.tar.xz")
+
+$(rakudo-star-ver):
+	$(call SOURCEWGET,"rakudo-star","http://rakudo.org/downloads/star/"$(notdir $(rakudo-star-ver)))
 
 $(readline-ver):
 	$(call SOURCEWGET,"readline","http://ftp.gnu.org/gnu/"$(readline-ver))
