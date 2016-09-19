@@ -2249,8 +2249,8 @@ afternethttp: \
     Role-Tiny \
     Devel-GlobalDestruction \
     Moo \
-    Sub-Exporter \
     Params-Util \
+    Sub-Exporter \
     Sub-Install \
     Exporter-Tiny \
     Type-Tiny \
@@ -2425,12 +2425,12 @@ afterpatch: \
     pngnq \
     ack \
     mercurial \
-    rakudo-star \
     node \
     ImageMagick \
     valgrind \
     jq \
     gnuplot \
+    openvpn \
     afterlibsecret
 
 # Problem children
@@ -2445,9 +2445,9 @@ afterlibsecret: \
     cairo \
     py2cairo \
     pygobject \
-    openvpn \
     libdnet \
     daq \
+    rakudo-star \
     snort \
     mutt \
     qt-everywhere-opensource-src \
@@ -2466,6 +2466,39 @@ afterlibsecret: \
 # ==============================================================
 # Versions
 # ==============================================================
+# 2016-09-17
+# xz-ver             = xz/xz-5.0.5.tar.gz
+xz-ver             = xz/xz-5.2.2.tar.gz
+# 2016-09-09
+# openvpn-ver        = openvpn/openvpn-2.3.8.tar.xz
+openvpn-ver        = openvpn/openvpn-2.3.12.tar.xz
+# 2016-08-27
+# diffutils-ver      = diffutils/diffutils-3.3.tar.xz
+diffutils-ver      = diffutils/diffutils-3.5.tar.xz
+# 2016-08-26
+# perl-ver           = perl/perl-5.22.1.tar.gz
+perl-ver           = perl/perl-5.24.0.tar.gz
+# 2016-05-15
+# ImageMagick-ver   = ImageMagick/ImageMagick-7.0.1-3.tar.xz
+# 2016-08-26
+ImageMagick-ver   = ImageMagick/ImageMagick-7.0.2-9.tar.xz
+# 2016-04-19
+# gzip-ver           = gzip/gzip-1.6.tar.gz
+# 2016-08-26
+# gzip-ver           = gzip/gzip-1.7.tar.gz
+gzip-ver           = gzip/gzip-1.8.tar.gz
+# openssl-ver        = openssl/openssl-1.0.2e.tar.gz
+# 2016-03-11
+# openssl-ver        = openssl/openssl-1.0.2g.tar.gz
+# 2016-05-06
+#
+# Need pthreads.
+# 2016-08-26
+# openssl-ver        = openssl/openssl-1.1.0.tar.gz
+openssl-ver        = openssl/openssl-1.0.2h.tar.gz
+# 2016-08-26
+# gawk-ver           = gawk/gawk-4.1.1.tar.gz
+gawk-ver           = gawk/gawk-4.1.4.tar.gz
 # 2016-08-20
 # pinentry-ver       = pinentry/pinentry-0.9.5.tar.bz2
 pinentry-ver       = pinentry/pinentry-0.9.7.tar.bz2
@@ -2598,14 +2631,6 @@ gdb-ver           = gdb/gdb-7.11.tar.xz
 valgrind-ver      = valgrind/valgrind-3.11.0.tar.bz2
 # 2016-05-15
 jq-ver            = jq-1.5/jq-1.5.tar.gz
-# 2016-05-15
-ImageMagick-ver   = ImageMagick/ImageMagick-7.0.1-3.tar.xz
-# start organizing these by the last date they were updated
-# openssl-ver        = openssl/openssl-1.0.2e.tar.gz
-# 2016-03-11
-# openssl-ver        = openssl/openssl-1.0.2g.tar.gz
-# 2016-05-06
-openssl-ver        = openssl/openssl-1.0.2h.tar.gz
 # 2016-05-06
 util-linux-ver     = util-linux/util-linux-2.28.tar.gz
 # 2016-04-22
@@ -2615,9 +2640,6 @@ mercurial-ver      = mercurial/mercurial-3.7.3.tar.gz
 # 2016-04-19
 # tmux-ver           = tmux/tmux-2.1.tar.gz
 tmux-ver           = tmux/tmux-2.2.tar.gz
-# 2016-04-19
-# gzip-ver           = gzip/gzip-1.6.tar.gz
-gzip-ver           = gzip/gzip-1.7.tar.gz
 # 2016-04-19
 ack-ver            = ack/ack-2.14-single-file
 # 2016-04-18
@@ -2721,7 +2743,6 @@ coreutils-ver      = coreutils/coreutils-8.22.tar.xz
 db-ver             = db/db-6.1.26.tar
 dejagnu-ver        = dejagnu/dejagnu-1.5.3.tar.gz
 Devel-Symdump-ver  = Devel-Symdump/Devel-Symdump-2.15.tar.gz
-diffutils-ver      = diffutils/diffutils-3.3.tar.xz
 Digest-SHA1-ver    = Digest-SHA1/Digest-SHA1-2.13.tar.gz
 doxygen-ver        = doxygen/doxygen-1.8.9.1.src.tar.gz
 e2fsprogs-ver      = e2fsprogs/master.zip
@@ -2735,7 +2756,6 @@ findutils-ver      = findutils/findutils-4.4.2.tar.gz
 flex-ver           = flex/flex-2.5.39.tar.gz
 fontconfig-ver     = fontconfig/fontconfig-2.11.1.tar.bz2
 fuse-ver           = fuse/fuse-2.9.4.tar.gz
-gawk-ver           = gawk/gawk-4.1.1.tar.gz
 gcc-ver            = gcc/gcc-4.7.3.tar.bz2
 gc-ver             = gc/gc-7.4.2.tar.gz
 gdbm-ver           = gdbm/gdbm-1.10.tar.gz
@@ -2799,13 +2819,11 @@ Net-HTTP-ver       = Net-HTTP/Net-HTTP-6.09.tar.gz
 netpbm-ver         = netpbm/netpbm-10.35.95.tgz
 nettle-ver         = nettle/nettle-3.1.1.tar.gz
 ntfs-3g-ver        = ntfs-3g/ntfs-3g_ntfsprogs-2013.1.13.tgz
-openvpn-ver        = openvpn/openvpn-2.3.8.tar.xz
 p11-kit-ver        = p11-kit/p11-kit-0.23.2.tar.gz
 pango-ver          = pango/pango-1.36.8.tar.xz
 par2cmdline-ver    = par2cmdline/master.zip
 patch-ver          = patch/patch-2.7.tar.gz
 pcre-ver           = pcre/pcre-8.38.tar.bz2
-perl-ver           = perl/perl-5.22.1.tar.gz
 pixman-ver         = pixman/pixman-0.32.6.tar.gz
 pkg-config-ver     = pkg-config/pkg-config-0.29.tar.gz
 Pod-Coverage-ver   = Pod-Coverage/Pod-Coverage-0.23.tar.gz
@@ -2849,7 +2867,6 @@ which-ver          = which/which-2.20.tar.gz
 wipe-ver           = wipe/wipe-2.3.1.tar.bz2
 WWW-RobotRules-ver = WWW-RobotRules/WWW-RobotRules-6.02.tar.gz
 XML-Parser-ver     = XML-Parser/XML-Parser-2.36.tar.gz
-xz-ver             = xz/xz-5.0.5.tar.gz
 zip-ver            = zip/zip30.tar.gz
 zlib-ver           = zlib/zlib-1.2.8.tar.gz
 
@@ -3942,7 +3959,8 @@ ImageMagick : \
 	    --sysconfdir=/usr/local/etc \
 	    --enable-hdri \
 	    --with-modules \
-	    --with-perl
+	    --with-perl \
+	    --without-x
 	cd $@/`cat $@/untar.dir`/; make
 	-cd $@/`cat $@/untar.dir`/; make check || make test
 	$(call PKGINSTALL,$@)
@@ -4620,6 +4638,8 @@ perl: $(perl-ver)
 	    -Duseshrplib
 	cd $@/`cat $@/untar.dir`/; make
 	-cd $@/`cat $@/untar.dir`/; $(PHASE1_NOCHECK) make test
+	/usr/bin/sudo /bin/rm -f /usr/local/lib/libperl.so
+	cd $@/`cat $@/untar.dir`/; sudo cp libperl.so /usr/local/lib/.
 	$(call PKGINSTALL,$@)
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
