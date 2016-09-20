@@ -3039,13 +3039,11 @@ apr findutils gdbm jpeg libgpg-error libassuan libksba libpng npth which: $(whic
 # is too old to handle the command line arguments that are passed.
 .PHONY: diffutils
 .PHONY: grep
-.PHONY: libpthread
 .PHONY: m4
 .PHONY: patch
-diffutils grep libpthread m4 patch: \
+diffutils grep m4 patch: \
     $(diffutils-ver) \
     $(grep-ver) \
-    $(libpthread-ver) \
     $(m4-ver) \
     $(patch-ver)
 	$(call SOURCEDIR,$@,xf)
@@ -4056,6 +4054,19 @@ libiconv: $(libiconv-ver)
 	cd $@/`cat $@/untar.dir`/; make
 	$(call PKGINSTALL,$@)
 	$(call CPLIB,libcharset.*)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
+
+.PHONY: libpthread
+libpthread: \
+    $(libpthread-ver)
+	$(call SOURCEDIR,$@,xf)
+	cd $@; mkdir $@-build
+	cd $@/$@-build/; readlink -f . | grep $@-build
+	cd $@/$@-build/; ../`cat ../untar.dir`/configure --prefix=/usr/local
+	cd $@/$@-build/; make
+	-cd $@/$@-build/; make check || make test
+	$(call PKGINSTALLBUILD,$@)
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
 
