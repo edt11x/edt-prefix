@@ -2163,9 +2163,23 @@ phase1: \
 # db needs C++
 # lzma needs C++
 # lzip needs C++
+#
+# run ca-cert twice. The shell scripts are sloppy. They want to
+# manipulate the previously installed certs
+# Need the certs for Python Pip and git
+#
+# We may need to pull packages with git, so we need this as soon
+# as we have a reasonable C compiler ready, but after we have
+# the ca-certs installed.
+#
+# Watch to see if git hangs in the tests
+#
 .PHONY: aftergcc
 aftergcc: \
     check_sudo \
+    ca-cert \
+    ca-cert \
+    git \
     pcre \
     grep \
     db \
@@ -2177,9 +2191,6 @@ aftergcc: \
     expat \
     aftergettext
 
-# run ca-cert twice. The shell scripts are sloppy. They want to
-# manipulate the previously installed certs
-# Need the certs for Python Pip
 
 # took out Net-SSLeay
 #     Net-SSLeay IO-Socket-SSL 
@@ -2187,8 +2198,6 @@ aftergcc: \
 .PHONY: aftergettext
 aftergettext: \
     check_sudo \
-    ca-cert \
-    ca-cert \
     openssl \
     afteropenssl
 
@@ -2368,11 +2377,6 @@ afterllvm: \
 
 .PHONY: aftersubversion
 aftersubversion: \
-    git \
-    aftergit
-
-.PHONY: aftergit
-aftergit: \
     psmisc \
     tcp_wrappers \
     doxygen \
