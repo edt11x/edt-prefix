@@ -1987,6 +1987,7 @@ endef
 define SOURCEGIT
 	$(call SOURCECLEAN,$1,$2)
 	-cd $1; /bin/rm -rf `basename $2 .git`
+	-cd $1; /bin/rm -rf master.zip
 	cd $1; git clone $2
 endef
 
@@ -2466,6 +2467,9 @@ afterlibsecret: \
 # ==============================================================
 # Versions
 # ==============================================================
+# 2016-09-21
+# db-ver             = db/db-6.1.26.tar
+db-ver             = db/db-6.2.23.tar.gz
 # 2016-09-17
 # xz-ver             = xz/xz-5.0.5.tar.gz
 xz-ver             = xz/xz-5.2.2.tar.gz
@@ -2740,7 +2744,6 @@ clang-ver          = clang/clang-3.4.src.tar.gz
 clisp-ver          = clisp/clisp-2.49.tar.gz
 compiler-rt-ver    = compiler-rt/compiler-rt-3.4.src.tar.gz
 coreutils-ver      = coreutils/coreutils-8.22.tar.xz
-db-ver             = db/db-6.1.26.tar
 dejagnu-ver        = dejagnu/dejagnu-1.5.3.tar.gz
 Devel-Symdump-ver  = Devel-Symdump/Devel-Symdump-2.15.tar.gz
 Digest-SHA1-ver    = Digest-SHA1/Digest-SHA1-2.13.tar.gz
@@ -4215,6 +4218,7 @@ export GITCONFIG
 .PHONY: git
 git: $(git-ver)
 	$(call SOURCEDIR,$@,xf)
+	cd $@/`cat $@/untar.dir`/; chmod a+x configure
 	cd $@/`cat $@/untar.dir`/; PYTHON_PATH=/usr/local/bin/python SHELL_PATH=/usr/local/bin/bash SANE_TOOL_PATH="/usr/local/bin:/usr/local/sbin" ./configure --prefix=/usr/local --with-gitconfig=/usr/local/etc/gitconfig --with-libpcre
 	cd $@/`cat $@/untar.dir`/; PYTHON_PATH=/usr/local/bin/python SHELL_PATH=/usr/local/bin/bash SANE_TOOL_PATH="/usr/local/bin:/usr/local/sbin" make
 	cd $@/`cat $@/untar.dir`/; PYTHON_PATH=/usr/local/bin/python SHELL_PATH=/usr/local/bin/bash SANE_TOOL_PATH="/usr/local/bin:/usr/local/sbin" make test
@@ -5351,7 +5355,8 @@ $(Data-OptList-ver):
 	$(call SOURCEWGET,"Data-OptList","http://search.cpan.org/CPAN/authors/id/R/RJ/RJBS/"$(notdir $(Data-OptList-ver)))
 
 $(db-ver):
-	$(call SOURCEWGET,"db","http://download.oracle.com/otn/berkeley-"$(db-ver))
+	# $(call SOURCEWGET,"db","http://download.oracle.com/otn/berkeley-"$(db-ver))
+	$(call SOURCEWGET,"db","http://download.oracle.com/berkeley-"$(db-ver))
 
 $(Devel-GlobalDestruction-ver):
 	$(call SOURCEWGET,"Devel-GlobalDestruction","http://search.cpan.org/CPAN/authors/id/H/HA/HAARG/"$(notdir $(Devel-GlobalDestruction-ver)))
