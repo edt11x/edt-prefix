@@ -2471,6 +2471,26 @@ afterlibsecret: \
 # ==============================================================
 # Versions
 # ==============================================================
+# 2016-09-23
+vim-ver            = vim/vim-7.4.tar.bz2
+# vim-ver            = vim/v8.0.0008.tar.gz
+# 2016-09-23
+# wget-ver           = wget/wget-1.16.3.tar.xz
+wget-ver           = wget/wget-1.18.tar.xz
+# 2016-09-23
+# which-ver          = which/which-2.20.tar.gz
+which-ver          = which/which-2.21.tar.gz
+# 2016-09-23, Checked wipe is still 2.3.1 on Sourceforge, 2013-04-15
+wipe-ver           = wipe/wipe-2.3.1.tar.bz2
+# 2016-09-23, Checked WWW-RobotRules is still 6.02 in CPAN
+WWW-RobotRules-ver = WWW-RobotRules/WWW-RobotRules-6.02.tar.gz
+# 2016-09-23
+# XML-Parser-ver     = XML-Parser/XML-Parser-2.36.tar.gz
+XML-Parser-ver     = XML-Parser/XML-Parser-2.44.tar.gz
+# 2016-09-23, Checked, Info-Zip is still 3.0 2008-09-24
+zip-ver            = zip/zip30.tar.gz
+# 2016-09-23, Checked, zlib is still 1.2.8 2013-04-28
+zlib-ver           = zlib/zlib-1.2.8.tar.gz
 # 2016-09-21
 # db-ver             = db/db-6.1.26.tar
 db-ver             = db/db-6.2.23.tar.gz
@@ -2868,14 +2888,6 @@ unzip-ver          = unzip/unzip60.tar.gz
 URI-ver            = URI/URI-1.69.tar.gz
 util-linux-ng-ver  = util-linux-ng/util-linux-ng-2.18.tar.xz
 vala-ver           = vala/vala-0.28.1.tar.xz
-vim-ver            = vim/vim-7.4.tar.bz2
-wget-ver           = wget/wget-1.16.3.tar.xz
-which-ver          = which/which-2.20.tar.gz
-wipe-ver           = wipe/wipe-2.3.1.tar.bz2
-WWW-RobotRules-ver = WWW-RobotRules/WWW-RobotRules-6.02.tar.gz
-XML-Parser-ver     = XML-Parser/XML-Parser-2.36.tar.gz
-zip-ver            = zip/zip30.tar.gz
-zlib-ver           = zlib/zlib-1.2.8.tar.gz
 
 # ==============================================================
 # Individual Targets
@@ -4947,6 +4959,8 @@ vera++ : \
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
 
+
+# Vim may need to be in a foreground window to support its tests
 .PHONY: vim
 vim: $(vim-ver)
 	$(call SOURCEDIR,$@,xf)
@@ -5978,6 +5992,7 @@ $(vera++-ver):
 
 $(vim-ver):
 	$(call SOURCEWGET,"vim","ftp://ftp.vim.org/pub/vim/unix/vim-7.4.tar.bz2")
+	# (call SOURCEWGET,"vim","https://github.com/vim/vim/archive/"$(notdir $(vim-ver)))
 
 $(wget-ver):
 	$(call SOURCEWGET,"wget","http://ftp.gnu.org/gnu/"$(wget-ver))
@@ -5995,7 +6010,8 @@ $(WWW-RobotRules-ver):
 	$(call SOURCEWGET,"WWW-RobotRules","http://search.cpan.org/CPAN/authors/id/G/GA/GAAS/"$(notdir $(WWW-RobotRules-ver)))
 
 $(XML-Parser-ver):
-	$(call SOURCEWGET,"XML-Parser","http://search.cpan.org/CPAN/authors/id/M/MS/MSERGEANT/"$(notdir $(XML-Parser-ver)))
+	# (call SOURCEWGET,"XML-Parser","http://search.cpan.org/CPAN/authors/id/M/MS/MSERGEANT/"$(notdir $(XML-Parser-ver)))
+	$(call SOURCEWGET,"XML-Parser","http://search.cpan.org/CPAN/authors/id/T/TO/TODDR/"$(notdir $(XML-Parser-ver)))
 
 $(xz-ver):
 	$(call SOURCEWGET,"xz","http://tukaani.org/"$(xz-ver))
