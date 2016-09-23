@@ -2472,6 +2472,9 @@ afterlibsecret: \
 # Versions
 # ==============================================================
 # 2016-09-23
+# URI-ver            = URI/URI-1.69.tar.gz
+URI-ver            = URI/URI-1.71.tar.gz
+# 2016-09-23
 vim-ver            = vim/vim-7.4.tar.bz2
 # vim-ver            = vim/v8.0.0008.tar.gz
 # 2016-09-23
@@ -2885,7 +2888,6 @@ texinfo-ver        = texinfo/texinfo-5.2.tar.gz
 truecrypt-ver      = truecrypt/truecrypt-7.1a-linux-console-x86.tar.gz
 unrar-ver          = unrar/unrarsrc-5.3.3.tar.gz
 unzip-ver          = unzip/unzip60.tar.gz
-URI-ver            = URI/URI-1.69.tar.gz
 util-linux-ng-ver  = util-linux-ng/util-linux-ng-2.18.tar.xz
 vala-ver           = vala/vala-0.28.1.tar.xz
 
