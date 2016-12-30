@@ -2321,6 +2321,10 @@ afterlua: \
     vim \
     aftervim
 
+# If curl finds an old version of valgrind, like /usr/bin/valgrind
+# it will complain about a lot of illegal instructions and such.
+# valgrind may pick up the old compiler library and there may be
+# bugs like uninitialize variables, so it may complain on tests.
 .PHONY: aftervim
 aftervim: \
     check_sudo \
@@ -2334,6 +2338,7 @@ aftervim: \
     libidn \
     p11-kit \
     gnutls \
+    valgrind \
     curl \
     wipe \
     srm \
@@ -2432,10 +2437,12 @@ afterpatch: \
     mercurial \
     node \
     ImageMagick \
-    valgrind \
     jq \
     gnuplot \
     openvpn \
+    password-store \
+    slang \
+    nano \
     afterlibsecret
 
 # Problem children
@@ -2471,6 +2478,31 @@ afterlibsecret: \
 # ==============================================================
 # Versions
 # ==============================================================
+# 2016-05-15
+# valgrind-ver      = valgrind/valgrind-3.11.0.tar.bz2
+# 2016-12-29
+# Hey, valgrind seems to be sort of working!
+valgrind-ver      = valgrind/valgrind-3.12.0.tar.bz2
+# 2016-05-15
+# gdb-ver            = gdb/gdb-7.9.tar.xz
+# gdb-ver           = gdb/gdb-7.11.tar.xz
+# 2016-12-29
+gdb-ver           = gdb/gdb-7.12.tar.xz
+# 2016-12-29
+nano-ver           = nano/nano-2.6.3.tar.xz
+# 2016-12-29
+slang-ver          = slang/slang-2.3.1a.tar.bz2
+# 2016-03-25
+# curl-ver           = curl/curl-7.41.0.tar.bz2
+# 2016-12-29
+# curl-ver           = curl/curl-7.48.0.tar.bz2
+# valgrind is not very happy
+curl-ver           = curl/curl-7.52.1.tar.bz2
+# 2016-10-16
+password-store-ver = password-store/password-store-1.6.5.tar.xz
+# 2016-09-24
+# vala-ver           = vala/vala-0.28.1.tar.xz
+vala-ver           = vala/vala-0.34.0.tar.xz
 # 2016-09-23
 # URI-ver            = URI/URI-1.69.tar.gz
 URI-ver            = URI/URI-1.71.tar.gz
@@ -2656,11 +2688,6 @@ gnuplot-ver       = gnuplot/gnuplot-5.0.3.tar.gz
 # ruby-ver           = ruby/ruby-2.3.0.tar.xz
 ruby-ver          = ruby/ruby-2.3.1.tar.xz
 # 2016-05-15
-# gdb-ver            = gdb/gdb-7.9.tar.xz
-gdb-ver           = gdb/gdb-7.11.tar.xz
-# 2016-05-15
-valgrind-ver      = valgrind/valgrind-3.11.0.tar.bz2
-# 2016-05-15
 jq-ver            = jq-1.5/jq-1.5.tar.gz
 # 2016-05-06
 util-linux-ver     = util-linux/util-linux-2.28.tar.gz
@@ -2692,9 +2719,6 @@ git-ver            = git/git-2.8.1.tar.xz
 lxsplit-ver        = lxsplit/lxsplit-0.2.4.tar.gz
 # 2016-04-03
 node-ver           = node/node-v4.4.2.tar.gz
-# 2016-03-25
-# curl-ver           = curl/curl-7.41.0.tar.bz2
-curl-ver           = curl/curl-7.48.0.tar.bz2
 # 2016-03-12
 dbus-ver           = dbus/dbus-1.10.6.tar.gz
 # 2016-03-12
@@ -2889,7 +2913,6 @@ truecrypt-ver      = truecrypt/truecrypt-7.1a-linux-console-x86.tar.gz
 unrar-ver          = unrar/unrarsrc-5.3.3.tar.gz
 unzip-ver          = unzip/unzip60.tar.gz
 util-linux-ng-ver  = util-linux-ng/util-linux-ng-2.18.tar.xz
-vala-ver           = vala/vala-0.28.1.tar.xz
 
 # ==============================================================
 # Individual Targets
@@ -3178,7 +3201,8 @@ par2cmdline: $(par2cmdline-ver)
 .PHONY: cairo
 .PHONY: iptraf-ng
 .PHONY: hwloc
-srm wipe mosh socat tmux psmisc libusb htop cairo iptraf-ng hwloc: \
+.PHONY: nano
+srm wipe mosh socat tmux psmisc libusb htop cairo iptraf-ng hwloc nano: \
 	$(srm-ver) \
 	$(libusb-ver) \
 	$(htop-ver) \
@@ -3189,7 +3213,8 @@ srm wipe mosh socat tmux psmisc libusb htop cairo iptraf-ng hwloc: \
 	$(wipe-ver) \
 	$(cairo-ver) \
 	$(iptraf-ng-ver) \
-	$(hwloc-ver)
+	$(hwloc-ver) \
+	$(nano-ver)
 	$(call SOURCEDIR,$@,xf)
 	cd $@/`cat $@/untar.dir`/; CPPFLAGS="-I/usr/local/include -I/usr/local/include/ncursesw" ./configure --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/; make
@@ -3240,7 +3265,8 @@ make libpcap sqlite lzma bison pango tcpdump gobject-introspection : \
 .PHONY: multitail
 .PHONY: unrar
 .PHONY: lxsplit
-bcrypt libcap multitail symlinks unrar lxsplit: $(bcrypt-ver) $(multitail-ver) $(symlinks-ver) $(unrar-ver) $(libcap-ver) $(lxsplit-ver)
+.PHONY: password-store
+bcrypt libcap multitail symlinks unrar lxsplit password-store: $(bcrypt-ver) $(multitail-ver) $(symlinks-ver) $(unrar-ver) $(libcap-ver) $(lxsplit-ver) $(password-store-ver)
 	$(call SOURCEDIR,$@,xfz)
 	cd $@/`cat $@/untar.dir`/; make
 	$(call PKGINSTALL,$@)
@@ -3579,6 +3605,12 @@ crosextrafonts-carlito crosextrafonts: $(crosextrafonts-ver) $(crosextrafonts-ca
 	cd $@/`cat $@/untar.dir`/; sudo /usr/local/bin/install -m 644 -D *.ttf /usr/local/share/fonts/truetype
 	cd $@/`cat $@/untar.dir`/; sudo /usr/local/bin/fc-cache -f -v /usr/local/share/fonts
 
+# curl needs valgrind to run its tests
+# If it finds the system valgrind, that might not be compatible with
+# the compiler we are using, so it may think theres all sorts of illegal
+# instructions. Even if it does find the compiler we are using, it may
+# find a system library with bugs and claim uninitialized variables and
+# such, so we must ignore the tests.
 .PHONY: curl
 curl: $(curl-ver)
 	$(call SOURCEDIR,$@,xf)
@@ -4794,6 +4826,18 @@ scons: $(scons-ver)
 	    --prefix=/usr/local  --standard-lib --optimize=1 --install-data=/usr/share
 	@echo "======= Build of $@ Successful ======="
 
+# slang does not like the parallel build
+.PHONY: slang
+slang: $(slang-ver)
+	$(call SOURCEDIR,$@,xf)
+	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
+	cd $@/`cat $@/untar.dir`/; make -j1
+	cd $@/`cat $@/untar.dir`/; make check || make test
+	cd $@/`cat $@/untar.dir`/; sudo make install-all
+	$(call PKGINSTALL,$@)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
+
 .PHONY: snort
 snort : \
     $(snort-ver)
@@ -5166,6 +5210,7 @@ wget-all: \
     $(multitail-ver) \
     $(mutt-ver) \
     $(namespace-clean-ver) \
+    $(nano-ver) \
     $(ncurses-ver) \
     $(netpbm-ver) \
     $(Net-HTTP-ver) \
@@ -5185,6 +5230,7 @@ wget-all: \
     $(PAR-Dist-ver) \
     $(Params-Util-ver) \
     $(par2cmdline-ver) \
+    $(password-store-ver) \
     $(patch-ver) \
     $(pcre-ver) \
     $(perl-ver) \
@@ -5212,6 +5258,7 @@ wget-all: \
     $(sed-ver) \
     $(serf-ver) \
     $(sharutils-ver) \
+    $(slang-ver) \
     $(snort-ver) \
     $(socat-ver) \
     $(sparse-ver) \
@@ -5727,6 +5774,9 @@ $(mutt-ver):
 $(namespace-clean-ver):
 	$(call SOURCEWGET,"namespace-clean","http://search.cpan.org/CPAN/authors/id/R/RI/RIBASUSHI/"$(notdir $(namespace-clean-ver)))
 
+$(nano-ver):
+	$(call SOURCEWGET,"nano","https://www.nano-editor.org/dist/v2.6/"$(notdir $(nano-ver)))
+
 $(nettle-ver):
 	$(call SOURCEWGET,"nettle","https://ftp.gnu.org/gnu/"$(nettle-ver))
 
@@ -5780,6 +5830,9 @@ $(Params-Util-ver):
 
 $(par2cmdline-ver):
 	$(call SOURCEWGET,"par2cmdline","https://github.com/Parchive/par2cmdline/archive/master.zip")
+
+$(password-store-ver):
+	$(call SOURCEWGET,"password-store","https://git.zx2c4.com/password-store/snapshot/"$(notdir $(password-store-ver)))
 
 $(patch-ver):
 	$(call SOURCEWGET,"patch","http://ftp.gnu.org/gnu/"$(patch-ver))
@@ -5866,6 +5919,9 @@ $(serf-ver):
 # sharutils needed for cryptsetup
 $(sharutils-ver):
 	$(call SOURCEWGET, "sharutils", "http://ftp.gnu.org/gnu/sharutils/sharutils-4.15.1.tar.xz")
+
+$(slang-ver):
+	$(call SOURCEWGET,"slang","http://www.jedsoft.org/releases/"$(slang-ver))
 
 $(Sub-Uplevel-ver):
 	$(call SOURCEWGET,"Sub-Uplevel","http://search.cpan.org/CPAN/authors/id/D/DA/DAGOLDEN/"$(notdir $(Sub-Uplevel-ver)))
@@ -5981,7 +6037,7 @@ $(URI-ver):
 	$(call SOURCEWGET,"URI","http://search.cpan.org/CPAN/authors/id/E/ET/ETHER/"$(notdir $(URI-ver)))
 
 $(vala-ver):
-	$(call SOURCEWGET,"vala","http://ftp.gnome.org/pub/gnome/sources/vala/0.28/"$(notdir $(vala-ver)))
+	$(call SOURCEWGET,"vala","http://ftp.gnome.org/pub/gnome/sources/vala/0.34/"$(notdir $(vala-ver)))
 
 $(valgrind-ver):
 	$(call SOURCEWGET,"valgrind","http://valgrind.org/downloads/"$(notdir $(valgrind-ver)))
