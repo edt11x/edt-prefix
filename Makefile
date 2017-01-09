@@ -1940,6 +1940,12 @@ define MKVRFYDIR
 	cd $1; readlink -f . | grep $1
 endef
 
+define SOURCEBANNER
+	@echo "======================================"
+	@echo "=======    Start $1"
+	@echo "======================================"
+endef
+
 # tcp_wrappers uses underscore in front of the version number
 define SOURCEBASE
 	$(call MKVRFYDIR,$1)
@@ -1947,20 +1953,34 @@ define SOURCEBASE
 	cd $1; find . -maxdepth 1 -type d -name $1_\* -print -exec /bin/rm -rf {} \;
 endef
 
+define MAKEUNTARDIR
+	-cd $1; /bin/rm -f untar.dir
+	cd $1; find . -maxdepth 1 -type d -name $1\* -print > untar.dir
+	cd $1/`cat $1/untar.dir`/; readlink -f . | grep `cat ../untar.dir`
+endef
+
 # Old versions of tar may not handle all archives and may not dynamically detect
 # how the archive is compressed. So we will try multiple ways and also see if
 # we have a version in /usr/local/bin that can handle it.
+# 1 - name of the project
+# 2 - tar options, xf or xfz
 define SOURCEDIR
-	@echo "======================================"
-	@echo "=======    Start $1"
-	@echo "======================================"
+	$(call SOURCEBANNER,$1)
 	$(call SOURCEBASE,$1)
 	echo ---###---
 	cd $1; tar $2 $1*.tar* || tar $2 $1*.tgz || tar $2 $1*.tar || tar xf $1*.tar* || /usr/local/bin/tar xf $1*.tar* || unzip $1*.zip || unzip master.zip || ( mkdir $1; cd $1; tar xf ../master.tar.gz ) || test -d $1
 	echo ---###---
-	-cd $1; /bin/rm -f untar.dir
-	cd $1; find . -maxdepth 1 -type d -name $1\* -print > untar.dir
-	cd $1/`cat $1/untar.dir`/; readlink -f . | grep `cat ../untar.dir`
+	$(call MAKEUNTARDIR,$1)
+endef
+
+define SOURCEFLATZIPDIR
+	$(call SOURCEBANNER,$1)
+	$(call SOURCEBASE,$1)
+	echo ---###---
+	cd $1; mkdir -p $1
+	cd $1/$1; unzip -o ../$1*.zip
+	echo ---###---
+	$(call MAKEUNTARDIR,$1)
 endef
 
 # cd $1; test ! -e $1-*.patch || /bin/mv $1-*.patch $$HOME/files/backups/oldpackages/.
@@ -2443,6 +2463,7 @@ afterpatch: \
     password-store \
     slang \
     nano \
+    random \
     afterlibsecret
 
 # Problem children
@@ -2478,6 +2499,8 @@ afterlibsecret: \
 # ==============================================================
 # Versions
 # ==============================================================
+# 2017-01-08
+random-ver          = random/random.zip
 # 2016-05-15
 # valgrind-ver      = valgrind/valgrind-3.11.0.tar.bz2
 # 2016-12-29
@@ -4749,6 +4772,13 @@ qt-everywhere-opensource-src : \
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
 
+.PHONY: random
+random : \
+    $(random-ver)
+	$(call SOURCEFLATZIPDIR,$@,xf)
+	cd $@/`cat $@/untar.dir`/; make
+	cd $@/`cat $@/untar.dir`/; sudo cp -a -v ./ent /usr/local/bin/.
+
 .PHONY: rakudo-star
 rakudo-star: $(rakudo-star-ver)
 	$(call SOURCEDIR,$@,xf)
@@ -5247,6 +5277,7 @@ wget-all: \
     $(py2cairo-ver) \
     $(Python-ver) \
     $(qt-everywhere-opensource-src-ver) \
+    $(random-ver) \
     $(rakudo-star-ver) \
     $(readline-ver) \
     $(Role-Tiny-ver) \
@@ -5885,6 +5916,9 @@ $(p7zip-ver):
 
 $(qt-everywhere-opensource-src-ver):
 	$(call SOURCEWGET,"qt-everywhere-opensource-src","http://download.qt.io/archive/qt/5.5/5.5.1/single/qt-everywhere-opensource-src-5.5.1.tar.xz")
+
+$(random-ver):
+	$(call SOURCEWGET,"random","http://www.fourmilab.ch/"$(random-ver))
 
 $(rakudo-star-ver):
 	$(call SOURCEWGET,"rakudo-star","http://rakudo.org/downloads/star/"$(notdir $(rakudo-star-ver)))
