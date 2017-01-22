@@ -1,4 +1,9 @@
-
+#
+# Things I should work on:
+# * Alot of these packages fall into some pretty generic patterns,
+#  - configure; make; make check; sudo make install
+#  - I need to build more generic templates to match these patterns
+# * One major hurdle is not having a good pthreads library.
 #
 # We need a new version of Make to handle this Makefile. Probably
 # need to compile Make by hand so this will work or package install
@@ -2455,7 +2460,6 @@ afterpatch: \
     pngnq \
     ack \
     mercurial \
-    node \
     ImageMagick \
     jq \
     gnuplot \
@@ -2464,6 +2468,7 @@ afterpatch: \
     slang \
     nano \
     random \
+    maldetect \
     afterlibsecret
 
 # Problem children
@@ -2471,6 +2476,9 @@ afterpatch: \
 # pygobject needs pycairo
 # pycairo needs cairo
 # cairo wants libpthreads
+#
+# When one of these fails, I should keep shuffling it to the bottom of the
+# list, giving the other packages a chance to try.
 #
 .PHONY: afterlibsecret
 afterlibsecret: \
@@ -2494,11 +2502,14 @@ afterlibsecret: \
     pango \
     glibc \
     pinentry \
+    node \
     truecrypt
 
 # ==============================================================
 # Versions
 # ==============================================================
+# 2017-01-21
+maldetect-ver       = maldetect/maldetect-current.tar.gz
 # 2017-01-08
 random-ver          = random/random.zip
 # 2016-05-15
@@ -4467,9 +4478,14 @@ Math-Pari : \
 	cd $@/`cat $@/untar.dir`/; OPENSSL_DIR=/usr/local OPENSSL_PREFIX=/usr/local LD_LIBRARY_PATH=:/usr/local/lib:/usr/lib make test || make check
 	$(call PKGINSTALL,$@)
 
+.PHONY: maldetect
+maldetect : \
+    $(maldetect-ver)
+	$(call SOURCEDIR,$@,xfz)
+	cd $@/`cat $@/untar.dir`/; sudo ./install.sh
+
 .PHONY: mercurial
 mercurial: $(mercurial-ver)
-	$(call SOURCEDIR,$@,xfz)
 	cd $@/`cat $@/untar.dir`/; make build
 	cd $@/`cat $@/untar.dir`/; sudo make PREFIX=/usr/local install-bin
 
@@ -5223,6 +5239,7 @@ wget-all: \
     $(lzo-ver) \
     $(m4-ver) \
     $(make-ver) \
+    $(maldetect-ver) \
     $(Math-Pari-ver) \
     $(Math-Random-ISAAC-ver) \
     $(Math-Random-Secure-ver) \
@@ -5741,6 +5758,9 @@ $(lxsplit-ver):
 
 $(make-ver):
 	$(call SOURCEWGET,"make","https://ftp.gnu.org/gnu/make/make-4.1.tar.gz")
+
+$(maldetect-ver):
+	$(call SOURCEWGET,"maldetect","http://www.rfxn.com/downloads/"$(notdir $(maldetect-ver)))
 
 $(Math-Random-ISAAC-ver):
 	$(call SOURCEWGET,"Math-Random-ISAAC","http://search.cpan.org/CPAN/authors/id/J/JA/JAWNSY/"$(notdir $(Math-Random-ISAAC-ver)))
