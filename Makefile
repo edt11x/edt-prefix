@@ -1,9 +1,14 @@
 #
 # Things I should work on:
 # * Alot of these packages fall into some pretty generic patterns,
-#  - configure; make; make check; sudo make install
+#  - tar xf; configure; make; make check; sudo make install
+#  - or tar xf; make; make check; make install
 #  - I need to build more generic templates to match these patterns
 # * One major hurdle is not having a good pthreads library.
+# * Need to work on the ability to handle building multiple versions of a
+#   package. For example, I need to build GCC 4.7.3 since that will still
+#   build with just a straight C compiler, then I need to build a more
+#   recent version of GCC, like GCC 6 to build the rest of the packages.
 #
 # We need a new version of Make to handle this Makefile. Probably
 # need to compile Make by hand so this will work or package install
@@ -34,6 +39,8 @@
 # https://ftp.gnu.org/pub/gnu/
 # ftp://ftp.kernel.org/pub/linux/
 #
+# Lots of good concise info about building individual packages and their 
+# dependancies can be found at Linux From Scratch.
 #
 # Configuration Variables
 #
@@ -100,6 +107,90 @@ define COMPILERRTPATCH
    int ptrace_setregset = PTRACE_SETREGSET;
 endef
 
+###################################################################################
+###################################################################################
+###################################################################################
+define ICUPATCH
+Submitted By: Pierre Labastie <pierre dot labastie at neuf dot fr>
+Date: 2016-11-15
+Initial Package Version: 58.1
+Upstream Status: Applied
+Origin: Upstream, rediffed so that patch -p1 works.
+Description: Fix a regression in 58.1, which made mozilla applications
+segfault. See ticket #8527
+
+diff -Naur icu.old/source/common/ulist.c icu.new/source/common/ulist.c
+--- icu.old/source/common/ulist.c	2016-06-15 20:58:17.000000000 +0200
++++ icu.new/source/common/ulist.c	2016-11-15 16:11:09.996596933 +0100
+@@ -29,7 +29,6 @@
+     UListNode *tail;
+     
+     int32_t size;
+-    int32_t currentIndex;
+ };
+ 
+ static void ulist_addFirstItem(UList *list, UListNode *newItem);
+@@ -51,7 +50,6 @@
+     newList->head = NULL;
+     newList->tail = NULL;
+     newList->size = 0;
+-    newList->currentIndex = -1;
+     
+     return newList;
+ }
+@@ -80,8 +78,9 @@
+     } else {
+         p->next->previous = p->previous;
+     }
+-    list->curr = NULL;
+-    list->currentIndex = 0;
++    if (p == list->curr) {
++        list->curr = p->next;
++    }
+     --list->size;
+     if (p->forceDelete) {
+         uprv_free(p->data);
+@@ -150,7 +149,6 @@
+         newItem->next = list->head;
+         list->head->previous = newItem;
+         list->head = newItem;
+-        list->currentIndex++;
+     }
+     
+     list->size++;
+@@ -193,7 +191,6 @@
+     
+     curr = list->curr;
+     list->curr = curr->next;
+-    list->currentIndex++;
+     
+     return curr->data;
+ }
+@@ -209,7 +206,6 @@
+ U_CAPI void U_EXPORT2 ulist_resetList(UList *list) {
+     if (list != NULL) {
+         list->curr = list->head;
+-        list->currentIndex = 0;
+     }
+ }
+ 
+@@ -272,4 +268,3 @@
+ U_CAPI UList * U_EXPORT2 ulist_getListFromEnum(UEnumeration *en) {
+     return (UList *)(en->context);
+ }
+-
+diff -Naur icu.old/source/i18n/ucol_res.cpp icu.new/source/i18n/ucol_res.cpp
+--- icu.old/source/i18n/ucol_res.cpp	2016-09-28 04:26:02.000000000 +0200
++++ icu.new/source/i18n/ucol_res.cpp	2016-11-15 16:11:10.000596933 +0100
+@@ -680,6 +680,7 @@
+         return NULL;
+     }
+     memcpy(en, &defaultKeywordValues, sizeof(UEnumeration));
++    ulist_resetList(sink.values);  // Initialize the iterator.
+     en->context = sink.values;
+     sink.values = NULL;  // Avoid deletion in the sink destructor.
+     return en;
+endef
 ###################################################################################
 ###################################################################################
 ###################################################################################
@@ -1958,10 +2049,24 @@ define SOURCEBASE
 	cd $1; find . -maxdepth 1 -type d -name $1_\* -print -exec /bin/rm -rf {} \;
 endef
 
+# 1 - name of the project
+# 2 - expected partial name of the directory that was untarred, the untar name
 define MAKEUNTARDIR
 	-cd $1; /bin/rm -f untar.dir
-	cd $1; find . -maxdepth 1 -type d -name $1\* -print > untar.dir
+	cd $1; find . -maxdepth 1 -type d -name $2\* -print > untar.dir
 	cd $1/`cat $1/untar.dir`/; readlink -f . | grep `cat ../untar.dir`
+endef
+
+# 1 - name of the project
+# 2 - tar options, xf or xfz
+# 3 - expected partial name of the directory that was untarred, the untar name
+define SOURCEDIR_W_UNTAR
+	$(call SOURCEBANNER,$1)
+	$(call SOURCEBASE,$1)
+	echo ---###---
+	cd $1; tar $2 $1*.tar* || tar $2 $1*.tgz || tar $2 $1*.tar || tar xf $1*.tar* || /usr/local/bin/tar xf $1*.tar* || unzip $1*.zip || unzip master.zip || ( mkdir $1; cd $1; tar xf ../master.tar.gz ) || test -d $1
+	echo ---###---
+	$(call MAKEUNTARDIR,$1,$3)
 endef
 
 # Old versions of tar may not handle all archives and may not dynamically detect
@@ -1970,12 +2075,7 @@ endef
 # 1 - name of the project
 # 2 - tar options, xf or xfz
 define SOURCEDIR
-	$(call SOURCEBANNER,$1)
-	$(call SOURCEBASE,$1)
-	echo ---###---
-	cd $1; tar $2 $1*.tar* || tar $2 $1*.tgz || tar $2 $1*.tar || tar xf $1*.tar* || /usr/local/bin/tar xf $1*.tar* || unzip $1*.zip || unzip master.zip || ( mkdir $1; cd $1; tar xf ../master.tar.gz ) || test -d $1
-	echo ---###---
-	$(call MAKEUNTARDIR,$1)
+	$(call SOURCEDIR_W_UNTAR,$1,$2,$1)
 endef
 
 define SOURCEFLATZIPDIR
@@ -1985,7 +2085,7 @@ define SOURCEFLATZIPDIR
 	cd $1; mkdir -p $1
 	cd $1/$1; unzip -o ../$1*.zip
 	echo ---###---
-	$(call MAKEUNTARDIR,$1)
+	$(call MAKEUNTARDIR,$1,$1)
 endef
 
 # cd $1; test ! -e $1-*.patch || /bin/mv $1-*.patch $$HOME/files/backups/oldpackages/.
@@ -2053,12 +2153,15 @@ endef
 
 # Some packages do not have configure and depend on the PREFIX
 # and DESTDIR variables to determine where they should install
+# Some Makefiles use prefix, some use PREFIX
+# 1 - name of the project and base directory
+# 2 - expected partial name of the directory that was untarred, the untar name
 define PKGINSTALLTOPREFIX
 	@echo "======= Start of $1 Successful ======="
-	cd $1/$2/; /usr/bin/sudo make PREFIX=/usr/local install || /usr/bin/sudo make LD_LIBRARY_PATH="/usr/local/lib:/usr/local/lib64:/lib:/usr/lib:/usr/local/glibc/lib" PREFIX=/usr/local install
+	cd $1/$2/; /usr/bin/sudo make prefix=/usr/local PREFIX=/usr/local install || /usr/bin/sudo make LD_LIBRARY_PATH="/usr/local/lib:/usr/local/lib64:/lib:/usr/lib:/usr/local/glibc/lib" PREFIX=/usr/local install
 	-cd $1/$2/; /usr/bin/sudo /bin/rm -rf /tmp/stage
 	cd $1/$2/; /usr/bin/sudo /bin/mkdir -p /tmp/stage
-	cd $1/$2/; /usr/bin/sudo make PREFIX=/usr/local DESTDIR=/tmp/stage install || /usr/bin/sudo make LD_LIBRARY_PATH="/usr/local/lib:/usr/local/lib64:/lib:/usr/lib:/usr/local/glibc/lib" PREFIX=/usr/local DESTDIR=/tmp/stage install
+	cd $1/$2/; /usr/bin/sudo make prefix=/usr/local PREFIX=/usr/local DESTDIR=/tmp/stage install || /usr/bin/sudo make LD_LIBRARY_PATH="/usr/local/lib:/usr/local/lib64:/lib:/usr/lib:/usr/local/glibc/lib" PREFIX=/usr/local DESTDIR=/tmp/stage install
 	$(call PKGFROMSTAGE,$1,$2,stage)
 	-cd $1/$2/; /usr/bin/sudo /bin/rm -rf /tmp/stage
 	@echo "======= Install of $1 Successful ======="
@@ -2215,7 +2318,6 @@ aftergcc: \
     gettext \
     expat \
     aftergettext
-
 
 # took out Net-SSLeay
 #     Net-SSLeay IO-Socket-SSL 
@@ -2469,6 +2571,7 @@ afterpatch: \
     nano \
     random \
     maldetect \
+    LMDB \
     afterlibsecret
 
 # Problem children
@@ -2492,7 +2595,7 @@ afterlibsecret: \
     snort \
     mutt \
     qt-everywhere-opensource-src \
-    gcc-5.3 \
+    gcc-6.3 \
     e2fsprogs \
     netpbm \
     vera++ \
@@ -2508,6 +2611,42 @@ afterlibsecret: \
 # ==============================================================
 # Versions
 # ==============================================================
+# 2017-04-11
+# m4-ver             = m4/m4-1.4.17.tar.gz
+m4-ver             = m4/m4-1.4.18.tar.gz
+# 2016-04-22
+# gcc-5.3-ver        = gcc-5.3/gcc-5.3.0.tar.bz2
+# 2017-01-27
+gcc-6.3-ver          = gcc-6.3/gcc-6.3.0.tar.bz2
+# 2017-01-27
+# icu-ver            = icu/icu4c-54_1-src.tgz
+icu-ver            = icu/icu4c-58_2-src.tgz
+# 2017-01-27
+# glib-ver           = glib/glib-2.44.1.tar.xz
+glib-ver           = glib/glib-2.46.1.tar.xz
+# needs libmount and openat
+# glib-ver           = glib/glib-2.50.2.tar.xz
+# 2017-01-27
+# harfbuzz-ver       = harfbuzz/harfbuzz-0.9.38.tar.bz2
+harfbuzz-ver       = harfbuzz/harfbuzz-1.4.2.tar.bz2
+# 2016-04-18
+# freetype-ver       = freetype/freetype-2.6.1.tar.bz2
+# freetype-ver       = freetype/freetype-2.6.3.tar.bz2
+# 2017-01-27
+freetype-ver       = freetype/freetype-2.7.1.tar.bz2
+# 2017-01-27
+# fontconfig-ver     = fontconfig/fontconfig-2.11.1.tar.bz2
+fontconfig-ver     = fontconfig/fontconfig-2.12.1.tar.bz2
+# 2016-01-23
+# Python-ver         = Python/Python-2.7.10.tar.xz
+# Python-ver         = Python/Python-2.7.11.tar.xz
+# 2017-01-27
+Python-ver         = Python/Python-2.7.13.tar.xz
+# 2017-01-27
+LMDB-ver           = LMDB/LMDB_0.9.19.tar.gz
+# 2017-01-27
+# pcre-ver           = pcre/pcre-8.38.tar.bz2
+pcre-ver           = pcre/pcre-8.40.tar.bz2
 # 2017-01-21
 maldetect-ver       = maldetect/maldetect-current.tar.gz
 # 2017-01-08
@@ -2725,8 +2864,6 @@ ruby-ver          = ruby/ruby-2.3.1.tar.xz
 jq-ver            = jq-1.5/jq-1.5.tar.gz
 # 2016-05-06
 util-linux-ver     = util-linux/util-linux-2.28.tar.gz
-# 2016-04-22
-gcc-5.3-ver        = gcc-5.3/gcc-5.3.0.tar.bz2
 # 2016-04-20
 mercurial-ver      = mercurial/mercurial-3.7.3.tar.gz
 # 2016-04-19
@@ -2740,9 +2877,6 @@ pngnq-ver          = pngnq/pngnq-1.1.tar.gz
 crosextrafonts-carlito-ver = crosextrafonts-carlito/crosextrafonts-carlito-20130920.tar.gz
 # 2016-04-18
 crosextrafonts-ver = crosextrafonts/crosextrafonts-20130214.tar.gz
-# 2016-04-18
-# freetype-ver       = freetype/freetype-2.6.1.tar.bz2
-freetype-ver       = freetype/freetype-2.6.3.tar.bz2
 # 2016-04-08
 # grep-ver           = grep/grep-2.21.tar.xz
 grep-ver           = grep/grep-2.24.tar.xz
@@ -2782,9 +2916,6 @@ py2cairo-ver       = py2cairo/py2cairo-1.10.0.tar.bz2
 # 2016-01-23
 # Adding libidn
 libidn-ver         = libidn/libidn-1.32.tar.gz
-# 2016-01-23
-# Python-ver         = Python/Python-2.7.10.tar.xz
-Python-ver         = Python/Python-2.7.11.tar.xz
 # 2016-01-21
 # cairo-ver          = cairo/cairo-1.14.2.tar.xz
 cairo-ver          = cairo/cairo-1.14.6.tar.xz
@@ -2809,7 +2940,6 @@ httpd-ver          = httpd/httpd-2.4.18.tar.bz2
 subversion-ver     = subversion/subversion-1.9.3.tar.bz2
 # 2016-01-09 Lua
 lua-ver            = lua/lua-5.3.2.tar.gz
-# fontconfig-ver     = fontconfig/fontconfig-2.11.1.tar.bz2
 acl-ver            = acl/acl-2.2.52.src.tar.gz
 apr-util-ver       = apr-util/apr-util-1.5.3.tar.bz2
 apr-ver            = apr/apr-1.4.8.tar.bz2
@@ -2842,20 +2972,16 @@ File-Listing-ver   = File-Listing/File-Listing-6.04.tar.gz
 file-ver           = file/file-5.17.tar.gz
 findutils-ver      = findutils/findutils-4.4.2.tar.gz
 flex-ver           = flex/flex-2.5.39.tar.gz
-fontconfig-ver     = fontconfig/fontconfig-2.11.1.tar.bz2
 fuse-ver           = fuse/fuse-2.9.4.tar.gz
 gcc-ver            = gcc/gcc-4.7.3.tar.bz2
 gc-ver             = gc/gc-7.4.2.tar.gz
 gdbm-ver           = gdbm/gdbm-1.10.tar.gz
 gettext-ver        = gettext/gettext-0.19.7.tar.gz
 glibc-ver          = glibc/glibc-2.21.tar.gz
-# glib-ver           = glib/glib-2.44.1.tar.xz
-glib-ver           = glib/glib-2.46.1.tar.xz
 gmp-ver            = gmp/gmp-5.1.2.tar.bz2
 gobject-introspection-ver = gobject-introspection/gobject-introspection-1.46.0.tar.xz
 go-ver             = go/go1.4.2.src.tar.gz
 guile-ver          = guile/guile-2.0.11.tar.xz
-harfbuzz-ver       = harfbuzz/harfbuzz-0.9.38.tar.bz2
 HTML-Parser-ver    = HTML-Parser/HTML-Parser-3.71.tar.gz
 HTML-Tagset-ver    = HTML-Tagset/HTML-Tagset-3.20.tar.gz
 htop-ver           = htop/htop-1.0.1.tar.gz
@@ -2865,7 +2991,6 @@ HTTP-Date-ver      = HTTP-Date/HTTP-Date-6.02.tar.gz
 HTTP-Message-ver   = HTTP-Message/HTTP-Message-6.11.tar.gz
 HTTP-Negotiate-ver = HTTP-Negotiate/HTTP-Negotiate-6.01.tar.gz
 hwloc-ver          = hwloc/hwloc-1.11.0.tar.gz
-icu-ver            = icu/icu4c-54_1-src.tgz
 inetutils-ver      = inetutils/inetutils-1.9.tar.gz
 intltool-ver       = intltool/intltool-0.51.0.tar.gz
 IO-HTML-ver        = IO-HTML/IO-HTML-1.001.tar.gz
@@ -2896,7 +3021,6 @@ llvm-ver           = llvm/llvm-3.4.src.tar.gz
 LWP-MediaTypes-ver = LWP-MediaTypes/LWP-MediaTypes-6.02.tar.gz
 lzma-ver           = lzma/lzma-4.32.7.tar.gz
 lzo-ver            = lzo/lzo-2.08.tar.gz
-m4-ver             = m4/m4-1.4.17.tar.gz
 make-ver           = make/make-4.1.tar.gz
 mosh-ver           = mosh/mosh-1.2.5.tar.gz
 mpc-ver            = mpc/mpc-1.0.1.tar.gz
@@ -2911,7 +3035,6 @@ p11-kit-ver        = p11-kit/p11-kit-0.23.2.tar.gz
 pango-ver          = pango/pango-1.36.8.tar.xz
 par2cmdline-ver    = par2cmdline/master.zip
 patch-ver          = patch/patch-2.7.tar.gz
-pcre-ver           = pcre/pcre-8.38.tar.bz2
 pixman-ver         = pixman/pixman-0.32.6.tar.gz
 pkg-config-ver     = pkg-config/pkg-config-0.29.tar.gz
 Pod-Coverage-ver   = Pod-Coverage/Pod-Coverage-0.23.tar.gz
@@ -3474,7 +3597,6 @@ ack: $(ack-ver)
 	cd $@; cp $(notdir $(ack-ver)) ack
 	cd $@; sudo /usr/local/bin/install -m 755 -D ack /usr/local/bin
 
-
 .PHONY: acl
 acl: $(acl-ver)
 	# remove the old shared library, in case its in use
@@ -3886,20 +4008,21 @@ gcc: $(gcc-ver)
 	$(call CPLIB,libstdc*)
 	@echo "======= Build of $@ Successful ======="
 
-.PHONY: gcc-5.3
-gcc-5.3: $(gcc-5.3-ver)
+.PHONY: gcc-6.3
+gcc-6.3: $(gcc-6.3-ver)
 	$(call SOURCEDIR,$@,xf)
-	cd $@; mkdir $@-build
+	cd $@; mkdir -v $@-build
 	cd $@/$@-build/; readlink -f . | grep $@-build
 	cd $@/$@-build/; ../`cat ../untar.dir`/configure \
 		    LDFLAGS="-L/usr/local/lib -lpth" \
 		    --enable-shared \
+		    --disable-bootstrap \
 		    --disable-threads \
 		    --disable-multilib \
 		    --prefix=/usr/local \
-                    --enable-languages=$(GCC_LANGS) \
-		    --with-ecj-jar=/usr/local/share/java/ecj.jar
+                    --enable-languages=c,c++
 	cd $@/$@-build/; make
+	false
 	-cd $@/$@-build/; C_INCLUDE_PATH=/usr/local/include LIBRARY_PATH=/usr/local/lib make check
 	test -e /usr/local/bin/cc || /usr/bin/sudo ln -sf /usr/local/bin/gcc /usr/local/bin/cc
 	$(call PKGINSTALLBUILD,$@)
@@ -4008,10 +4131,15 @@ httpd: $(httpd-ver)
 	cd $@/`cat $@/untar.dir`/; make
 	$(call PKGINSTALL,$@)
 
+export ICUPATCH
+patches/icu4c-58.2-fix_enumeration-1.patch:
+	-mkdir -p patches
+	echo "$$ICUPATCH" >> $@
+
 .PHONY: icu
-icu: $(icu-ver)
+icu: $(icu-ver) patches/icu4c-58.2-fix_enumeration-1.patch
 	$(call SOURCEDIR,$@,xf)
-	# XXX XXX XXX XXX 
+	cd $@/`cat $@/untar.dir`; patch -p1 -i ../../patches/icu4c-58.2-fix_enumeration-1.patch
 	cd $@/`cat $@/untar.dir`/source; CC=gcc CXX=g++ ./configure --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/source; make
 	cd $@/`cat $@/untar.dir`/source; make check || make test
@@ -4468,6 +4596,14 @@ llvm: $(llvm-ver) $(clang-ver) $(compiler-rt-ver) patches/compiler-rt.patch
 	cd $@/`cat $@/untar.dir`/; make
 	cd $@/`cat $@/untar.dir`/; make check || make test
 	$(call PKGINSTALL,$@)
+
+.PHONY: LMDB
+LMDB: $(LMDB-ver)
+	$(call SOURCEDIR_W_UNTAR,$@,xfz,lmdb-LMDB)
+	cd $@/`cat $@/untar.dir`/libraries/liblmdb; make
+	$(call PKGINSTALLTOPREFIX,$@,`cat $@/untar.dir`/libraries/liblmdb)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
 
 .PHONY: Math-Pari
 Math-Pari : \
@@ -5051,8 +5187,8 @@ vera++ : \
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
 
-
 # Vim may need to be in a foreground window to support its tests
+# unset DISPLAY to get the tests to pass
 .PHONY: vim
 vim: $(vim-ver)
 	$(call SOURCEDIR,$@,xf)
@@ -5164,7 +5300,7 @@ wget-all: \
     $(fuse-ver) \
     $(gawk-ver) \
     $(gcc-ver) \
-    $(gcc-5.3-ver) \
+    $(gcc-6.3-ver) \
     $(gc-ver) \
     $(gdbm-ver) \
     $(gdb-ver) \
@@ -5232,6 +5368,7 @@ wget-all: \
     $(libxslt-ver) \
     $(Linux-PAM-ver) \
     $(List-MoreUtils-ver) \
+    $(LMDB-ver) \
     $(lua-ver) \
     $(LWP-MediaTypes-ver) \
     $(lxsplit-ver) \
@@ -5545,8 +5682,8 @@ $(gc-ver):
 $(gcc-ver):
 	$(call SOURCEWGET,"gcc","http://ftp.gnu.org/gnu/gcc/"$(basename $(basename $(notdir $(gcc-ver))))"/"$(notdir $(gcc-ver)))
 
-$(gcc-5.3-ver):
-	$(call SOURCEWGET,"gcc-5.3","http://ftp.gnu.org/gnu/gcc/"$(basename $(basename $(notdir $(gcc-5.3-ver))))"/"$(notdir $(gcc-5.3-ver)))
+$(gcc-6.3-ver):
+	$(call SOURCEWGET,"gcc-6.3","http://www.netgull.com/gcc/releases/"$(basename $(basename $(notdir $(gcc-6.3-ver))))"/"$(notdir $(gcc-6.3-ver)))
 
 $(gdb-ver):
 	$(call SOURCEWGET,"gdb","https://ftp.gnu.org/gnu/"$(gdb-ver))
@@ -5631,7 +5768,7 @@ $(hwloc-ver):
 	$(call SOURCEWGET,"hwloc","http://www.open-mpi.org/software/hwloc/v1.11/downloads/hwloc-1.11.0.tar.gz")
 
 $(icu-ver):
-	$(call SOURCEWGET,"icu","http://download.icu-project.org/files/icu4c/54.1/icu4c-54_1-src.tgz")
+	$(call SOURCEWGET,"icu","http://download.icu-project.org/files/icu4c/58.2/"$(notdir $(icu-ver)))
 
 $(ImageMagick-ver):
 	$(call SOURCEWGET,"ImageMagick","https://www.imagemagick.org/download/releases/"$(notdir $(ImageMagick-ver)))
@@ -5747,6 +5884,9 @@ $(List-MoreUtils-ver):
 $(llvm-ver):
 	$(call SOURCEWGET,"llvm","http://llvm.org/releases/3.4/llvm-3.4.src.tar.gz")
 
+$(LMDB-ver):
+	$(call SOURCEWGET,"LMDB","https://github.com/LMDB/lmdb/archive/"$(notdir $(LMDB-ver)))
+
 $(lua-ver):
 	$(call SOURCEWGET,"lua","http://www.lua.org/ftp/"$(notdir $(lua-ver)))
 
@@ -5778,7 +5918,7 @@ $(lzo-ver):
 	$(call SOURCEWGET,"lzo","http://www.oberhumer.com/opensource/lzo/download/lzo-2.08.tar.gz")
 
 $(m4-ver):
-	$(call SOURCEWGET,"m4","http://ftp.gnu.org/gnu/m4/m4-1.4.17.tar.gz")
+	$(call SOURCEWGET,"m4","http://ftp.gnu.org/gnu/"$(m4-ver))
 
 $(Math-Pari-ver):
 	$(call SOURCEWGET,"Math-Pari","http://search.cpan.org/CPAN/authors/id/I/IL/ILYAZ/modules/"$(notdir $(Math-Pari-ver)))
