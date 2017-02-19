@@ -45,6 +45,9 @@
 # As far as special steps to install documentation, I am skipping those
 # more and more. I find I look everything up on Google and Stackoverflow.
 #
+# In general, I try to build the packages without special options or
+# patches, but often that is not realistic.
+#
 # Configuration Variables
 #
 GCC_LANGS=c,c++,fortran,java,objc,obj-c++
@@ -2591,6 +2594,7 @@ afterpatch: \
     opus \
     x264 \
     x265 \
+    ffmpeg \
     afterlibsecret
 
 # Problem children
@@ -2631,6 +2635,8 @@ afterlibsecret: \
 # ==============================================================
 # Versions
 # ==============================================================
+# 2017-02-19
+ffmpeg-ver         = ffmpeg/ffmpeg-3.2.4.tar.xz
 # 2017-02-18
 x265-ver           = x265/x265_2.3.tar.gz
 # 2017-02-18
@@ -3475,7 +3481,7 @@ srm wipe mosh socat tmux psmisc libusb htop cairo iptraf-ng hwloc nano libass fd
 	$(wipe-ver) \
 	$(x264-ver)
 	$(call SOURCEDIR,$@,xf)
-	cd $@/`cat $@/untar.dir`/; CPPFLAGS="-I/usr/local/include -I/usr/local/include/ncursesw" ./configure --prefix=/usr/local
+	cd $@/`cat $@/untar.dir`/; CPPFLAGS="-I/usr/local/include -I/usr/local/include/ncursesw" ./configure --prefix=/usr/local --enable-shared
 	cd $@/`cat $@/untar.dir`/; make
 	$(call PKGINSTALL,$@)
 	$(call CPLIB,lib$@*)
@@ -4029,6 +4035,32 @@ flex: $(flex-ver)
 	# fails because of the old Glibc
 	# cd $@/`cat $@/untar.dir`/; make check || make test
 	$(call PKGINSTALL,$@)
+
+.PHONY: ffmpeg
+ffmpeg : \
+    $(ffmpeg-ver)
+	$(call SOURCEDIR,$@,xf)
+	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local \
+            --enable-gpl         \
+            --enable-version3    \
+            --enable-nonfree     \
+            --enable-shared      \
+            --disable-debug      \
+            --enable-libass      \
+            --enable-libfdk-aac  \
+            --enable-libfreetype \
+            --enable-libmp3lame  \
+            --enable-libopus     \
+            --enable-libtheora   \
+            --enable-libvorbis   \
+            --enable-libvpx      \
+            --enable-libx264     \
+            --enable-libx265
+	cd $@/`cat $@/untar.dir`/; make
+	$(call PKGINSTALL,$@)
+	$(call CPLIB,libproto*)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
 
 .PHONY: fontconfig
 fontconfig: $(fontconfig-ver)
@@ -5440,6 +5472,7 @@ wget-all: \
     $(findutils-ver) \
     $(flac-ver) \
     $(flex-ver) \
+    $(ffmpeg-ver) \
     $(fontconfig-ver) \
     $(freetype-ver) \
     $(fribidi-ver) \
@@ -5830,6 +5863,9 @@ $(flac-ver):
 
 $(flex-ver):
 	$(call SOURCEWGET,"flex","http://sourceforge.net/projects/flex/files/flex-2.5.39.tar.gz")
+
+$(ffmpeg-ver):
+	$(call SOURCEWGET,"ffmpeg","http://ffmpeg.org/releases/"$(notdir $(ffmpeg-ver)))
 
 $(fontconfig-ver):
 	$(call SOURCEWGET,"fontconfig","http://www.freedesktop.org/software/fontconfig/release/"$(notdir $(fontconfig-ver)))
