@@ -42,6 +42,9 @@
 # Lots of good concise info about building individual packages and their 
 # dependancies can be found at Linux From Scratch.
 #
+# As far as special steps to install documentation, I am skipping those
+# more and more. I find I look everything up on Google and Stackoverflow.
+#
 # Configuration Variables
 #
 GCC_LANGS=c,c++,fortran,java,objc,obj-c++
@@ -2572,6 +2575,22 @@ afterpatch: \
     random \
     maldetect \
     LMDB \
+    fribidi \
+    libass \
+    fdk-aac \
+    nasm \
+    yasm \
+    alsa-lib \
+    libogg \
+    flac \
+    libvorbis \
+    libsndfile \
+    lame \
+    libtheora \
+    libvpx \
+    opus \
+    x264 \
+    x265 \
     afterlibsecret
 
 # Problem children
@@ -2606,11 +2625,52 @@ afterlibsecret: \
     glibc \
     pinentry \
     node \
+    octave \
     truecrypt
 
 # ==============================================================
 # Versions
 # ==============================================================
+# 2017-02-18
+x265-ver           = x265/x265_2.3.tar.gz
+# 2017-02-18
+x264-ver           = x264/x264-snapshot-20170212-2245-stable.tar.bz2
+# 2017-02-18
+opus-ver           = opus/opus-1.1.4.tar.gz
+# 2017-02-18
+libvpx-ver         = libvpx/libvpx-1.6.1.tar.bz2
+# 2017-02-18
+yasm-ver           = yasm/yasm-1.3.0.tar.gz
+# 2017-02-18
+libtheora-ver      = libtheora/libtheora-1.1.1.tar.xz
+# 2017-02-18
+# libpng-ver         = libpng/libpng-1.6.16.tar.xz
+libpng-ver         = libpng/libpng-1.6.28.tar.xz
+# 2017-02-18
+lame-ver           = lame/lame-3.99.5.tar.gz
+# 2017-02-18
+octave-ver         = octave/octave-4.0.3.tar.xz
+# 2017-02-18
+libsndfile-ver     = libsndfile/libsndfile-1.0.27.tar.gz
+# 2017-02-18
+# sqlite-ver         = sqlite/sqlite-autoconf-3071502.tar.gz
+sqlite-ver         = sqlite/sqlite-autoconf-3170000.tar.gz
+# 2017-02-18
+libvorbis-ver      = libvorbis/libvorbis-1.3.5.tar.xz
+# 2017-02-18
+flac-ver           = flac/flac-1.3.2.tar.xz
+# 2017-02-18
+libogg-ver         = libogg/libogg-1.3.2.tar.xz
+# 2017-02-18
+alsa-lib-ver       = alsa-lib/alsa-lib-1.1.3.tar.bz2
+# 2017-02-18
+nasm-ver           = nasm/nasm-2.12.02.tar.xz
+# 2017-02-18
+fdk-aac-ver        = fdk-aac/fdk-aac-0.1.5.tar.gz
+# 2017-02-18
+libass-ver         = libass/libass-0.13.6.tar.xz
+# 2017-02-18
+fribidi-ver        = fribidi/fribidi-0.19.7.tar.bz2
 # 2017-04-11
 # m4-ver             = m4/m4-1.4.17.tar.gz
 m4-ver             = m4/m4-1.4.18.tar.gz
@@ -3007,7 +3067,6 @@ libffi-ver         = libffi/libffi-3.2.1.tar.gz
 libiconv-ver       = libiconv/libiconv-1.14.tar.gz
 jpeg-ver           = jpeg/jpegsrc.v9b.tar.gz
 libpcap-ver        = libpcap/libpcap-1.4.0.tar.gz
-libpng-ver         = libpng/libpng-1.6.16.tar.xz
 libpthread-ver     = libpthread/master.zip
 libsecret-ver      = libsecret/libsecret-0.18.3.tar.xz
 libtasn1-ver       = libtasn1/libtasn1-4.3.tar.gz
@@ -3052,7 +3111,6 @@ sed-ver            = sed/sed-4.2.2.tar.gz
 serf-ver           = serf/serf-1.3.5.tar.bz2
 sharutils-ver      = sharutils/sharutils-4.15.1.tar.xz
 sparse-ver         = sparse/sparse-0.5.0.tar.gz
-sqlite-ver         = sqlite/sqlite-autoconf-3071502.tar.gz
 srm-ver            = srm/srm-1.2.15.tar.gz
 swig-ver           = swig/swig-3.0.0.tar.gz
 symlinks-ver       = symlinks/symlinks-1.4.tar.gz
@@ -3230,6 +3288,24 @@ apr findutils gdbm jpeg libgpg-error libassuan libksba libpng npth which: $(whic
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
 
+# Standard build, post tar rule, separate build directory
+# No make check or make test
+# We should have a good version of tar that
+# automatically detects file type
+.PHONY: libvpx
+libvpx : \
+    $(libvpx-ver)
+	$(call SOURCEDIR,$@,xf)
+	cd $@/`cat $@/untar.dir`/; sed -i -e 's/\boff_t\b/int/' third_party/libwebm/mkvmuxer/mkvwriter.cc
+	cd $@/`cat $@/untar.dir`/; sed -i -e 's/\boff_t\b/int/' third_party/libwebm/mkvparser/mkvreader.cc
+	cd $@; mkdir $@-build
+	cd $@/$@-build/; readlink -f . | grep $@-build
+	cd $@/$@-build/; ../`cat ../untar.dir`/configure --prefix=/usr/local
+	cd $@/$@-build/; make
+	$(call PKGINSTALLBUILD,$@)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
+
 # Standard build, post tar rule, separate build directory,
 # broken copyright
 #
@@ -3289,35 +3365,53 @@ libffi texinfo: \
 	$(call CPLIB,$@*)
 
 # Standard build, post tar rule, no separate build directory
+.PHONY: alsa-lib
 .PHONY: check
 .PHONY: daq
 .PHONY: file
+.PHONY: flac
+.PHONY: fribidi
 .PHONY: gnupg
 .PHONY: jnettop
+.PHONY: lame
+.PHONY: libogg
 .PHONY: libdnet
+.PHONY: libvorbis
 .PHONY: libxml2
 .PHONY: libxslt
+.PHONY: octave
+.PHONY: opus
 .PHONY: pixman
 .PHONY: popt
 .PHONY: protobuf
 .PHONY: sharutils
 .PHONY: tcc
-jnettop libxml2 check file protobuf libtasn1 gnupg popt sharutils pixman libxslt tcc libidn daq libdnet : \
+.PHONY: yasm
+jnettop libxml2 check file protobuf libtasn1 gnupg popt sharutils pixman libxslt tcc libidn daq libdnet fribidi alsa-lib libogg flac libvorbis octave lame yasm opus x264 : \
+    $(alsa-lib-ver) \
     $(check-ver) \
     $(daq-ver) \
     $(file-ver) \
+    $(flac-ver) \
+    $(fribidi-ver) \
     $(gnupg-ver) \
     $(jnettop-ver) \
+    $(lame-ver) \
     $(libdnet-ver) \
     $(libidn-ver) \
+    $(libogg-ver) \
     $(libtasn1-ver) \
+    $(libvorbis-ver) \
     $(libxml2-ver) \
     $(libxslt-ver) \
+    $(octave-ver) \
+    $(opus-ver) \
     $(pixman-ver) \
     $(popt-ver) \
     $(protobuf-ver) \
     $(sharutils-ver) \
-    $(tcc-ver)
+    $(tcc-ver) \
+    $(yasm-ver)
 	$(call SOURCEDIR,$@,xf)
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/; make
@@ -3347,31 +3441,39 @@ par2cmdline: $(par2cmdline-ver)
 #
 # we should have a good version of tar that automatically
 # detects file type
-.PHONY: mosh
-.PHONY: srm
-.PHONY: wipe
-.PHONY: socat
-.PHONY: tmux
-.PHONY: psmisc
-.PHONY: libusb
-.PHONY: htop
 .PHONY: cairo
-.PHONY: iptraf-ng
+.PHONY: fdk-aac
+.PHONY: htop
 .PHONY: hwloc
+.PHONY: iptraf-ng
+.PHONY: libass
+.PHONY: libusb
+.PHONY: mosh
 .PHONY: nano
-srm wipe mosh socat tmux psmisc libusb htop cairo iptraf-ng hwloc nano: \
-	$(srm-ver) \
-	$(libusb-ver) \
-	$(htop-ver) \
-	$(mosh-ver) \
-	$(socat-ver) \
-	$(tmux-ver) \
-	$(psmisc-ver) \
-	$(wipe-ver) \
+.PHONY: nasm
+.PHONY: psmisc
+.PHONY: socat
+.PHONY: srm
+.PHONY: tmux
+.PHONY: wipe
+.PHONY: x264
+srm wipe mosh socat tmux psmisc libusb htop cairo iptraf-ng hwloc nano libass fdk-aac nasm x264 : \
 	$(cairo-ver) \
-	$(iptraf-ng-ver) \
+	$(fdk-aac-ver) \
+	$(htop-ver) \
 	$(hwloc-ver) \
-	$(nano-ver)
+	$(iptraf-ng-ver) \
+	$(libass-ver) \
+	$(libusb-ver) \
+	$(mosh-ver) \
+	$(nano-ver) \
+	$(nasm-ver) \
+	$(psmisc-ver) \
+	$(socat-ver) \
+	$(srm-ver) \
+	$(tmux-ver) \
+	$(wipe-ver) \
+	$(x264-ver)
 	$(call SOURCEDIR,$@,xf)
 	cd $@/`cat $@/untar.dir`/; CPPFLAGS="-I/usr/local/include -I/usr/local/include/ncursesw" ./configure --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/; make
@@ -4293,6 +4395,35 @@ libsecret : \
 	cd $@/`cat $@/untar.dir`/; make
 	-cd $@/`cat $@/untar.dir`/; make check || make test
 	$(call PKGINSTALL,$@)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
+
+# The test files for libsndfile have a hardcoded path to /usr/bin/python
+# We edit it to /usr/bin/env python
+.PHONY: libsndfile
+libsndfile : \
+    $(libsndfile-ver)
+	$(call SOURCEDIR,$@,xf)
+	-cd $@/`cat $@/untar.dir`/; sed -i -e 's/#!\/usr\/bin\/python/#!\/usr\/bin\/env python/' src/binheader_writef_check.py
+	-cd $@/`cat $@/untar.dir`/; sed -i -e 's/#!\/usr\/bin\/python/#!\/usr\/bin\/env python/' src/create_symbols_file.py
+	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --disable-octave
+	cd $@/`cat $@/untar.dir`/; make
+	cd $@/`cat $@/untar.dir`/; make check || make test
+	$(call PKGINSTALL,$@)
+	$(call CPLIB,libproto*)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
+
+.PHONY: libtheora
+libtheora : \
+    $(libtheora-ver)
+	$(call SOURCEDIR,$@,xf)
+	cd $@/`cat $@/untar.dir`/; sed -i 's/png_\(sizeof\)/\1/g' examples/png2theora.c
+	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
+	cd $@/`cat $@/untar.dir`/; make
+	cd $@/`cat $@/untar.dir`/; make check || make test
+	$(call PKGINSTALL,$@)
+	$(call CPLIB,libproto*)
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
 
@@ -5221,6 +5352,17 @@ whois: $(whois-ver)
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
 
+.PHONY: x265
+x265: $(x265-ver)
+	$(call SOURCEDIR,$@,xf)
+	cd $@; mkdir $@-build
+	cd $@/$@-build/; readlink -f . | grep $@-build
+	cd $@/$@-build/; cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=/usr/local ../x265_2.3/source
+	cd $@/$@-build/; make
+	$(call PKGINSTALLBUILD,$@)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
+
 .PHONY: zip
 zip: $(zip-ver)
 	$(call SOURCEDIR,$@,zip)
@@ -5242,6 +5384,7 @@ zlib: $(zlib-ver)
 wget-all: \
     $(ack-ver) \
     $(acl-ver) \
+    $(alsa-lib-ver) \
     $(Any-Moose-ver) \
     $(apr-util-ver) \
     $(apr-ver) \
@@ -5291,12 +5434,15 @@ wget-all: \
     $(expat-ver) \
     $(expect-ver) \
     $(Exporter-Tiny-ver) \
+    $(fdk-aac-ver) \
     $(File-Listing-ver) \
     $(file-ver) \
     $(findutils-ver) \
+    $(flac-ver) \
     $(flex-ver) \
     $(fontconfig-ver) \
     $(freetype-ver) \
+    $(fribidi-ver) \
     $(fuse-ver) \
     $(gawk-ver) \
     $(gcc-ver) \
@@ -5341,7 +5487,9 @@ wget-all: \
     $(jnettop-ver) \
     $(jpeg-ver) \
     $(jq-ver) \
+    $(lame-ver) \
     $(libarchive-ver) \
+    $(libass-ver) \
     $(libassuan-ver) \
     $(libatomic_ops-ver) \
     $(libcap-ver) \
@@ -5354,15 +5502,20 @@ wget-all: \
     $(libiconv-ver) \
     $(libidn-ver) \
     $(libksba-ver) \
+    $(libogg-ver) \
     $(libpcap-ver) \
     $(libpng-ver) \
     $(libpthread-ver) \
     $(libsecret-ver) \
+    $(libsndfile-ver) \
     $(libtasn1-ver) \
+    $(libtheora-ver) \
     $(libtool-ver) \
     $(libunistring-ver) \
     $(libusb-ver) \
     $(libutempter-ver) \
+    $(libvorbis-ver) \
+    $(libvpx-ver) \
     $(libwww-perl-ver) \
     $(libxml2-ver) \
     $(libxslt-ver) \
@@ -5395,6 +5548,7 @@ wget-all: \
     $(mutt-ver) \
     $(namespace-clean-ver) \
     $(nano-ver) \
+    $(nasm-ver) \
     $(ncurses-ver) \
     $(netpbm-ver) \
     $(Net-HTTP-ver) \
@@ -5403,8 +5557,10 @@ wget-all: \
     $(node-ver) \
     $(npth-ver) \
     $(ntfs-3g-ver) \
+    $(octave-ver) \
     $(openssl-ver) \
     $(openvpn-ver) \
+    $(opus-ver) \
     $(p11-kit-ver) \
     $(p7zip-ver) \
     $(Package-Stash-ver) \
@@ -5490,7 +5646,9 @@ wget-all: \
     $(whois-ver) \
     $(wipe-ver) \
     $(WWW-RobotRules-ver) \
+    $(x264-ver) \
     $(XML-Parser-ver) \
+    $(yasm-ver) \
     $(zip-ver) \
     $(zlib-ver) \
     $(util-linux-ng-ver)
@@ -5500,6 +5658,9 @@ $(ack-ver):
 
 $(acl-ver):
 	$(call SOURCEWGET,"acl","http://download.savannah.gnu.org/releases/"$(acl-ver))
+
+$(alsa-lib-ver):
+	$(call SOURCEWGET,"alsa-lib","ftp://ftp.alsa-project.org/pub/lib/"$(notdir $(alsa-lib-ver)))
 
 $(Any-Moose-ver):
 	$(call SOURCEWGET,"Any-Moose","http://search.cpan.org/CPAN/authors/id/E/ET/ETHER/"$(notdir $(Any-Moose-ver)))
@@ -5655,11 +5816,17 @@ $(expect-ver):
 $(Exporter-Tiny-ver):
 	$(call SOURCEWGET,"Exporter-Tiny","http://search.cpan.org/CPAN/authors/id/T/TO/TOBYINK/"$(notdir $(Exporter-Tiny-ver)))
 
+$(fdk-aac-ver):
+	$(call SOURCEWGET,"fdk-aac","http://downloads.sourceforge.net/opencore-amr/"$(notdir $(fdk-aac-ver)))
+
 $(file-ver):
 	$(call SOURCEWGET,"file","ftp://ftp.astron.com/pub/"$(file-ver))
 
 $(findutils-ver):
 	$(call SOURCEWGET,"findutils","https://ftp.gnu.org/pub/gnu/"$(findutils-ver))
+
+$(flac-ver):
+	$(call SOURCEWGET,"flac","http://downloads.xiph.org/releases/flac/"$(notdir $(flac-ver)))
 
 $(flex-ver):
 	$(call SOURCEWGET,"flex","http://sourceforge.net/projects/flex/files/flex-2.5.39.tar.gz")
@@ -5669,6 +5836,9 @@ $(fontconfig-ver):
 
 $(freetype-ver):
 	$(call SOURCEWGET,"freetype","http://downloads.sourceforge.net/"$(freetype-ver))
+
+$(fribidi-ver):
+	$(call SOURCEWGET,"fribidi","http://fribidi.org/download/"$(notdir $(fribidi-ver)))
 
 $(fuse-ver):
 	$(call SOURCEWGET,"fuse","https://github.com/libfuse/libfuse/releases/download/fuse_2_9_4/"$(notdir $(fuse-ver)))
@@ -5800,8 +5970,14 @@ $(jpeg-ver):
 $(jq-ver):
 	$(call SOURCEWGET,"jq","https://github.com/stedolan/jq/releases/download/"$(jq-ver))
 
+$(lame-ver):
+	$(call SOURCEWGET,"lame","http://downloads.sourceforge.net/"$(lame-ver))
+
 $(libarchive-ver):
 	$(call SOURCEWGET,"libarchive","http://www.libarchive.org/downloads/libarchive-3.1.2.tar.gz")
+
+$(libass-ver):
+	$(call SOURCEWGET,"libass","https://github.com/libass/libass/releases/download/"$(word 2,$(subst -, ,$(basename $(basename $(notdir $(libass-ver))))))"/"$(notdir $(libass-ver)))
 
 $(libassuan-ver):
 	$(call SOURCEWGET,"libassuan","ftp://ftp.gnupg.org/gcrypt/"$(libassuan-ver))
@@ -5842,14 +6018,23 @@ $(libpcap-ver):
 $(libgpg-error-ver):
 	$(call SOURCEWGET,"libgpg-error","ftp://ftp.gnupg.org/gcrypt/"$(libgpg-error-ver))
 
+$(libogg-ver):
+	$(call SOURCEWGET,"libogg","http://downloads.xiph.org/releases/ogg/"$(notdir $(libogg-ver)))
+
 $(libpng-ver):
-	$(call SOURCEWGET,"libpng","http://downloads.sourceforge.net/libpng/libpng-1.6.16.tar.xz")
+	$(call SOURCEWGET,"libpng","http://downloads.sourceforge.net/"$(libpng-ver))
+
+$(libtheora-ver):
+	$(call SOURCEWGET,"libtheora","http://downloads.xiph.org/releases/theora/"$(notdir $(libtheora-ver)))
 
 $(libpthread-ver):
 	$(call SOURCEGIT,"libpthread","git://git.sv.gnu.org/hurd/libpthread.git")
 
 $(libsecret-ver):
 	$(call SOURCEWGET,"libsecret","http://ftp.gnome.org/pub/gnome/sources/libsecret/0.18/"$(notdir $(libsecret-ver)))
+
+$(libsndfile-ver):
+	$(call SOURCEWGET,"libsndfile","http://www.mega-nerd.com/libsndfile/files/"$(notdir $(libsndfile-ver)))
 
 $(libtasn1-ver):
 	$(call SOURCEWGET,"libtasn1","http://ftp.gnu.org/gnu/"$(libtasn1-ver))
@@ -5862,6 +6047,12 @@ $(libunistring-ver):
 
 $(libusb-ver):
 	$(call SOURCEWGET,"libusb","http://downloads.sourceforge.net/libusb/libusb-1.0.19.tar.bz2")
+
+$(libvorbis-ver):
+	$(call SOURCEWGET,"libvorbis","http://downloads.xiph.org/releases/vorbis/"$(notdir $(libvorbis-ver)))
+
+$(libvpx-ver):
+	$(call SOURCEWGET,"libvpx","http://storage.googleapis.com/downloads.webmproject.org/releases/webm/"$(notdir $(libvpx-ver)))
 
 $(libwww-perl-ver):
 	$(call SOURCEWGET,"libwww-perl","http://search.cpan.org/CPAN/authors/id/E/ET/ETHER/"$(notdir $(libwww-perl-ver)))
@@ -5968,6 +6159,9 @@ $(namespace-clean-ver):
 $(nano-ver):
 	$(call SOURCEWGET,"nano","https://www.nano-editor.org/dist/v2.6/"$(notdir $(nano-ver)))
 
+$(nasm-ver):
+	$(call SOURCEWGET,"nasm","http://www.nasm.us/pub/nasm/releasebuilds/"$(word 2,$(subst -, ,$(basename $(basename $(notdir $(nasm-ver))))))"/"$(notdir $(nasm-ver)))
+
 $(nettle-ver):
 	$(call SOURCEWGET,"nettle","https://ftp.gnu.org/gnu/"$(nettle-ver))
 
@@ -5992,11 +6186,17 @@ $(npth-ver):
 $(ntfs-3g-ver):
 	$(call SOURCEWGET,"ntfs-3g","http://tuxera.com/opensource/ntfs-3g_ntfsprogs-2013.1.13.tgz")
 
+$(octave-ver):
+	$(call SOURCEWGET,"octave","https://ftp.gnu.org/gnu/"$(octave-ver))
+
 $(openssl-ver):
 	$(call SOURCEWGET,"openssl","http://www.openssl.org/source/"$(notdir $(openssl-ver)))
 
 $(openvpn-ver):
 	$(call SOURCEWGET,"openvpn","https://swupdate.openvpn.org/community/releases/"$(notdir $(openvpn-ver)))
+
+$(opus-ver):
+	$(call SOURCEWGET,"opus","http://downloads.xiph.org/releases/"$(opus-ver))
 
 $(p11-kit-ver):
 	$(call SOURCEWGET,"p11-kit","http://p11-glue.freedesktop.org/releases/"$(notdir $(p11-kit-ver)))
@@ -6145,7 +6345,7 @@ $(sparse-ver):
 	$(call SOURCEWGET,"sparse","http://www.kernel.org/pub/software/devel/sparse/dist/sparse-0.5.0.tar.gz")
 
 $(sqlite-ver):
-	$(call SOURCEWGET,"sqlite","http://www.sqlite.org/"$(notdir $(sqlite-ver)))
+	$(call SOURCEWGET,"sqlite","http://sqlite.org/2017/"$(notdir $(sqlite-ver)))
 
 $(srm-ver):
 	$(call SOURCEWGET,"srm","http://sourceforge.net/projects/srm/files/1.2.15/"$(notdir $(srm-ver)))
@@ -6261,9 +6461,18 @@ $(wipe-ver):
 $(WWW-RobotRules-ver):
 	$(call SOURCEWGET,"WWW-RobotRules","http://search.cpan.org/CPAN/authors/id/G/GA/GAAS/"$(notdir $(WWW-RobotRules-ver)))
 
+$(x264-ver):
+	$(call SOURCEWGET,"x264","http://download.videolan.org/pub/videolan/x264/snapshots/"$(notdir $(x264-ver)))
+
+$(x265-ver):
+	$(call SOURCEWGET,"x265","https://bitbucket.org/multicoreware/x265/downloads/"$(notdir $(x265-ver)))
+
 $(XML-Parser-ver):
 	# (call SOURCEWGET,"XML-Parser","http://search.cpan.org/CPAN/authors/id/M/MS/MSERGEANT/"$(notdir $(XML-Parser-ver)))
 	$(call SOURCEWGET,"XML-Parser","http://search.cpan.org/CPAN/authors/id/T/TO/TODDR/"$(notdir $(XML-Parser-ver)))
+
+$(yasm-ver):
+	$(call SOURCEWGET,"yasm","http://www.tortall.net/projects/yasm/releases/"$(notdir $(yasm-ver)))
 
 $(xz-ver):
 	$(call SOURCEWGET,"xz","http://tukaani.org/"$(xz-ver))
