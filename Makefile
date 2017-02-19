@@ -3387,7 +3387,7 @@ libffi texinfo: \
 .PHONY: sharutils
 .PHONY: tcc
 .PHONY: yasm
-jnettop libxml2 check file protobuf libtasn1 gnupg popt sharutils pixman libxslt tcc libidn daq libdnet fribidi alsa-lib libogg flac libvorbis octave lame yasm opus x264 : \
+jnettop libxml2 check file protobuf libtasn1 gnupg popt sharutils pixman libxslt tcc libidn daq libdnet fribidi alsa-lib libogg flac libvorbis octave lame yasm opus : \
     $(alsa-lib-ver) \
     $(check-ver) \
     $(daq-ver) \
