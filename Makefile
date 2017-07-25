@@ -2382,6 +2382,15 @@ afternethttp: \
     Class-Loader \
     pari \
     Math-Pari \
+    Sub-Name \
+    Class-Load \
+    Class-Load-XS \
+    Package-DeprecationManager \
+    File-pushd \
+    Test-CleanNamespaces \
+    Module-Runtime-Conflicts \
+    Moose \
+    MouseX-Types \
     Mouse \
     Any-Moose \
     Capture-Tiny \
@@ -2412,6 +2421,40 @@ afternethttp: \
     Math-Random-ISAAC \
     Test-Warn \
     Net-SSLeay \
+    Test-Inter \
+    Date-Manip \
+    Sub-Identify \
+    namespace-autoclean \
+    Eval-Closure \
+    MRO-Compat \
+    Devel-StackTrace \
+    Test-Needs \
+    Specio \
+    Test-Simple \
+    Importer \
+    Sub-Info \
+    Term-Table \
+    Test2-Plugin-NoWarnings \
+    Test2-Suite \
+    Test-Without-Module \
+    Exception-Class \
+    Class-Data-Inheritable \
+    Params-ValidationCompiler \
+    Algorithm-Diff \
+    Text-Diff \
+    Test-Differences \
+    Scalar-List-Utils \
+    CPAN-Meta-Check \
+    Class-Singleton \
+    DateTime-Locale \
+    DateTime-TimeZone \
+    DateTime \
+    JSON-MaybeXS \
+    Test-RequiresInternet \
+    LWP-Protocol-https \
+    Log-Log4perl \
+    Mojolicious \
+    Digest-HMAC \
     libwww-perl \
     bison \
     afterbison
@@ -2429,6 +2472,7 @@ afterbison: \
     libgpg-error \
     libgcrypt \
     libassuan \
+    ntbtls \
     libksba \
     npth \
     libcap \
@@ -2594,7 +2638,9 @@ afterpatch: \
     opus \
     x264 \
     x265 \
+    libmpeg2 \
     ffmpeg \
+    dash \
     afterlibsecret
 
 # Problem children
@@ -2630,11 +2676,166 @@ afterlibsecret: \
     pinentry \
     node \
     octave \
+    Net-DNS \
     truecrypt
 
 # ==============================================================
 # Versions
 # ==============================================================
+# 2017-07-22
+# tar-ver            = tar/tar-1.28.tar.gz
+tar-ver            = tar/tar-1.29.tar.gz
+# 2017-07-22
+# npth-ver      = npth/npth-1.2.tar.bz2
+npth-ver      = npth/npth-1.5.tar.bz2
+# 2017-07-22
+ntbtls-ver         = ntbtls/ntbtls-0.1.1.tar.bz2
+# 2016-08-20
+# libassuan-ver      = libassuan/libassuan-2.3.0.tar.bz2
+libassuan-ver      = libassuan/libassuan-2.4.3.tar.bz2
+# 2017-07-22
+# libksba-ver        = libksba/libksba-1.3.3.tar.bz2
+# libksba-ver        = libksba/libksba-1.3.4.tar.bz2
+libksba-ver        = libksba/libksba-1.3.5.tar.bz2
+# 2017-07-22
+# gnupg-ver          = gnupg/gnupg-2.0.29.tar.bz2
+# gnupg-ver          = gnupg/gnupg-2.0.30.tar.bz2
+gnupg-ver          = gnupg/gnupg-2.1.21.tar.bz2
+# 2017-07-22
+# libgpg-error-ver   = libgpg-error/libgpg-error-1.20.tar.bz2
+# libgpg-error-ver   = libgpg-error/libgpg-error-1.24.tar.bz2
+libgpg-error-ver   = libgpg-error/libgpg-error-1.27.tar.bz2
+# 2017-07-22
+# libgcrypt-ver      = libgcrypt/libgcrypt-1.6.4.tar.bz2
+# libgcrypt-ver      = libgcrypt/libgcrypt-1.7.0.tar.bz2
+# libgcrypt-ver      = libgcrypt/libgcrypt-1.7.3.tar.bz2
+# libgcrypt-ver      = libgcrypt/libgcrypt-1.7.3.tar.bz2
+libgcrypt-ver      = libgcrypt/libgcrypt-1.8.0.tar.bz2
+# serf-ver           = serf/serf-1.3.5.tar.bz2
+# 2017-05-20 serf is failing to build, trying a new version
+# Nope, it fails due to certificates that are now expired
+# https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=862027
+serf-ver           = serf/serf-1.3.9.tar.bz2
+# 2017-05-20 serf needs new scons
+# scons-ver          = scons/scons-2.3.4.tar.gz
+scons-ver          = scons/scons-2.5.1.tar.gz
+# openssl-ver        = openssl/openssl-1.0.2e.tar.gz
+# 2016-03-11
+# openssl-ver        = openssl/openssl-1.0.2g.tar.gz
+# 2016-05-06
+#
+# Need pthreads.
+# 2016-08-26
+# openssl-ver        = openssl/openssl-1.1.0.tar.gz
+# New version of apr, apr-util
+# openssl-ver        = openssl/openssl-1.0.2h.tar.gz
+# 2017-05-20
+openssl-ver        = openssl/openssl-1.0.2k.tar.gz
+# 2017-03-10
+Digest-HMAC-ver = Digest-HMAC/Digest-HMAC-1.03.tar.gz
+# 2017-03-10
+Net-DNS-ver = Net-DNS/Net-DNS-1.08.tar.gz
+# 2017-03-10
+Mojolicious-ver = Mojolicious/Mojolicious-7.28.tar.gz
+# 2017-03-10
+Log-Log4perl-ver = Log-Log4perl/Log-Log4perl-1.49.tar.gz
+# 2017-03-10
+Test-RequiresInternet-ver = Test-RequiresInternet/Test-RequiresInternet-0.05.tar.gz
+# 2017-03-10
+LWP-Protocol-https-ver = LWP-Protocol-https/LWP-Protocol-https-6.07.tar.gz
+# 2017-03-10
+JSON-MaybeXS-ver = JSON-MaybeXS/JSON-MaybeXS-1.003009.tar.gz
+# 2017-03-10
+Class-Singleton-ver = Class-Singleton/Class-Singleton-1.5.tar.gz
+# 2017-03-10
+Module-Runtime-Conflicts-ver = Module-Runtime-Conflicts/Module-Runtime-Conflicts-0.003.tar.gz
+# 2017-03-10
+File-pushd-ver = File-pushd/File-pushd-1.014.tar.gz
+# 2017-03-10
+Test-Deep-ver = Test-Deep/Test-Deep-1.126.tar.gz
+# 2017-03-10
+Test-CleanNamespaces-ver = Test-CleanNamespaces/Test-CleanNamespaces-0.22.tar.gz
+# 2017-03-10
+Class-Load-XS-ver = Class-Load-XS/Class-Load-XS-0.09.tar.gz
+# 2017-03-10
+Devel-OverloadInfo-ver = Devel-OverloadInfo/Devel-OverloadInfo-0.004.tar.gz
+# 2017-03-10
+Test-Warnings-ver = Test-Warnings/Test-Warnings-0.026.tar.gz
+# 2017-03-10
+Package-DeprecationManager-ver = Package-DeprecationManager/Package-DeprecationManager-0.17.tar.gz
+# 2017-03-10
+Sub-Name-ver = Sub-Name/Sub-Name-0.21.tar.gz
+# 2017-03-10
+Class-Load-ver = Class-Load/Class-Load-0.23.tar.gz
+# 2017-03-10
+Moose-ver = Moose/Moose-2.2004.tar.gz
+# 2017-03-10
+MouseX-Types-ver = MouseX-Types/MouseX-Types-0.06.tar.gz
+# 2017-03-10
+Scalar-List-Utils-ver = Scalar-List-Utils/Scalar-List-Utils-1.47.tar.gz
+# 2017-03-10
+Algorithm-Diff-ver = Algorithm-Diff/Algorithm-Diff-1.1903.tar.gz
+# 2017-03-10
+Text-Diff-ver = Text-Diff/Text-Diff-1.44.tar.gz
+# 2017-03-10
+Test-Differences-ver = Test-Differences/Test-Differences-0.64.tar.gz
+# 2017-03-10
+CPAN-Meta-Check-ver = CPAN-Meta-Check/CPAN-Meta-Check-0.014.tar.gz
+# 2017-03-05
+DateTime-Locale-ver = DataTime-Locale/DateTime-Locale-1.12.tar.gz
+# 2017-03-05
+Class-Data-Inheritable-ver = Class-Data-Inheritable/Class-Data-Inheritable-0.08.tar.gz
+# 2017-03-05
+Exception-Class-ver = Exception-Class/Exception-Class-1.42.tar.gz
+# 2017-03-05
+Test-Without-Module-ver = Test-Without-Module/Test-Without-Module-0.18.tar.gz
+# 2017-03-05
+Test2-Plugin-NoWarnings-ver = Test2-Plugin-NoWarnings/Test2-Plugin-NoWarnings-0.05.tar.gz
+# 2017-03-05
+Term-Table-ver = Term-Table/Term-Table-0.006.tar.gz
+# 2017-03-05
+Sub-Info-ver = Sub-Info/Sub-Info-0.002.tar.gz
+# 2017-03-05
+Importer-ver = Importer/Importer-0.024.tar.gz
+# 2017-03-05
+Test-Simple-ver = Test-Simple/Test-Simple-1.302075.tar.gz
+# 2017-03-04
+Test2-Suite-ver = Test2-Suite/Test2-Suite-0.000067.tar.gz
+# 2017-03-04
+Params-ValidationCompiler-ver = Params-ValidationCompiler/Params-ValidationCompiler-0.13.tar.gz
+# 2017-03-04
+Test-Needs-ver = Test-Needs/Test-Needs-0.002001.tar.gz
+# 2017-03-04
+Devel-StackTrace-ver = Devel-StackTrace/Devel-StackTrace-2.02.tar.gz
+# 2017-03-04
+MRO-Compat-ver = MRO-Compat/MRO-Compat-0.12.tar.gz
+# 2017-03-04
+Eval-Closure-ver = Eval-Closure/Eval-Closure-0.14.tar.gz
+# 2017-03-04
+Specio-ver = Specio/Specio-0.31.tar.gz
+# 2017-03-04
+Sub-Identify-ver   = Sub-Identify/Sub-Identify-0.12.tar.gz
+# 2017-03-04
+namespace-autoclean-ver = namespace-autoclean/namespace-autoclean-0.28.tar.gz
+# 2017-03-04
+DateTime-ver       = DateTime/DateTime-1.42.tar.gz
+# 2017-03-04
+DateTime-TimeZone-ver = DateTime-TimeZone/DateTime-TimeZone-2.10.tar.gz
+# 2017-03-04
+Test-Inter-ver     = Test-Inter/Test-Inter-1.06.tar.gz
+# 2017-03-04
+Date-Manip-ver     = Date-Manip/Date-Manip-6.58.tar.gz
+# 2016-06-05
+# Capture-Tiny-ver = Capture-Tiny/Capture-Tiny-0.42.tar.gz
+# 2017-03-04
+Capture-Tiny-ver   = Capture-Tiny/Capture-Tiny-0.46.tar.gz
+# 2017-02-26
+libmpeg2-ver       = libmpeg2/libmpeg2-0.5.1.tar.gz
+# 2017-02-25
+dash-ver           = dash/dash-0.5.9.1.tar.gz
+# 2017-02-24
+# libpthread-ver     = libpthread/master.zip
+libpthread-ver     = libpthread/libpthread-glibc-2.23-hurd+libpthread-20161218.tar.gz
 # 2017-02-19
 ffmpeg-ver         = ffmpeg/ffmpeg-3.2.4.tar.xz
 # 2017-02-18
@@ -2789,39 +2990,12 @@ ImageMagick-ver   = ImageMagick/ImageMagick-7.0.2-9.tar.xz
 # 2016-08-26
 # gzip-ver           = gzip/gzip-1.7.tar.gz
 gzip-ver           = gzip/gzip-1.8.tar.gz
-# openssl-ver        = openssl/openssl-1.0.2e.tar.gz
-# 2016-03-11
-# openssl-ver        = openssl/openssl-1.0.2g.tar.gz
-# 2016-05-06
-#
-# Need pthreads.
-# 2016-08-26
-# openssl-ver        = openssl/openssl-1.1.0.tar.gz
-openssl-ver        = openssl/openssl-1.0.2h.tar.gz
 # 2016-08-26
 # gawk-ver           = gawk/gawk-4.1.1.tar.gz
 gawk-ver           = gawk/gawk-4.1.4.tar.gz
 # 2016-08-20
 # pinentry-ver       = pinentry/pinentry-0.9.5.tar.bz2
 pinentry-ver       = pinentry/pinentry-0.9.7.tar.bz2
-# 2016-08-20
-npth-ver      = npth/npth-1.2.tar.bz2
-# 2016-08-20
-# libassuan-ver      = libassuan/libassuan-2.3.0.tar.bz2
-libassuan-ver      = libassuan/libassuan-2.4.3.tar.bz2
-# 2016-08-20
-# libksba-ver        = libksba/libksba-1.3.3.tar.bz2
-libksba-ver        = libksba/libksba-1.3.4.tar.bz2
-# 2016-08-20
-# libgcrypt-ver      = libgcrypt/libgcrypt-1.6.4.tar.bz2
-# libgcrypt-ver      = libgcrypt/libgcrypt-1.7.0.tar.bz2
-libgcrypt-ver      = libgcrypt/libgcrypt-1.7.3.tar.bz2
-# 2016-08-20
-# libgpg-error-ver   = libgpg-error/libgpg-error-1.20.tar.bz2
-libgpg-error-ver   = libgpg-error/libgpg-error-1.24.tar.bz2
-# 2016-08-20
-# gnupg-ver          = gnupg/gnupg-2.0.29.tar.bz2
-gnupg-ver          = gnupg/gnupg-2.0.30.tar.bz2
 # 2016-07-24
 rakudo-star-ver    = rakudo-star/rakudo-star-2016.07.tar.gz
 # 2016-07-16
@@ -2880,8 +3054,6 @@ Moo-ver          = Moo/Moo-2.001001.tar.gz
 Module-Runtime-ver = Module-Runtime/Module-Runtime-0.014.tar.gz
 # 2016-06-05
 Module-Find-ver  = Module-Find/Module-Find-0.13.tar.gz
-# 2016-06-05
-Capture-Tiny-ver = Capture-Tiny/Capture-Tiny-0.42.tar.gz
 # 2016-06-05
 Crypt-Random-Source-ver = Crypt-Random-Source/Crypt-Random-Source-0.12.tar.gz
 # 2016-06-04
@@ -3007,13 +3179,13 @@ subversion-ver     = subversion/subversion-1.9.3.tar.bz2
 # 2016-01-09 Lua
 lua-ver            = lua/lua-5.3.2.tar.gz
 acl-ver            = acl/acl-2.2.52.src.tar.gz
-apr-util-ver       = apr-util/apr-util-1.5.3.tar.bz2
-apr-ver            = apr/apr-1.4.8.tar.bz2
+apr-util-ver       = apr-util/apr-util-1.5.4.tar.bz2
+apr-ver            = apr/apr-1.5.2.tar.bz2
 Archive-Zip-ver    = Archive-Zip/Archive-Zip-1.51.tar.gz
 attr-ver           = attr/attr-2.4.47.src.tar.gz
 autoconf-ver       = autoconf/autoconf-2.69.tar.xz
 autogen-ver        = autogen/autogen-5.18.7.tar.xz
-automake-ver       = automake/automake-1.14.tar.xz
+automake-ver       = automake/automake-1.15.tar.xz
 bash-ver           = bash/bash-4.3.30.tar.gz
 bcrypt-ver         = bcrypt/bcrypt-1.1.tar.gz
 binutils-ver       = binutils/binutils-2.24.tar.gz
@@ -3073,7 +3245,6 @@ libffi-ver         = libffi/libffi-3.2.1.tar.gz
 libiconv-ver       = libiconv/libiconv-1.14.tar.gz
 jpeg-ver           = jpeg/jpegsrc.v9b.tar.gz
 libpcap-ver        = libpcap/libpcap-1.4.0.tar.gz
-libpthread-ver     = libpthread/master.zip
 libsecret-ver      = libsecret/libsecret-0.18.3.tar.xz
 libtasn1-ver       = libtasn1/libtasn1-4.3.tar.gz
 libtool-ver        = libtool/libtool-2.4.2.tar.gz
@@ -3110,17 +3281,14 @@ pth-ver            = pth/pth-2.0.7.tar.gz
 pygobject-ver      = pygobject/pygobject-2.28.6.tar.xz
 readline-ver       = readline/readline-6.3.tar.gz
 Scalar-MoreUtils-ver = Scalar-MoreUtils/Scalar-MoreUtils-0.02.tar.gz
-scons-ver          = scons/scons-2.3.4.tar.gz
 screen-ver         = screen/screen-4.3.1.tar.gz
 scrypt-ver         = scrypt/scrypt-1.1.6.tgz
 sed-ver            = sed/sed-4.2.2.tar.gz
-serf-ver           = serf/serf-1.3.5.tar.bz2
 sharutils-ver      = sharutils/sharutils-4.15.1.tar.xz
 sparse-ver         = sparse/sparse-0.5.0.tar.gz
 srm-ver            = srm/srm-1.2.15.tar.gz
 swig-ver           = swig/swig-3.0.0.tar.gz
 symlinks-ver       = symlinks/symlinks-1.4.tar.gz
-tar-ver            = tar/tar-1.28.tar.gz
 tcc-ver            = tcc/tcc-0.9.26.tar.bz2
 tcl-ver            = tcl/tcl8.6.3-src.tar.gz
 tclx-ver           = tclx/tclx8.4.1.tar.bz2
@@ -3281,9 +3449,10 @@ scrypt: $(scrypt-ver)
 .PHONY: libgpg-error
 .PHONY: libksba
 .PHONY: libpng
+.PHONY: ntbtls
 .PHONY: npth
 .PHONY: which
-apr findutils gdbm jpeg libgpg-error libassuan libksba libpng npth which: $(which-ver) $(libpng-ver) $(libgpg-error-ver) $(libassuan-ver) $(libksba-ver) $(apr-ver) $(gdbm-ver) $(findutils-ver) $(jpeg-ver) $(npth-ver)
+apr findutils gdbm jpeg libgpg-error libassuan libksba libpng ntbtls npth which: $(which-ver) $(libpng-ver) $(libgpg-error-ver) $(libassuan-ver) $(libksba-ver) $(apr-ver) $(gdbm-ver) $(findutils-ver) $(jpeg-ver) $(npth-ver) $(ntbtls-ver)
 	$(call SOURCEDIR,$@,xf)
 	cd $@; mkdir $@-build
 	cd $@/$@-build/; readlink -f . | grep $@-build
@@ -3377,11 +3546,11 @@ libffi texinfo: \
 .PHONY: file
 .PHONY: flac
 .PHONY: fribidi
-.PHONY: gnupg
 .PHONY: jnettop
 .PHONY: lame
 .PHONY: libogg
 .PHONY: libdnet
+.PHONY: libmpeg2
 .PHONY: libvorbis
 .PHONY: libxml2
 .PHONY: libxslt
@@ -3393,18 +3562,18 @@ libffi texinfo: \
 .PHONY: sharutils
 .PHONY: tcc
 .PHONY: yasm
-jnettop libxml2 check file protobuf libtasn1 gnupg popt sharutils pixman libxslt tcc libidn daq libdnet fribidi alsa-lib libogg flac libvorbis octave lame yasm opus : \
+jnettop libxml2 check file protobuf libtasn1 popt sharutils pixman libxslt tcc libidn daq libdnet fribidi alsa-lib libogg flac libvorbis octave lame yasm opus libmpeg2 : \
     $(alsa-lib-ver) \
     $(check-ver) \
     $(daq-ver) \
     $(file-ver) \
     $(flac-ver) \
     $(fribidi-ver) \
-    $(gnupg-ver) \
     $(jnettop-ver) \
     $(lame-ver) \
     $(libdnet-ver) \
     $(libidn-ver) \
+    $(libmpeg2-ver) \
     $(libogg-ver) \
     $(libtasn1-ver) \
     $(libvorbis-ver) \
@@ -3419,7 +3588,7 @@ jnettop libxml2 check file protobuf libtasn1 gnupg popt sharutils pixman libxslt
     $(tcc-ver) \
     $(yasm-ver)
 	$(call SOURCEDIR,$@,xf)
-	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
+	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --enable-shared
 	cd $@/`cat $@/untar.dir`/; make
 	cd $@/`cat $@/untar.dir`/; make check || make test
 	$(call PKGINSTALL,$@)
@@ -3430,11 +3599,24 @@ jnettop libxml2 check file protobuf libtasn1 gnupg popt sharutils pixman libxslt
 # Standard build, post tar rule, no separate build directory,
 # full automake
 .PHONY: par2cmdline
-par2cmdline: $(par2cmdline-ver)
+par2cmdline : $(par2cmdline-ver)
 	$(call SOURCEDIR,$@,xf)
 	cd $@/`cat $@/untar.dir`/; aclocal
 	cd $@/`cat $@/untar.dir`/; automake --add-missing
 	cd $@/`cat $@/untar.dir`/; autoconf
+	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
+	cd $@/`cat $@/untar.dir`/; make
+	cd $@/`cat $@/untar.dir`/; make check || make test
+	$(call PKGINSTALL,$@)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
+
+# Standard build, post tar rule, no separate build directory,
+# autoreconf to automate  autoconf, autoheader, aclocal automake libtoolize and autopoint
+.PHONY: dash
+dash : $(dash-ver)
+	$(call SOURCEDIR,$@,xf)
+	cd $@/`cat $@/untar.dir`/; autoreconf -i
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/; make
 	cd $@/`cat $@/untar.dir`/; make check || make test
@@ -3539,21 +3721,38 @@ bcrypt libcap multitail symlinks unrar lxsplit password-store: $(bcrypt-ver) $(m
 	$(call CPLIB,$@*)
 
 # Perl Rule using Make
+.PHONY: Algorithm-Diff
 .PHONY: Any-Moose
 .PHONY: Archive-Zip
 .PHONY: B-Hooks-EndOfScope
+.PHONY: CPAN-Meta-Check
 .PHONY: Capture-Tiny
+.PHONY: Class-Data-Inheritable
+.PHONY: Class-Load
+.PHONY: Class-Load-XS
 .PHONY: Class-Loader
 .PHONY: Class-Method-Modifiers
+.PHONY: Class-Singleton
 .PHONY: Crypt-Random
 .PHONY: Crypt-Random-Source
 .PHONY: Data-OptList
+.PHONY: DataTime-Locale
+.PHONY: Date-Manip
+.PHONY: DateTime
+.PHONY: DateTime-Locale
+.PHONY: DateTime-TimeZone
 .PHONY: Devel-GlobalDestruction
+.PHONY: Devel-OverloadInfo
+.PHONY: Devel-StackTrace
 .PHONY: Devel-Symdump
+.PHONY: Digest-HMAC
 .PHONY: Digest-SHA1
 .PHONY: Dist-CheckConflicts
 .PHONY: Encode-Locale
+.PHONY: Eval-Closure
+.PHONY: Exception-Class
 .PHONY: Exporter-Tiny
+.PHONY: File-pushd
 .PHONY: File-Listing
 .PHONY: HTML-Parser
 .PHONY: HTML-Tagset
@@ -3562,12 +3761,15 @@ bcrypt libcap multitail symlinks unrar lxsplit password-store: $(bcrypt-ver) $(m
 .PHONY: HTTP-Date
 .PHONY: HTTP-Message
 .PHONY: HTTP-Negotiate
-.PHONY: inc-latest
 .PHONY: IO-HTML
 .PHONY: IO-Socket-SSL
-.PHONY: libwww-perl
-.PHONY: List-MoreUtils
+.PHONY: Importer
+.PHONY: JSON-MaybeXS
 .PHONY: LWP-MediaTypes
+.PHONY: LWP-Protocol-https
+.PHONY: List-MoreUtils
+.PHONY: Log-Log4perl
+.PHONY: MRO-Compat
 .PHONY: Math-Random-ISAAC
 .PHONY: Math-Random-Secure
 .PHONY: Module-Build
@@ -3575,50 +3777,94 @@ bcrypt libcap multitail symlinks unrar lxsplit password-store: $(bcrypt-ver) $(m
 .PHONY: Module-Find
 .PHONY: Module-Implementation
 .PHONY: Module-Runtime
+.PHONY: Module-Runtime-Conflicts
+.PHONY: Mojolicious
 .PHONY: Moo
+.PHONY: Moose
 .PHONY: Mouse
-.PHONY: namespace-clean
+.PHONY: MouseX-Types
+.PHONY: Net-DNS
 .PHONY: Net-HTTP
+.PHONY: PAR-Dist
+.PHONY: Package-DeprecationManager
 .PHONY: Package-Stash
 .PHONY: Package-Stash-XS
-.PHONY: PAR-Dist
 .PHONY: Params-Util
+.PHONY: Params-ValidationCompiler
 .PHONY: Pod-Coverage
 .PHONY: Role-Tiny
+.PHONY: Scalar-List-Utils
 .PHONY: Scalar-MoreUtils
+.PHONY: Specio
 .PHONY: Sub-Exporter
 .PHONY: Sub-Exporter-Progressive
+.PHONY: Sub-Identify
+.PHONY: Sub-Info
 .PHONY: Sub-Install
+.PHONY: Sub-Name
 .PHONY: Sub-Uplevel
+.PHONY: Term-Table
+.PHONY: Test-CleanNamespaces
+.PHONY: Test-Deep
+.PHONY: Test-Differences
 .PHONY: Test-Fatal
+.PHONY: Test-Inter
 .PHONY: Test-LeakTrace
+.PHONY: Test-Needs
 .PHONY: Test-NoWarnings
 .PHONY: Test-Pod
 .PHONY: Test-Pod-Coverage
 .PHONY: Test-Requires
+.PHONY: Test-RequiresInternet
+.PHONY: Test-Simple
 .PHONY: Test-Warn
+.PHONY: Tests-Warnings
+.PHONY: Test-Without-Module
+.PHONY: Test2-Plugin-NoWarnings
+.PHONY: Test2-Suite
+.PHONY: Text-Diff
 .PHONY: Try-Tiny
 .PHONY: Type-Tiny
 .PHONY: URI
 .PHONY: Variable-Magic
 .PHONY: WWW-RobotRules
 .PHONY: XML-Parser
-Any-Moose Archive-Zip Capture-Tiny B-Hooks-EndOfScope Class-Loader Class-Method-Modifiers Crypt-Random Crypt-Random-Source Data-OptList Devel-GlobalDestruction Digest-SHA1 Dist-CheckConflicts Encode-Locale Exporter-Tiny File-Listing Scalar-MoreUtils URI HTML-Tagset HTML-Parser HTTP-Daemon HTTP-Cookies HTTP-Date WWW-RobotRules HTTP-Message HTTP-Negotiate inc-latest IO-HTML IO-Socket-SSL LWP-MediaTypes Module-Find Module-Implementation Module-Runtime Math-Random-ISAAC Math-Random-Secure Module-Build Moo Net-HTTP Devel-Symdump List-MoreUtils namespace-clean Package-Stash Package-Stash-XS PAR-Dist Params-Util Pod-Coverage Role-Tiny Sub-Exporter Sub-Exporter-Progressive Sub-Install Sub-Uplevel Test-Fatal Test-LeakTrace Test-NoWarnings Test-Pod Test-Pod-Coverage Test-Requires Test-Warn Type-Tiny Try-Tiny Variable-Magic libwww-perl XML-Parser : \
+.PHONY: inc-latest
+.PHONY: libwww-perl
+.PHONY: namespace-autoclean
+.PHONY: namespace-clean
+Sub-Name Class-Load Class-Load-XS Test-Warnings Package-DeprecationManager Devel-OverloadInfo Test-Deep File-pushd Test-CleanNamespaces Module-Runtime-Conflicts Moose MouseX-Types Any-Moose Archive-Zip Capture-Tiny B-Hooks-EndOfScope Class-Loader Class-Method-Modifiers Crypt-Random Crypt-Random-Source Data-OptList Devel-GlobalDestruction Digest-SHA1 Dist-CheckConflicts Encode-Locale Exporter-Tiny File-Listing Scalar-MoreUtils URI HTML-Tagset HTML-Parser HTTP-Daemon HTTP-Cookies HTTP-Date WWW-RobotRules HTTP-Message HTTP-Negotiate inc-latest IO-HTML IO-Socket-SSL LWP-MediaTypes Module-Find Module-Implementation Module-Runtime Math-Random-ISAAC Math-Random-Secure Module-Build Moo Net-HTTP Devel-Symdump List-MoreUtils namespace-clean Package-Stash Package-Stash-XS PAR-Dist Params-Util Pod-Coverage Role-Tiny Sub-Exporter Sub-Exporter-Progressive Sub-Install Sub-Uplevel Test-Fatal Test-LeakTrace Test-NoWarnings Test-Pod Test-Pod-Coverage Test-Requires Test-Warn Type-Tiny Try-Tiny Variable-Magic libwww-perl XML-Parser Test-Inter Date-Manip Sub-Identify namespace-autoclean Eval-Closure MRO-Compat Devel-StackTrace Test-Needs Specio Test-Simple Importer Sub-Info Term-Table Test-Without-Module Test2-Plugin-NoWarnings Test2-Suite Exception-Class Class-Data-Inheritable Params-ValidationCompiler DateTime-Locale Algorithm-Diff Text-Diff Test-Differences Scalar-List-Utils CPAN-Meta-Check Class-Singleton DateTime DateTime-TimeZone JSON-MaybeXS Test-RequiresInternet LWP-Protocol-https Log-Log4perl Mojolicious Digest-HMAC Net-DNS : \
+    $(Algorithm-Diff-ver) \
     $(Any-Moose-ver) \
     $(Archive-Zip-ver) \
     $(B-Hooks-EndOfScope-ver) \
+    $(CPAN-Meta-Check-ver) \
     $(Capture-Tiny-ver) \
+    $(Class-Data-Inheritable-ver) \
+    $(Class-Load-ver) \
+    $(Class-Load-XS-ver) \
     $(Class-Loader-ver) \
     $(Class-Method-Modifiers-ver) \
-    $(Crypt-Random-ver) \
     $(Crypt-Random-Source-ver) \
+    $(Crypt-Random-ver) \
+    $(Class-Singleton-ver) \
     $(Data-OptList-ver) \
+    $(Date-Manip-ver) \
+    $(DateTime-Locale-ver) \
+    $(DateTime-TimeZone-ver) \
+    $(DateTime-ver) \
     $(Devel-GlobalDestruction-ver) \
+    $(Devel-OverloadInfo-ver) \
+    $(Devel-StackTrace-ver) \
     $(Devel-Symdump-ver) \
+    $(Digest-HMAC-ver) \
     $(Digest-SHA1-ver) \
     $(Dist-CheckConflicts-ver) \
     $(Encode-Locale-ver) \
+    $(Eval-Closure-ver) \
+    $(Exception-Class-ver) \
     $(Exporter-Tiny-ver) \
+    $(File-pushd-ver) \
     $(File-Listing-ver) \
     $(HTML-Parser-ver) \
     $(HTML-Tagset-ver) \
@@ -3627,43 +3873,74 @@ Any-Moose Archive-Zip Capture-Tiny B-Hooks-EndOfScope Class-Loader Class-Method-
     $(HTTP-Date-ver) \
     $(HTTP-Message-ver) \
     $(HTTP-Negotiate-ver) \
-    $(inc-latest-ver) \
     $(IO-HTML-ver) \
-    $(List-MoreUtils-ver) \
+    $(Importer-ver) \
+    $(JSON-MaybeXS-ver) \
     $(LWP-MediaTypes-ver) \
+    $(LWP-Protocol-https-ver) \
+    $(List-MoreUtils-ver) \
+    $(Log-Log4perl-ver) \
+    $(MRO-Compat-ver) \
     $(Math-Random-ISAAC-ver) \
     $(Math-Random-Secure-ver) \
     $(Module-Build-ver) \
     $(Module-Find-ver) \
     $(Module-Implementation-ver) \
     $(Module-Runtime-ver) \
+    $(Module-Runtime-Conflicts-ver) \
+    $(Mojolicious-ver) \
     $(Moo-ver) \
-    $(namespace-clean-ver) \
+    $(Moose-ver) \
+    $(MouseX-Types-ver) \
     $(Net-HTTP-ver) \
-    $(Package-Stash-ver) \
-    $(Package-Stash-XS-ver) \
+    $(Net-DNS-ver) \
     $(PAR-Dist-ver) \
+    $(Package-DeprecationManager-ver) \
+    $(Package-Stash-XS-ver) \
+    $(Package-Stash-ver) \
     $(Params-Util-ver) \
+    $(Params-ValidationCompiler-ver) \
     $(Pod-Coverage-ver) \
     $(Role-Tiny-ver) \
+    $(Scalar-List-Utils-ver) \
     $(Scalar-MoreUtils-ver) \
-    $(Sub-Exporter-ver) \
+    $(Specio-ver) \
     $(Sub-Exporter-Progressive-ver) \
+    $(Sub-Exporter-ver) \
+    $(Sub-Identify-ver) \
+    $(Sub-Info-ver) \
     $(Sub-Install-ver) \
+    $(Sub-Name-ver) \
     $(Sub-Uplevel-ver) \
+    $(Term-Table-ver) \
+    $(Test-CleanNamespaces-ver) \
+    $(Test-Deep-ver) \
+    $(Test-Differences-ver) \
     $(Test-Fatal-ver) \
+    $(Test-Inter-ver) \
     $(Test-LeakTrace-ver) \
+    $(Test-Needs-ver) \
     $(Test-NoWarnings-ver) \
     $(Test-Pod-Coverage-ver) \
     $(Test-Pod-ver) \
     $(Test-Requires-ver) \
+    $(Test-RequiresInternet-ver) \
+    $(Test-Simple-ver) \
     $(Test-Warn-ver) \
+    $(Test-Warnings-ver) \
+    $(Test-Without-Module-ver) \
+    $(Test2-Plugin-NoWarnings-ver) \
+    $(Test2-Suite-ver) \
+    $(Text-Diff-ver) \
     $(Try-Tiny-ver) \
     $(Type-Tiny-ver) \
     $(URI-ver) \
     $(Variable-Magic-ver) \
     $(WWW-RobotRules-ver) \
     $(XML-Parser-ver) \
+    $(inc-latest-ver) \
+    $(namespace-autoclean-ver) \
+    $(namespace-clean-ver) \
     $(libwww-perl-ver)
 	$(call SOURCEDIR,$@,xfz)
 	cd $@/`cat $@/untar.dir`/; perl Makefile.PL LIBS='-L/usr/local/lib -L/usr/lib -L/lib' INC='-I/usr/local/include -I/usr/include'
@@ -4190,6 +4467,20 @@ go: $(go-ver)
 	cd $@; sudo cp -r go /usr/local/.
 	cd /usr/local/go/src; sudo ./all.bash
 
+# I think gnupg will not find the scdaemon during the first test.
+# I think it has to be installed and then re-run the test.
+.PHONY: gnupg
+gnupg : \
+    $(gnupg-ver)
+	$(call SOURCEDIR,$@,xf)
+	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --enable-shared
+	cd $@/`cat $@/untar.dir`/; make
+	-cd $@/`cat $@/untar.dir`/; make check || make test
+	$(call PKGINSTALL,$@)
+	$(call CPLIB,libproto*)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
+
 .PHONY: gnuplot
 gnuplot : \
     $(gnuplot-ver)
@@ -4412,6 +4703,7 @@ libpthread: \
 	$(call SOURCEDIR,$@,xf)
 	cd $@; mkdir $@-build
 	cd $@/$@-build/; readlink -f . | grep $@-build
+	cd $@/$@-build/; chmod a+rx ../`cat ../untar.dir`/configure
 	cd $@/$@-build/; ../`cat ../untar.dir`/configure --prefix=/usr/local
 	cd $@/$@-build/; make
 	-cd $@/$@-build/; make check || make test
@@ -5160,7 +5452,12 @@ serf: $(serf-ver)
 	sed -i "/Default/s:lib_static,::"   SConstruct && \
 	sed -i "/Alias/s:install_static,::" SConstruct && \
 	scons PREFIX=/usr/local
-	cd $@/`cat $@/untar.dir`/; scons check
+	# The tests use certificates that have expired in 2017, generating
+	# 14 failures.
+	# Debian has fixed this with:
+	# https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=862027
+	# I suspect an updated version of serf will fix this
+	-cd $@/`cat $@/untar.dir`/; scons check
 	cd $@/`cat $@/untar.dir`/; sudo scons PREFIX=/usr/local install
 	@echo "======= Build of $@ Successful ======="
 
@@ -5414,19 +5711,129 @@ zlib: $(zlib-ver)
 
 .PHONY: wget-all
 wget-all: \
+    $(Algorithm-Diff-ver) \
+    $(Any-Moose-ver) \
+    $(Archive-Zip-ver) \
+    $(B-Hooks-EndOfScope-ver) \
+    $(CPAN-Meta-Check-ver) \
+    $(Capture-Tiny-ver) \
+    $(Class-Data-Inheritable-ver) \
+    $(Class-Load-ver) \
+    $(Class-Load-XS-ver) \
+    $(Class-Loader-ver) \
+    $(Class-Method-Modifiers-ver) \
+    $(Class-Singleton-ver) \
+    $(Crypt-Random-Source-ver) \
+    $(Crypt-Random-ver) \
+    $(Data-OptList-ver) \
+    $(Date-Manip-ver) \
+    $(DateTime-Locale-ver) \
+    $(DateTime-TimeZone-ver) \
+    $(DateTime-ver) \
+    $(Devel-GlobalDestruction-ver) \
+    $(Devel-OverloadInfo-ver) \
+    $(Devel-StackTrace-ver) \
+    $(Devel-Symdump-ver) \
+    $(Digest-HMAC-ver) \
+    $(Digest-SHA1-ver) \
+    $(Dist-CheckConflicts-ver) \
+    $(Encode-Locale-ver) \
+    $(Eval-Closure-ver) \
+    $(Exception-Class-ver) \
+    $(Exporter-Tiny-ver) \
+    $(File-pushd-ver) \
+    $(File-Listing-ver) \
+    $(HTML-Parser-ver) \
+    $(HTML-Tagset-ver) \
+    $(HTTP-Cookies-ver) \
+    $(HTTP-Daemon-ver) \
+    $(HTTP-Date-ver) \
+    $(HTTP-Message-ver) \
+    $(HTTP-Negotiate-ver) \
+    $(IO-HTML-ver) \
+    $(IO-Socket-SSL-ver) \
+    $(ImageMagick-ver) \
+    $(Importer-ver) \
+    $(JSON-MaybeXS-ver) \
+    $(LMDB-ver) \
+    $(LWP-MediaTypes-ver) \
+    $(LWP-Protocol-https-ver) \
+    $(Linux-PAM-ver) \
+    $(List-MoreUtils-ver) \
+    $(Log-Log4perl-ver) \
+    $(MRO-Compat-ver) \
+    $(Math-Pari-ver) \
+    $(Math-Random-ISAAC-ver) \
+    $(Math-Random-Secure-ver) \
+    $(Module-Build-XSUtil-ver) \
+    $(Module-Build-ver) \
+    $(Module-Find-ver) \
+    $(Module-Implementation-ver) \
+    $(Module-Runtime-ver) \
+    $(Module-Runtime-Conflicts-ver) \
+    $(Mojolicious-ver) \
+    $(Moo-ver) \
+    $(Moose-ver) \
+    $(Mouse-ver) \
+    $(MouseX-Types-ver) \
+    $(Net-HTTP-ver) \
+    $(Net-DNS-ver) \
+    $(Net-SSLeay-ver) \
+    $(PAR-Dist-ver) \
+    $(Package-DeprecationManager-ver) \
+    $(Package-Stash-XS-ver) \
+    $(Package-Stash-ver) \
+    $(Params-Util-ver) \
+    $(Params-ValidationCompiler-ver) \
+    $(Pod-Coverage-ver) \
+    $(Python-ver) \
+    $(Role-Tiny-ver) \
+    $(Scalar-List-Utils-ver) \
+    $(Scalar-MoreUtils-ver) \
+    $(Specio-ver) \
+    $(Sub-Exporter-Progressive-ver) \
+    $(Sub-Exporter-ver) \
+    $(Sub-Identify-ver) \
+    $(Sub-Info-ver) \
+    $(Sub-Install-ver) \
+    $(Sub-Name-ver) \
+    $(Sub-Uplevel-ver) \
+    $(Term-Table-ver) \
+    $(Test-CleanNamespaces-ver) \
+    $(Test-Deep-ver) \
+    $(Test-Exception-ver) \
+    $(Test-Fatal-ver) \
+    $(Test-Inter-ver) \
+    $(Test-LeakTrace-ver) \
+    $(Test-Needs-ver) \
+    $(Test-NoWarnings-ver) \
+    $(Test-Pod-Coverage-ver) \
+    $(Test-Pod-ver) \
+    $(Test-Requires-ver) \
+    $(Test-RequiresInternet-ver) \
+    $(Test-Simple-ver) \
+    $(Test-Warn-ver) \
+    $(Test-Warnings-ver) \
+    $(Test-Without-Module-ver) \
+    $(Test2-Plugin-NoWarnings-ver) \
+    $(Test2-Suite-ver) \
+    $(Text-Differences-ver) \
+    $(Try-Tiny-ver) \
+    $(Type-Tiny-ver) \
+    $(URI-ver) \
+    $(Variable-Magic-ver) \
+    $(WWW-RobotRules-ver) \
+    $(XML-Parser-ver) \
     $(ack-ver) \
     $(acl-ver) \
     $(alsa-lib-ver) \
-    $(Any-Moose-ver) \
     $(apr-util-ver) \
     $(apr-ver) \
-    $(Archive-Zip-ver) \
     $(attr-ver) \
     $(autoconf-ver) \
     $(autogen-ver) \
     $(automake-ver) \
     $(autossh-ver) \
-    $(B-Hooks-EndOfScope-ver) \
     $(bash-ver) \
     $(bcrypt-ver) \
     $(binutils-ver) \
@@ -5434,87 +5841,65 @@ wget-all: \
     $(bzip-ver) \
     $(ca-cert-ver) \
     $(cairo-ver) \
-    $(Capture-Tiny-ver) \
     $(check-ver) \
     $(clang-ver) \
-    $(Class-Loader-ver) \
-    $(Class-Method-Modifiers-ver) \
     $(clisp-ver) \
     $(cmake-ver) \
     $(compiler-rt-ver) \
     $(coreutils-ver) \
     $(cppcheck-ver) \
-    $(crosextrafonts-ver) \
     $(crosextrafonts-carlito-ver) \
-    $(Crypt-Random-ver) \
-    $(Crypt-Random-Source-ver) \
+    $(crosextrafonts-ver) \
     $(curl-ver) \
     $(daq-ver) \
-    $(Data-OptList-ver) \
+    $(dash-ver) \
     $(db-ver) \
     $(dbus-ver) \
     $(dejagnu-ver) \
-    $(Devel-GlobalDestruction-ver) \
-    $(Devel-Symdump-ver) \
     $(diffutils-ver) \
-    $(Digest-SHA1-ver) \
-    $(Dist-CheckConflicts-ver) \
     $(doxygen-ver) \
     $(e2fsprogs-ver) \
     $(ecj-ver) \
-    $(Encode-Locale-ver) \
     $(expat-ver) \
     $(expect-ver) \
-    $(Exporter-Tiny-ver) \
     $(fdk-aac-ver) \
-    $(File-Listing-ver) \
+    $(ffmpeg-ver) \
     $(file-ver) \
     $(findutils-ver) \
     $(flac-ver) \
     $(flex-ver) \
-    $(ffmpeg-ver) \
     $(fontconfig-ver) \
     $(freetype-ver) \
     $(fribidi-ver) \
     $(fuse-ver) \
     $(gawk-ver) \
-    $(gcc-ver) \
-    $(gcc-6.3-ver) \
     $(gc-ver) \
-    $(gdbm-ver) \
+    $(gcc-6.3-ver) \
+    $(gcc-ver) \
     $(gdb-ver) \
+    $(gdbm-ver) \
     $(gettext-ver) \
     $(git-ver) \
-    $(glibc-ver) \
     $(glib-ver) \
+    $(glibc-ver) \
     $(gmp-ver) \
     $(gntls-ver) \
     $(gnupg-ver) \
     $(gnuplot-ver) \
-    $(gobject-introspection) \
     $(go-ver) \
+    $(gobject-introspection) \
     $(grep-ver) \
     $(guile-ver) \
     $(gzip-ver) \
     $(harfbuzz-ver) \
     $(hashdeep-ver) \
-    $(HTML-Parser-ver) \
-    $(HTML-Tagset-ver) \
     $(htop-ver) \
-    $(HTTP-Cookies-ver) \
-    $(HTTP-Daemon-ver) \
-    $(HTTP-Date-ver) \
     $(httpd-ver) \
-    $(HTTP-Message-ver) \
-    $(HTTP-Negotiate-ver) \
     $(hwloc-ver) \
     $(icu-ver) \
-    $(ImageMagick-ver) \
-    $(inetutils-ver) \
     $(inc-latest-ver) \
+    $(inetutils-ver) \
     $(intltool-ver) \
-    $(IO-HTML-ver) \
-    $(IO-Socket-SSL-ver) \
     $(iptraf-ng-ver) \
     $(iwyu-ver) \
     $(jnettop-ver) \
@@ -5535,6 +5920,7 @@ wget-all: \
     $(libiconv-ver) \
     $(libidn-ver) \
     $(libksba-ver) \
+    $(libmpeg2-ver) \
     $(libogg-ver) \
     $(libpcap-ver) \
     $(libpng-ver) \
@@ -5552,42 +5938,28 @@ wget-all: \
     $(libwww-perl-ver) \
     $(libxml2-ver) \
     $(libxslt-ver) \
-    $(Linux-PAM-ver) \
-    $(List-MoreUtils-ver) \
-    $(LMDB-ver) \
     $(lua-ver) \
-    $(LWP-MediaTypes-ver) \
     $(lxsplit-ver) \
     $(lzma-ver) \
     $(lzo-ver) \
     $(m4-ver) \
     $(make-ver) \
     $(maldetect-ver) \
-    $(Math-Pari-ver) \
-    $(Math-Random-ISAAC-ver) \
-    $(Math-Random-Secure-ver) \
     $(mercurial-ver) \
-    $(Module-Build-ver) \
-    $(Module-Build-XSUtil-ver) \
-    $(Module-Find-ver) \
-    $(Module-Implementation-ver) \
-    $(Module-Runtime-ver) \
-    $(Moo-ver) \
     $(mosh-ver) \
-    $(Mouse-ver) \
     $(mpc-ver) \
     $(mpfr-ver) \
     $(multitail-ver) \
     $(mutt-ver) \
+    $(namespace-autoclean-ver) \
     $(namespace-clean-ver) \
     $(nano-ver) \
     $(nasm-ver) \
     $(ncurses-ver) \
     $(netpbm-ver) \
-    $(Net-HTTP-ver) \
-    $(Net-SSLeay-ver) \
     $(nettle-ver) \
     $(node-ver) \
+    $(ntbtls-ver) \
     $(npth-ver) \
     $(ntfs-3g-ver) \
     $(octave-ver) \
@@ -5596,13 +5968,9 @@ wget-all: \
     $(opus-ver) \
     $(p11-kit-ver) \
     $(p7zip-ver) \
-    $(Package-Stash-ver) \
-    $(Package-Stash-XS-ver) \
     $(pango-ver) \
-    $(pari-ver) \
-    $(PAR-Dist-ver) \
-    $(Params-Util-ver) \
     $(par2cmdline-ver) \
+    $(pari-ver) \
     $(password-store-ver) \
     $(patch-ver) \
     $(pcre-ver) \
@@ -5611,21 +5979,17 @@ wget-all: \
     $(pixman-ver) \
     $(pkg-config-ver) \
     $(pngnq-ver) \
-    $(Pod-Coverage-ver) \
     $(popt-ver) \
     $(protobuf-ver) \
     $(psmisc-ver) \
     $(pth-ver) \
-    $(pygobject-ver) \
     $(py2cairo-ver) \
-    $(Python-ver) \
+    $(pygobject-ver) \
     $(qt-everywhere-opensource-src-ver) \
-    $(random-ver) \
     $(rakudo-star-ver) \
+    $(random-ver) \
     $(readline-ver) \
-    $(Role-Tiny-ver) \
     $(ruby-ver) \
-    $(Scalar-MoreUtils-ver) \
     $(scons-ver) \
     $(screen-ver) \
     $(scrypt-ver) \
@@ -5638,10 +6002,6 @@ wget-all: \
     $(sparse-ver) \
     $(sqlite-ver) \
     $(srm-ver) \
-    $(Sub-Exporter-ver) \
-    $(Sub-Exporter-Progressive-ver) \
-    $(Sub-Install-ver) \
-    $(Sub-Uplevel-ver) \
     $(subversion-ver) \
     $(swig-ver) \
     $(symlinks-ver) \
@@ -5650,37 +6010,23 @@ wget-all: \
     $(tcc-ver) \
     $(tcl-ver) \
     $(tclx-ver) \
-    $(tcpdump-ver) \
     $(tcp_wrappers-ver) \
-    $(Test-Exception-ver) \
-    $(Test-Fatal-ver) \
-    $(Test-LeakTrace-ver) \
-    $(Test-NoWarnings-ver) \
-    $(Test-Pod-Coverage-ver) \
-    $(Test-Pod-ver) \
-    $(Test-Requires-ver) \
-    $(Test-Warn-ver) \
+    $(tcpdump-ver) \
     $(texinfo-ver) \
     $(tmux-ver) \
     $(truecrypt-ver) \
-    $(Try-Tiny-ver) \
-    $(Type-Tiny-ver) \
     $(unrar-ver) \
     $(unzip-ver) \
-    $(URI-ver) \
     $(util-linux-ver) \
     $(vala-ver) \
     $(valgrind-ver) \
-    $(Variable-Magic-ver) \
     $(vera++-ver) \
     $(vim-ver) \
     $(wget-ver) \
     $(which-ver) \
     $(whois-ver) \
     $(wipe-ver) \
-    $(WWW-RobotRules-ver) \
     $(x264-ver) \
-    $(XML-Parser-ver) \
     $(yasm-ver) \
     $(zip-ver) \
     $(zlib-ver) \
@@ -5699,13 +6045,16 @@ $(Any-Moose-ver):
 	$(call SOURCEWGET,"Any-Moose","http://search.cpan.org/CPAN/authors/id/E/ET/ETHER/"$(notdir $(Any-Moose-ver)))
 
 $(apr-ver):
-	$(call SOURCEWGET,"apr","http://archive.apache.org/dist/apr/apr-1.4.8.tar.bz2")
+	$(call SOURCEWGET,"apr","http://archive.apache.org/dist/apr/"$(notdir $(apr-ver)))
 
 $(apr-util-ver):
-	$(call SOURCEWGET,"apr-util","http://archive.apache.org/dist/apr/apr-util-1.5.3.tar.bz2")
+	$(call SOURCEWGET,"apr-util","http://archive.apache.org/dist/apr/"$(notdir $(apr-util-ver)))
 
 $(Archive-Zip-ver):
 	$(call SOURCEWGET,"Archive-Zip","http://search.cpan.org/CPAN/authors/id/P/PH/PHRED/"$(notdir $(Archive-Zip-ver)))
+
+$(Algorithm-Diff-ver):
+	$(call SOURCEWGET,"Algorithm-Diff","http://search.cpan.org/CPAN/authors/id/T/TY/TYEMQ/"$(notdir $(Algorithm-Diff-ver)))
 
 $(attr-ver):
 	$(call SOURCEWGET,"attr","http://download.savannah.gnu.org/releases/attr/attr-2.4.47.src.tar.gz")
@@ -5758,11 +6107,23 @@ $(check-ver):
 $(clang-ver):
 	$(call SOURCEWGET,"clang","http://llvm.org/releases/3.4/clang-3.4.src.tar.gz")
 
+$(Class-Data-Inheritable-ver):
+	$(call SOURCEWGET,"Class-Data-Inheritable","http://search.cpan.org/CPAN/authors/id/T/TM/TMTM/"$(notdir $(Class-Data-Inheritable-ver)))
+
+$(Class-Load-ver):
+	$(call SOURCEWGET,"Class-Load","http://search.cpan.org/CPAN/authors/id/E/ET/ETHER/"$(notdir $(Class-Load-ver)))
+
+$(Class-Load-XS-ver):
+	$(call SOURCEWGET,"Class-Load-XS","http://search.cpan.org/CPAN/authors/id/E/ET/ETHER/"$(notdir $(Class-Load-XS-ver)))
+
 $(Class-Loader-ver):
 	$(call SOURCEWGET,"Class-Loader","http://search.cpan.org/CPAN/authors/id/V/VI/VIPUL/"$(notdir $(Class-Loader-ver)))
 
 $(Class-Method-Modifiers-ver):
 	$(call SOURCEWGET,"Class-Method-Modifiers","http://search.cpan.org/CPAN/authors/id/E/ET/ETHER/"$(notdir $(Class-Method-Modifiers-ver)))
+
+$(Class-Singleton-ver):
+	$(call SOURCEWGET,"Class-Singleton","http://search.cpan.org/CPAN/authors/id/S/SH/SHAY/"$(notdir $(Class-Singleton-ver)))
 
 $(clisp-ver):
 	$(call SOURCEWGET,"clisp","https://ftp.gnu.org/pub/gnu/"$(clisp-ver))
@@ -5775,6 +6136,9 @@ $(compiler-rt-ver):
 
 $(coreutils-ver):
 	$(call SOURCEWGET,"coreutils","http://ftp.gnu.org/gnu/"$(coreutils-ver))
+
+$(CPAN-Meta-Check-ver):
+	$(call SOURCEWGET,"CPAN-Meta-Check","http://search.cpan.org/CPAN/authors/id/L/LE/LEONT/"$(notdir $(CPAN-Meta-Check-ver)))
 
 $(cppcheck-ver):
 	$(call SOURCEWGET,"cppcheck","http://downloads.sourceforge.net/project/cppcheck/cppcheck/1.72/"$(notdir $(cppcheck-ver)))
@@ -5797,8 +6161,23 @@ $(curl-ver):
 $(daq-ver):
 	$(call SOURCEWGET,"daq","https://www.snort.org/downloads/snort/"$(notdir $(daq-ver)))
 
+$(dash-ver):
+	$(call SOURCEWGET,"dash","https://git.kernel.org/pub/scm/utils/dash/dash.git/snapshot/"$(notdir $(dash-ver)))
+
 $(Data-OptList-ver):
 	$(call SOURCEWGET,"Data-OptList","http://search.cpan.org/CPAN/authors/id/R/RJ/RJBS/"$(notdir $(Data-OptList-ver)))
+
+$(Date-Manip-ver):
+	$(call SOURCEWGET,"Date-Manip","http://search.cpan.org/CPAN/authors/id/S/SB/SBECK/"$(notdir $(Date-Manip-ver)))
+
+$(DateTime-ver):
+	$(call SOURCEWGET,"DateTime","http://search.cpan.org/CPAN/authors/id/D/DR/DROLSKY/"$(notdir $(DateTime-ver)))
+
+$(DateTime-Locale-ver):
+	$(call SOURCEWGET,"DateTime-Locale","http://search.cpan.org/CPAN/authors/id/D/DR/DROLSKY/"$(notdir $(DateTime-Locale-ver)))
+
+$(DateTime-TimeZone-ver):
+	$(call SOURCEWGET,"DateTime-TimeZone","http://search.cpan.org/CPAN/authors/id/D/DR/DROLSKY/"$(notdir $(DateTime-TimeZone-ver)))
 
 $(db-ver):
 	# $(call SOURCEWGET,"db","http://download.oracle.com/otn/berkeley-"$(db-ver))
@@ -5806,6 +6185,12 @@ $(db-ver):
 
 $(Devel-GlobalDestruction-ver):
 	$(call SOURCEWGET,"Devel-GlobalDestruction","http://search.cpan.org/CPAN/authors/id/H/HA/HAARG/"$(notdir $(Devel-GlobalDestruction-ver)))
+
+$(Devel-OverloadInfo-ver):
+	$(call SOURCEWGET,"Devel-OverloadInfo","http://search.cpan.org/CPAN/authors/id/I/IL/ILMARI/"$(notdir $(Devel-OverloadInfo-ver)))
+
+$(Devel-StackTrace-ver):
+	$(call SOURCEWGET,"Devel-StackTrace","http://search.cpan.org/CPAN/authors/id/D/DR/DROLSKY/"$(notdir $(Devel-StackTrace-ver)))
 
 $(Devel-Symdump-ver):
 	$(call SOURCEWGET,"Devel-Symdump","http://search.cpan.org/CPAN/authors/id/A/AN/ANDK/"$(notdir $(Devel-Symdump-ver)))
@@ -5818,6 +6203,9 @@ $(dejagnu-ver):
 
 $(diffutils-ver):
 	$(call SOURCEWGET,"diffutils","http://ftp.gnu.org/gnu/"$(diffutils-ver))
+
+$(Digest-HMAC-ver):
+	$(call SOURCEWGET,"Digest-HMAC","http://search.cpan.org/CPAN/authors/id/G/GA/GAAS/"$(notdir $(Digest-HMAC-ver)))
 
 $(Digest-SHA1-ver):
 	$(call SOURCEWGET,"Digest-SHA1","http://search.cpan.org/CPAN/authors/id/G/GA/GAAS/"$(notdir $(Digest-SHA1-ver)))
@@ -5840,6 +6228,12 @@ $(Encode-Locale-ver):
 $(File-Listing-ver):
 	$(call SOURCEWGET,"File-Listing","http://search.cpan.org/CPAN/authors/id/G/GA/GAAS/"$(notdir $(File-Listing-ver)))
 
+$(Eval-Closure-ver):
+	$(call SOURCEWGET,"Eval-Closure","http://search.cpan.org/CPAN/authors/id/D/DO/DOY/"$(notdir $(Eval-Closure-ver)))
+
+$(Exception-Class-ver):
+	$(call SOURCEWGET,"Exception-Class","http://search.cpan.org/CPAN/authors/id/D/DR/DROLSKY/"$(notdir $(Exception-Class-ver)))
+
 $(expat-ver):
 	$(call SOURCEWGET,"expat","http://downloads.sourceforge.net/expat/expat-2.1.0.tar.gz")
 
@@ -5854,6 +6248,9 @@ $(fdk-aac-ver):
 
 $(file-ver):
 	$(call SOURCEWGET,"file","ftp://ftp.astron.com/pub/"$(file-ver))
+
+$(File-pushd-ver):
+	$(call SOURCEWGET,"File-pushd","http://search.cpan.org/CPAN/authors/id/D/DA/DAGOLDEN/"$(notdir $(File-pushd-ver)))
 
 $(findutils-ver):
 	$(call SOURCEWGET,"findutils","https://ftp.gnu.org/pub/gnu/"$(findutils-ver))
@@ -5979,6 +6376,9 @@ $(icu-ver):
 $(ImageMagick-ver):
 	$(call SOURCEWGET,"ImageMagick","https://www.imagemagick.org/download/releases/"$(notdir $(ImageMagick-ver)))
 
+$(Importer-ver):
+	$(call SOURCEWGET,"Importer","http://search.cpan.org/CPAN/authors/id/E/EX/EXODIST/"$(notdir $(Importer-ver)))
+
 $(IO-HTML-ver):
 	$(call SOURCEWGET,"IO-HTML","http://search.cpan.org/CPAN/authors/id/C/CJ/CJM/"$(notdir $(IO-HTML-ver)))
 
@@ -5998,7 +6398,10 @@ $(iwyu-ver):
 	$(call SOURCEWGET,"include-what-you-use","http://include-what-you-use.com/downloads/include-what-you-use-3.4.src.tar.gz")
 
 $(IO-Socket-SSL-ver):
-	$(call SOURCEWGET,"IO-Socket-SSL","http://search.cpan.org/CPAN/authors/id/S/SU/SULLR/IO-Socket-SSL-2.012.tar.gz")
+	$(call SOURCEWGET,"IO-Socket-SSL","http://search.cpan.org/CPAN/authors/id/S/SU/SULLR/"$(notdir $(IO-Socket-SSL-ver)))
+
+$(JSON-MaybeXS-ver):
+	$(call SOURCEWGET,"JSON-MaybeXS","http://search.cpan.org/CPAN/authors/id/E/ET/ETHER/"$(notdir $(JSON-MaybeXS-ver)))
 
 $(jpeg-ver):
 	$(call SOURCEWGET,"jpeg","http://www.ijg.org/files/"$(notdir $(jpeg-ver)))
@@ -6054,6 +6457,9 @@ $(libpcap-ver):
 $(libgpg-error-ver):
 	$(call SOURCEWGET,"libgpg-error","ftp://ftp.gnupg.org/gcrypt/"$(libgpg-error-ver))
 
+$(libmpeg2-ver):
+	$(call SOURCEWGET,"libmpeg2","http://libmpeg2.sourceforge.net/files/"$(notdir $(libmpeg2-ver)))
+
 $(libogg-ver):
 	$(call SOURCEWGET,"libogg","http://downloads.xiph.org/releases/ogg/"$(notdir $(libogg-ver)))
 
@@ -6064,7 +6470,7 @@ $(libtheora-ver):
 	$(call SOURCEWGET,"libtheora","http://downloads.xiph.org/releases/theora/"$(notdir $(libtheora-ver)))
 
 $(libpthread-ver):
-	$(call SOURCEGIT,"libpthread","git://git.sv.gnu.org/hurd/libpthread.git")
+	$(call SOURCEWGET,"libpthread","http://git.savannah.gnu.org/cgit/hurd/libpthread.git/snapshot/"$(notdir $(libpthread-ver)))
 
 $(libsecret-ver):
 	$(call SOURCEWGET,"libsecret","http://ftp.gnome.org/pub/gnome/sources/libsecret/0.18/"$(notdir $(libsecret-ver)))
@@ -6114,11 +6520,17 @@ $(llvm-ver):
 $(LMDB-ver):
 	$(call SOURCEWGET,"LMDB","https://github.com/LMDB/lmdb/archive/"$(notdir $(LMDB-ver)))
 
+$(Log-Log4perl-ver):
+	$(call SOURCEWGET,"Log-Log4perl","http://search.cpan.org/CPAN/authors/id/M/MS/MSCHILLI/"$(notdir $(Log-Log4perl-ver)))
+
 $(lua-ver):
 	$(call SOURCEWGET,"lua","http://www.lua.org/ftp/"$(notdir $(lua-ver)))
 
 $(LWP-MediaTypes-ver):
 	$(call SOURCEWGET,"LWP-MediaTypes","http://search.cpan.org/CPAN/authors/id/G/GA/GAAS/"$(notdir $(LWP-MediaTypes-ver)))
+
+$(LWP-Protocol-https-ver):
+	$(call SOURCEWGET,"LWP-Protocol-https","http://search.cpan.org/CPAN/authors/id/O/OA/OALDERS/"$(notdir $(LWP-Protocol-https-ver)))
 
 $(lxsplit-ver):
 	$(call SOURCEWGET,"lxsplit","http://downloads.sourceforge.net/"$(lxsplit-ver))
@@ -6168,11 +6580,23 @@ $(Module-Implementation-ver):
 $(Module-Runtime-ver):
 	$(call SOURCEWGET,"Module-Runtime","http://search.cpan.org/CPAN/authors/id/Z/ZE/ZEFRAM/"$(notdir $(Module-Runtime-ver)))
 
+$(Module-Runtime-Conflicts-ver):
+	$(call SOURCEWGET,"Module-Runtime-Conflicts","http://search.cpan.org/CPAN/authors/id/E/ET/ETHER/"$(notdir $(Module-Runtime-Conflicts-ver)))
+
 $(Moo-ver):
 	$(call SOURCEWGET,"Moo","http://search.cpan.org/CPAN/authors/id/H/HA/HAARG/"$(notdir $(Moo-ver)))
 
+$(Mojolicious-ver):
+	$(call SOURCEWGET,"Mojolicious","http://search.cpan.org/CPAN/authors/id/S/SR/SRI/"$(notdir $(Mojolicious-ver)))
+
+$(Moose-ver):
+	$(call SOURCEWGET,"Moose","http://search.cpan.org/CPAN/authors/id/E/ET/ETHER/"$(notdir $(Moose-ver)))
+
 $(Mouse-ver):
 	$(call SOURCEWGET,"Mouse","http://search.cpan.org/CPAN/authors/id/S/SY/SYOHEX/"$(notdir $(Mouse-ver)))
+
+$(MouseX-Types-ver):
+	$(call SOURCEWGET,"MouseX-Types","http://search.cpan.org/CPAN/authors/id/G/GF/GFUJI/"$(notdir $(MouseX-Types-ver)))
 
 $(mosh-ver):
 	$(call SOURCEWGET,"mosh","http://mosh.mit.edu/"$(notdir $(mosh-ver)))
@@ -6183,11 +6607,17 @@ $(mpc-ver):
 $(mpfr-ver):
 	$(call SOURCEWGET,"mpfr","http://ftp.gnu.org/gnu/"$(mpfr-ver))
 
+$(MRO-Compat-ver):
+	$(call SOURCEWGET,"MRO-Compat","http://search.cpan.org/CPAN/authors/id/B/BO/BOBTFISH/"$(notdir $(MRO-Compat-ver)))
+
 $(multitail-ver):
 	$(call SOURCEWGET,"multitail","http://www.vanheusden.com/"$(multitail-ver))
 
 $(mutt-ver):
 	$(call SOURCEWGET,"mutt","ftp://ftp.mutt.org/pub/"$(mutt-ver))
+
+$(namespace-autoclean-ver):
+	$(call SOURCEWGET,"namespace-autoclean","http://search.cpan.org/CPAN/authors/id/E/ET/ETHER/"$(notdir $(namespace-autoclean-ver)))
 
 $(namespace-clean-ver):
 	$(call SOURCEWGET,"namespace-clean","http://search.cpan.org/CPAN/authors/id/R/RI/RIBASUSHI/"$(notdir $(namespace-clean-ver)))
@@ -6207,6 +6637,9 @@ $(ncurses-ver):
 $(Net-HTTP-ver):
 	$(call SOURCEWGET,"Net-HTTP","http://search.cpan.org/CPAN/authors/id/E/ET/ETHER/"$(notdir $(Net-HTTP-ver)))
 
+$(Net-DNS-ver):
+	$(call SOURCEWGET,"Net-DNS","http://search.cpan.org/CPAN/authors/id/N/NL/NLNETLABS/"$(notdir $(Net-DNS-ver)))
+
 $(Net-SSLeay-ver):
 	$(call SOURCEWGET,"Net-SSLeay","http://search.cpan.org/CPAN/authors/id/M/MI/MIKEM/"$(notdir $(Net-SSLeay-ver)))
 
@@ -6218,6 +6651,9 @@ $(node-ver):
 
 $(npth-ver):
 	$(call SOURCEWGET,"npth","https://gnupg.org/ftp/gcrypt/"$(npth-ver))
+
+$(ntbtls-ver):
+	$(call SOURCEWGET,"ntbtls","https://www.gnupg.org/ftp/gcrypt/"$(ntbtls-ver))
 
 $(ntfs-3g-ver):
 	$(call SOURCEWGET,"ntfs-3g","http://tuxera.com/opensource/ntfs-3g_ntfsprogs-2013.1.13.tgz")
@@ -6237,6 +6673,9 @@ $(opus-ver):
 $(p11-kit-ver):
 	$(call SOURCEWGET,"p11-kit","http://p11-glue.freedesktop.org/releases/"$(notdir $(p11-kit-ver)))
 
+$(Package-DeprecationManager-ver):
+	$(call SOURCEWGET,"Package-DeprecationManager","http://search.cpan.org/CPAN/authors/id/D/DR/DROLSKY/"$(notdir $(Package-DeprecationManager-ver)))
+
 $(Package-Stash-ver):
 	$(call SOURCEWGET,"Package-Stash","http://search.cpan.org/CPAN/authors/id/D/DO/DOY/"$(notdir $(Package-Stash-ver)))
 
@@ -6251,6 +6690,9 @@ $(pari-ver):
 
 $(PAR-Dist-ver):
 	$(call SOURCEWGET,"PAR-Dist","http://search.cpan.org/CPAN/authors/id/A/AU/AUDREYT/"$(notdir $(PAR-Dist-ver)))
+
+$(Params-ValidationCompiler-ver):
+	$(call SOURCEWGET,"Params-ValidationCompiler","http://search.cpan.org/CPAN/authors/id/D/DR/DROLSKY/"$(notdir $(Params-ValidationCompiler-ver)))
 
 $(Params-Util-ver):
 	$(call SOURCEWGET,"Params-Util","http://search.cpan.org/CPAN/authors/id/A/AD/ADAMK/"$(notdir $(Params-Util-ver)))
@@ -6328,11 +6770,14 @@ $(Role-Tiny-ver):
 $(ruby-ver):
 	$(call SOURCEWGET,"ruby","http://cache.ruby-lang.org/pub/ruby/2.3/"$(notdir $(ruby-ver)))
 
+$(Scalar-List-Utils-ver):
+	$(call SOURCEWGET,"Scalar-List-Utils","http://search.cpan.org/CPAN/authors/id/P/PE/PEVANS/"$(notdir $(Scalar-List-Utils-ver)))
+
 $(Scalar-MoreUtils-ver):
 	$(call SOURCEWGET,"Scalar-MoreUtils","http://search.cpan.org/CPAN/authors/id/R/RK/RKRIMEN/"$(notdir $(Scalar-MoreUtils-ver)))
 
 $(scons-ver):
-	$(call SOURCEWGET, "scons", "http://prdownloads.sourceforge.net/scons/scons-2.3.4.tar.gz")
+	$(call SOURCEWGET, "scons", "http://prdownloads.sourceforge.net/scons/"$(notdir $(scons-ver)))
 
 $(screen-ver):
 	$(call SOURCEWGET,"screen","https://ftp.gnu.org/gnu/"$(screen-ver))
@@ -6344,7 +6789,7 @@ $(sed-ver):
 	$(call SOURCEWGET, "sed", "http://ftp.gnu.org/gnu/sed/sed-4.2.2.tar.gz")
 
 $(serf-ver):
-	$(call SOURCEWGET, "serf", "http://serf.googlecode.com/svn/src_releases/serf-1.3.5.tar.bz2")
+	$(call SOURCEWGET, "serf", "https://archive.apache.org/dist/"$(serf-ver))
 
 # sharutils needed for cryptsetup
 $(sharutils-ver):
@@ -6352,6 +6797,9 @@ $(sharutils-ver):
 
 $(slang-ver):
 	$(call SOURCEWGET,"slang","http://www.jedsoft.org/releases/"$(slang-ver))
+
+$(Specio-ver):
+	$(call SOURCEWGET,"Specio","http://search.cpan.org/CPAN/authors/id/D/DR/DROLSKY/"$(notdir $(Specio-ver)))
 
 $(Sub-Uplevel-ver):
 	$(call SOURCEWGET,"Sub-Uplevel","http://search.cpan.org/CPAN/authors/id/D/DA/DAGOLDEN/"$(notdir $(Sub-Uplevel-ver)))
@@ -6362,8 +6810,17 @@ $(Sub-Exporter-ver):
 $(Sub-Exporter-Progressive-ver):
 	$(call SOURCEWGET,"Sub-Exporter-Progressive","http://search.cpan.org/CPAN/authors/id/F/FR/FREW/"$(notdir $(Sub-Exporter-Progressive-ver)))
 
+$(Sub-Info-ver):
+	$(call SOURCEWGET,"Sub-Info","http://search.cpan.org/CPAN/authors/id/E/EX/EXODIST/"$(notdir $(Sub-Info-ver)))
+
+$(Sub-Identify-ver):
+	$(call SOURCEWGET,"Sub-Identify","http://search.cpan.org/CPAN/authors/id/R/RG/RGARCIA/"$(notdir $(Sub-Identify-ver)))
+
 $(Sub-Install-ver):
 	$(call SOURCEWGET,"Sub-Install","http://search.cpan.org/CPAN/authors/id/R/RJ/RJBS/"$(notdir $(Sub-Install-ver)))
+
+$(Sub-Name-ver):
+	$(call SOURCEWGET,"Sub-Name","http://search.cpan.org/CPAN/authors/id/E/ET/ETHER/"$(notdir $(Sub-Name-ver)))
 
 $(subversion-ver):
 	$(call SOURCEWGET,"subversion","http://www.us.apache.org/dist/"$(subversion-ver))
@@ -6391,7 +6848,7 @@ $(swig-ver):
 	$(call SOURCEWGET,"swig","http://prdownloads.sourceforge.net/swig/swig-3.0.0.tar.gz")
 
 $(tar-ver):
-	$(call SOURCEWGET,"tar","https://ftp.gnu.org/gnu/tar/tar-1.28.tar.gz")
+	$(call SOURCEWGET,"tar","https://ftp.gnu.org/gnu/"$(tar-ver))
 
 $(tcc-ver):
 	$(call SOURCEWGET,"tcc","http://download.savannah.gnu.org/releases/tinycc/"$(notdir $(tcc-ver)))
@@ -6412,14 +6869,32 @@ $(tcp_wrappers-patch-ver):
 $(tcpdump-ver):
 	$(call SOURCEWGET,"tcpdump","http://www.tcpdump.org/release/tcpdump-4.5.1.tar.gz")
 
+$(Term-Table-ver):
+	$(call SOURCEWGET,"Term-Table","http://search.cpan.org/CPAN/authors/id/E/EX/EXODIST/"$(notdir $(Term-Table-ver)))
+
 $(Test-Exception-ver):
 	$(call SOURCEWGET,"Test-Exception","http://search.cpan.org/CPAN/authors/id/E/EX/EXODIST/"$(notdir $(Test-Exception-ver)))
+
+$(Test-CleanNamespaces-ver):
+	$(call SOURCEWGET,"Test-CleanNamespaces","http://search.cpan.org/CPAN/authors/id/E/ET/ETHER/"$(notdir $(Test-CleanNamespaces-ver)))
+
+$(Test-Deep-ver):
+	$(call SOURCEWGET,"Test-Deep","http://search.cpan.org/CPAN/authors/id/R/RJ/RJBS/"$(notdir $(Test-Deep-ver)))
+
+$(Test-Differences-ver):
+	$(call SOURCEWGET,"Test-Differences","http://search.cpan.org/CPAN/authors/id/D/DC/DCANTRELL/"$(notdir $(Test-Differences-ver)))
 
 $(Test-Fatal-ver):
 	$(call SOURCEWGET,"Test-Fatal","http://search.cpan.org/CPAN/authors/id/R/RJ/RJBS/"$(notdir $(Test-Fatal-ver)))
 
+$(Test-Inter-ver):
+	$(call SOURCEWGET,"Test-Inter","http://search.cpan.org/CPAN/authors/id/S/SB/SBECK/"$(notdir $(Test-Inter-ver)))
+
 $(Test-LeakTrace-ver):
 	$(call SOURCEWGET,"Test-LeakTrace","http://search.cpan.org/CPAN/authors/id/G/GF/GFUJI/"$(notdir $(Test-LeakTrace-ver)))
+
+$(Test-Needs-ver):
+	$(call SOURCEWGET,"Test-Needs","http://search.cpan.org/CPAN/authors/id/H/HA/HAARG/"$(notdir $(Test-Needs-ver)))
 
 $(Test-NoWarnings-ver):
 	$(call SOURCEWGET,"Test-NoWarnings","http://search.cpan.org/CPAN/authors/id/A/AD/ADAMK/"$(notdir $(Test-NoWarnings-ver)))
@@ -6435,6 +6910,27 @@ $(Test-Pod-Coverage-ver):
 
 $(Test-Requires-ver):
 	$(call SOURCEWGET,"Test-Requires","http://search.cpan.org/CPAN/authors/id/T/TO/TOKUHIROM/"$(notdir $(Test-Requires-ver)))
+
+$(Test-RequiresInternet-ver):
+	$(call SOURCEWGET,"Test-RequiresInternet","http://search.cpan.org/CPAN/authors/id/M/MA/MALLEN/"$(notdir $(Test-RequiresInternet-ver)))
+
+$(Test-Simple-ver):
+	$(call SOURCEWGET,"Test-Simple","http://search.cpan.org/CPAN/authors/id/E/EX/EXODIST/"$(notdir $(Test-Simple-ver)))
+
+$(Test-Warnings-ver):
+	$(call SOURCEWGET,"Test-Warnings","http://search.cpan.org/CPAN/authors/id/E/ET/ETHER/"$(notdir $(Test-Warnings-ver)))
+
+$(Test-Without-Module-ver):
+	$(call SOURCEWGET,"Test-Without-Module","http://search.cpan.org/CPAN/authors/id/C/CO/CORION/"$(notdir $(Test-Without-Module-ver)))
+
+$(Test2-Plugin-NoWarnings-ver):
+	$(call SOURCEWGET,"Test2-Plugin-NoWarnings","http://search.cpan.org/CPAN/authors/id/D/DR/DROLSKY/"$(notdir $(Test2-Plugin-NoWarnings-ver)))
+
+$(Test2-Suite-ver):
+	$(call SOURCEWGET,"Test2-Suite","http://search.cpan.org/CPAN/authors/id/E/EX/EXODIST/"$(notdir $(Test2-Suite-ver)))
+
+$(Text-Diff-ver):
+	$(call SOURCEWGET,"Text-Diff","http://search.cpan.org/CPAN/authors/id/N/NE/NEILB/"$(notdir $(Text-Diff-ver)))
 
 $(texinfo-ver):
 	$(call SOURCEWGET,"texinfo","https://ftp.gnu.org/gnu/texinfo/texinfo-5.2.tar.gz")
