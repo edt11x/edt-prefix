@@ -1,4 +1,4 @@
-#
+#"$(notdir $(lynis-ver)))
 # Things I should work on:
 # * Alot of these packages fall into some pretty generic patterns,
 #  - tar xf; configure; make; make check; sudo make install
@@ -2313,8 +2313,9 @@ aftergcc: \
     check_sudo \
     ca-cert \
     ca-cert \
-    git \
     pcre \
+    pcre2 \
+    git \
     grep \
     db \
     lzma \
@@ -2446,6 +2447,14 @@ afternethttp: \
     Scalar-List-Utils \
     CPAN-Meta-Check \
     Class-Singleton \
+    Class-Inspector \
+    Class-Tiny \
+    Scope-Guard \
+    Path-Tiny \
+    File-Copy-Recursive \
+    File-ShareDir-Install \
+    File-ShareDir \
+    Test-File-ShareDir \
     DateTime-Locale \
     DateTime-TimeZone \
     DateTime \
@@ -2641,6 +2650,10 @@ afterpatch: \
     libmpeg2 \
     ffmpeg \
     dash \
+    mutt \
+    c-ares \
+    lynis \
+    ocaml \
     afterlibsecret
 
 # Problem children
@@ -2662,7 +2675,6 @@ afterlibsecret: \
     daq \
     rakudo-star \
     snort \
-    mutt \
     qt-everywhere-opensource-src \
     gcc-6.3 \
     e2fsprogs \
@@ -2682,6 +2694,40 @@ afterlibsecret: \
 # ==============================================================
 # Versions
 # ==============================================================
+# 2017-10-05
+pcre2-ver          = pcre2/pcre2-10.30.tar.bz2
+# 2017-10-04
+pcre-ver           = pcre/pcre-8.41.tar.bz2
+# 2017-01-27
+# pcre-ver           = pcre/pcre-8.38.tar.bz2
+# pcre-ver           = pcre/pcre-8.40.tar.bz2
+# 2016-04-08
+# git-ver            = git/git-2.2.1.tar.xz
+git-ver            = git/git-2.8.1.tar.xz
+# 2017-10-04
+# git-ver            = git/git-2.14.1.tar.xz
+# 2017-10-04
+ocaml-ver          = ocaml/ocaml-4.05.0.tar.gz
+# 2017-10-04
+File-Copy-Recursive-ver = File-Copy-Recursive/File-Copy-Recursive-0.38.tar.gz
+# 2017-10-04
+Path-Tiny-ver       = Path-Tiny-ver/Path-Tiny-0.104.tar.gz
+# 2017-10-04
+Scope-Guard-ver     = Scope-Guard-ver/Scope-Guard-0.21.tar.gz
+# 2017-10-04
+Class-Tiny-ver      = Class-Tiny/Class-Tiny-1.006.tar.gz
+# 2017-10-04
+Class-Inspector-ver = Class-Inspector/Class-Inspector-1.32.tar.gz
+# 2017-10-04
+File-ShareDir-ver   = File-ShareDir/File-ShareDir-1.104.tar.gz
+# 2017-10-04
+Test-File-ShareDir-ver = Test-File-ShareDir/Test-File-ShareDir-1.001002.tar.gz
+# 2017-10-04
+File-ShareDir-Install-ver = File-ShareDir-Install/File-ShareDir-Install-0.11.tar.gz
+# 2017-10-03
+lynis-ver          = lynis/lynis-2.5.5.tar.gz
+# 2017-09-25
+c-ares-ver         = c-ares/c-ares-1.12.0.tar.gz
 # 2017-07-22
 # tar-ver            = tar/tar-1.28.tar.gz
 tar-ver            = tar/tar-1.29.tar.gz
@@ -2782,7 +2828,7 @@ Test-Differences-ver = Test-Differences/Test-Differences-0.64.tar.gz
 # 2017-03-10
 CPAN-Meta-Check-ver = CPAN-Meta-Check/CPAN-Meta-Check-0.014.tar.gz
 # 2017-03-05
-DateTime-Locale-ver = DataTime-Locale/DateTime-Locale-1.12.tar.gz
+DateTime-Locale-ver = DataTime-Locale/DateTime-Locale-1.16.tar.gz
 # 2017-03-05
 Class-Data-Inheritable-ver = Class-Data-Inheritable/Class-Data-Inheritable-0.08.tar.gz
 # 2017-03-05
@@ -2911,9 +2957,6 @@ fontconfig-ver     = fontconfig/fontconfig-2.12.1.tar.bz2
 Python-ver         = Python/Python-2.7.13.tar.xz
 # 2017-01-27
 LMDB-ver           = LMDB/LMDB_0.9.19.tar.gz
-# 2017-01-27
-# pcre-ver           = pcre/pcre-8.38.tar.bz2
-pcre-ver           = pcre/pcre-8.40.tar.bz2
 # 2017-01-21
 maldetect-ver       = maldetect/maldetect-current.tar.gz
 # 2017-01-08
@@ -3119,9 +3162,6 @@ crosextrafonts-ver = crosextrafonts/crosextrafonts-20130214.tar.gz
 # grep-ver           = grep/grep-2.21.tar.xz
 grep-ver           = grep/grep-2.24.tar.xz
 # 2016-04-08
-# git-ver            = git/git-2.2.1.tar.xz
-git-ver            = git/git-2.8.1.tar.xz
-# 2016-04-08
 lxsplit-ver        = lxsplit/lxsplit-0.2.4.tar.gz
 # 2016-04-03
 node-ver           = node/node-v4.4.2.tar.gz
@@ -3138,7 +3178,7 @@ autossh-ver        = autossh/autossh-1.4e.tgz
 # socat-ver          = socat/socat-1.7.3.0.tar.gz
 socat-ver          = socat/socat-1.7.3.1.tar.gz
 # 2016-01-31
-mutt-ver           = mutt/mutt-1.5.24.tar.gz
+mutt-ver           = mutt/mutt-1.9.0.tar.gz
 # 2016-01-31
 libdnet-ver        = libdnet/libdnet-1.12.tar.gz
 # 2016-01-31
@@ -3629,6 +3669,7 @@ dash : $(dash-ver)
 #
 # we should have a good version of tar that automatically
 # detects file type
+.PHONY: c-ares
 .PHONY: cairo
 .PHONY: fdk-aac
 .PHONY: htop
@@ -3645,7 +3686,7 @@ dash : $(dash-ver)
 .PHONY: tmux
 .PHONY: wipe
 .PHONY: x264
-srm wipe mosh socat tmux psmisc libusb htop cairo iptraf-ng hwloc nano libass fdk-aac nasm x264 : \
+srm wipe mosh socat tmux psmisc libusb htop cairo iptraf-ng hwloc nano libass fdk-aac nasm x264 c-ares : \
 	$(cairo-ver) \
 	$(fdk-aac-ver) \
 	$(htop-ver) \
@@ -3661,7 +3702,8 @@ srm wipe mosh socat tmux psmisc libusb htop cairo iptraf-ng hwloc nano libass fd
 	$(srm-ver) \
 	$(tmux-ver) \
 	$(wipe-ver) \
-	$(x264-ver)
+	$(x264-ver) \
+	$(c-ares-ver)
 	$(call SOURCEDIR,$@,xf)
 	cd $@/`cat $@/untar.dir`/; CPPFLAGS="-I/usr/local/include -I/usr/local/include/ncursesw" ./configure --prefix=/usr/local --enable-shared
 	cd $@/`cat $@/untar.dir`/; make
@@ -3728,11 +3770,13 @@ bcrypt libcap multitail symlinks unrar lxsplit password-store: $(bcrypt-ver) $(m
 .PHONY: CPAN-Meta-Check
 .PHONY: Capture-Tiny
 .PHONY: Class-Data-Inheritable
+.PHONY: Class-Inspector
 .PHONY: Class-Load
 .PHONY: Class-Load-XS
 .PHONY: Class-Loader
 .PHONY: Class-Method-Modifiers
 .PHONY: Class-Singleton
+.PHONY: Class-Tiny
 .PHONY: Crypt-Random
 .PHONY: Crypt-Random-Source
 .PHONY: Data-OptList
@@ -3753,7 +3797,10 @@ bcrypt libcap multitail symlinks unrar lxsplit password-store: $(bcrypt-ver) $(m
 .PHONY: Exception-Class
 .PHONY: Exporter-Tiny
 .PHONY: File-pushd
+.PHONY: File-Copy-Recursive
 .PHONY: File-Listing
+.PHONY: File-ShareDir
+.PHONY: File-ShareDir-Install
 .PHONY: HTML-Parser
 .PHONY: HTML-Tagset
 .PHONY: HTTP-Cookies
@@ -3791,10 +3838,12 @@ bcrypt libcap multitail symlinks unrar lxsplit password-store: $(bcrypt-ver) $(m
 .PHONY: Package-Stash-XS
 .PHONY: Params-Util
 .PHONY: Params-ValidationCompiler
+.PHONY: Path-Tiny
 .PHONY: Pod-Coverage
 .PHONY: Role-Tiny
 .PHONY: Scalar-List-Utils
 .PHONY: Scalar-MoreUtils
+.PHONY: Scope-Guard
 .PHONY: Specio
 .PHONY: Sub-Exporter
 .PHONY: Sub-Exporter-Progressive
@@ -3808,6 +3857,7 @@ bcrypt libcap multitail symlinks unrar lxsplit password-store: $(bcrypt-ver) $(m
 .PHONY: Test-Deep
 .PHONY: Test-Differences
 .PHONY: Test-Fatal
+.PHONY: Test-File-ShareDir
 .PHONY: Test-Inter
 .PHONY: Test-LeakTrace
 .PHONY: Test-Needs
@@ -3833,7 +3883,7 @@ bcrypt libcap multitail symlinks unrar lxsplit password-store: $(bcrypt-ver) $(m
 .PHONY: libwww-perl
 .PHONY: namespace-autoclean
 .PHONY: namespace-clean
-Sub-Name Class-Load Class-Load-XS Test-Warnings Package-DeprecationManager Devel-OverloadInfo Test-Deep File-pushd Test-CleanNamespaces Module-Runtime-Conflicts Moose MouseX-Types Any-Moose Archive-Zip Capture-Tiny B-Hooks-EndOfScope Class-Loader Class-Method-Modifiers Crypt-Random Crypt-Random-Source Data-OptList Devel-GlobalDestruction Digest-SHA1 Dist-CheckConflicts Encode-Locale Exporter-Tiny File-Listing Scalar-MoreUtils URI HTML-Tagset HTML-Parser HTTP-Daemon HTTP-Cookies HTTP-Date WWW-RobotRules HTTP-Message HTTP-Negotiate inc-latest IO-HTML IO-Socket-SSL LWP-MediaTypes Module-Find Module-Implementation Module-Runtime Math-Random-ISAAC Math-Random-Secure Module-Build Moo Net-HTTP Devel-Symdump List-MoreUtils namespace-clean Package-Stash Package-Stash-XS PAR-Dist Params-Util Pod-Coverage Role-Tiny Sub-Exporter Sub-Exporter-Progressive Sub-Install Sub-Uplevel Test-Fatal Test-LeakTrace Test-NoWarnings Test-Pod Test-Pod-Coverage Test-Requires Test-Warn Type-Tiny Try-Tiny Variable-Magic libwww-perl XML-Parser Test-Inter Date-Manip Sub-Identify namespace-autoclean Eval-Closure MRO-Compat Devel-StackTrace Test-Needs Specio Test-Simple Importer Sub-Info Term-Table Test-Without-Module Test2-Plugin-NoWarnings Test2-Suite Exception-Class Class-Data-Inheritable Params-ValidationCompiler DateTime-Locale Algorithm-Diff Text-Diff Test-Differences Scalar-List-Utils CPAN-Meta-Check Class-Singleton DateTime DateTime-TimeZone JSON-MaybeXS Test-RequiresInternet LWP-Protocol-https Log-Log4perl Mojolicious Digest-HMAC Net-DNS : \
+Sub-Name Class-Load Class-Load-XS Test-Warnings Package-DeprecationManager Devel-OverloadInfo Test-Deep File-pushd Test-CleanNamespaces Module-Runtime-Conflicts Moose MouseX-Types Any-Moose Archive-Zip Capture-Tiny B-Hooks-EndOfScope Class-Loader Class-Method-Modifiers Crypt-Random Crypt-Random-Source Data-OptList Devel-GlobalDestruction Digest-SHA1 Dist-CheckConflicts Encode-Locale Exporter-Tiny File-Listing Scalar-MoreUtils URI HTML-Tagset HTML-Parser HTTP-Daemon HTTP-Cookies HTTP-Date WWW-RobotRules HTTP-Message HTTP-Negotiate inc-latest IO-HTML IO-Socket-SSL LWP-MediaTypes Module-Find Module-Implementation Module-Runtime Math-Random-ISAAC Math-Random-Secure Module-Build Moo Net-HTTP Devel-Symdump List-MoreUtils namespace-clean Package-Stash Package-Stash-XS PAR-Dist Params-Util Pod-Coverage Role-Tiny Sub-Exporter Sub-Exporter-Progressive Sub-Install Sub-Uplevel Test-Fatal Test-LeakTrace Test-NoWarnings Test-Pod Test-Pod-Coverage Test-Requires Test-Warn Type-Tiny Try-Tiny Variable-Magic libwww-perl XML-Parser Test-Inter Date-Manip Sub-Identify namespace-autoclean Eval-Closure MRO-Compat Devel-StackTrace Test-Needs Specio Test-Simple Importer Sub-Info Term-Table Test-Without-Module Test2-Plugin-NoWarnings Test2-Suite Exception-Class Class-Data-Inheritable Params-ValidationCompiler Class-Inspector Class-Tiny Scope-Guard Path-Tiny File-Copy-Recursive File-ShareDir-Install File-ShareDir Test-File-ShareDir DateTime-Locale Algorithm-Diff Text-Diff Test-Differences Scalar-List-Utils CPAN-Meta-Check Class-Singleton DateTime DateTime-TimeZone JSON-MaybeXS Test-RequiresInternet LWP-Protocol-https Log-Log4perl Mojolicious Digest-HMAC Net-DNS : \
     $(Algorithm-Diff-ver) \
     $(Any-Moose-ver) \
     $(Archive-Zip-ver) \
@@ -3841,10 +3891,12 @@ Sub-Name Class-Load Class-Load-XS Test-Warnings Package-DeprecationManager Devel
     $(CPAN-Meta-Check-ver) \
     $(Capture-Tiny-ver) \
     $(Class-Data-Inheritable-ver) \
+    $(Class-Inspector-ver) \
     $(Class-Load-ver) \
     $(Class-Load-XS-ver) \
     $(Class-Loader-ver) \
     $(Class-Method-Modifiers-ver) \
+    $(Class-Tiny-ver) \
     $(Crypt-Random-Source-ver) \
     $(Crypt-Random-ver) \
     $(Class-Singleton-ver) \
@@ -3865,7 +3917,10 @@ Sub-Name Class-Load Class-Load-XS Test-Warnings Package-DeprecationManager Devel
     $(Exception-Class-ver) \
     $(Exporter-Tiny-ver) \
     $(File-pushd-ver) \
+    $(File-Copy-Recursive-ver) \
     $(File-Listing-ver) \
+    $(File-ShareDir-ver) \
+    $(File-ShareDir-Install-ver) \
     $(HTML-Parser-ver) \
     $(HTML-Tagset-ver) \
     $(HTTP-Cookies-ver) \
@@ -3900,10 +3955,12 @@ Sub-Name Class-Load Class-Load-XS Test-Warnings Package-DeprecationManager Devel
     $(Package-Stash-ver) \
     $(Params-Util-ver) \
     $(Params-ValidationCompiler-ver) \
+    $(Path-Tiny-ver) \
     $(Pod-Coverage-ver) \
     $(Role-Tiny-ver) \
     $(Scalar-List-Utils-ver) \
     $(Scalar-MoreUtils-ver) \
+    $(Scope-Guard-ver) \
     $(Specio-ver) \
     $(Sub-Exporter-Progressive-ver) \
     $(Sub-Exporter-ver) \
@@ -3917,6 +3974,7 @@ Sub-Name Class-Load Class-Load-XS Test-Warnings Package-DeprecationManager Devel
     $(Test-Deep-ver) \
     $(Test-Differences-ver) \
     $(Test-Fatal-ver) \
+    $(Test-File-ShareDir-ver) \
     $(Test-Inter-ver) \
     $(Test-LeakTrace-ver) \
     $(Test-Needs-ver) \
@@ -4780,6 +4838,17 @@ libutempter : \
 	$(call CPLIB,libutempter*)
 	$(call CPLIB,$@*)
 
+# No configure, no make check or test, does not have a good install, just copy the directory
+.PHONY: lynis
+lynis : \
+    $(lynis-ver)
+	$(call SOURCEDIR,$@,xf)
+	sudo cp -av $@/`cat $@/untar.dir` /usr/local/.
+	sudo /bin/rm -f /usr/local/bin/lynis
+	sudo bash -c "echo 'cd /usr/local/lynis; ./lynis $$''*' > /usr/local/bin/lynis"
+	sudo chown -R 0:0 /usr/local/lynis/include/*
+	sudo chmod a+x /usr/local/bin/lynis
+
 .PHONY: lua
 lua: $(lua-ver) patches/lua-5.3.2-shared_library-1.patch
 	$(call SOURCEDIR,$@,xf)
@@ -4832,6 +4901,16 @@ node: $(node-ver)
 	$(call SOURCEDIR,$@,xf)
 	cd $@/`cat $@/untar.dir`/; CC=clang CXX=clang++ CPPFLAGS="-I/usr/local/include -I/usr/local/include/ncursesw" LDFLAGS="-L/usr/local/lib -lpth" ./configure --prefix=/usr/local --without-snapshot
 	cd $@/`cat $@/untar.dir`/; make
+	$(call PKGINSTALL,$@)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
+
+.PHONY: ocaml
+ocaml: \
+	$(ocaml-ver)
+	$(call SOURCEDIR,$@,xf)
+	cd $@/`cat $@/untar.dir`/; CPPFLAGS="-I/usr/local/include -I/usr/local/include/ncursesw" ./configure -prefix /usr/local
+	cd $@/`cat $@/untar.dir`/; make world
 	$(call PKGINSTALL,$@)
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
@@ -5102,7 +5181,7 @@ mutt : \
 	$(call SOURCEDIR,$@,xf)
 	cd $@/`cat $@/untar.dir`/; CPPFLAGS="-I/usr/local/include -I/usr/local/include/ncursesw" ./configure --prefix=/usr/local \
 		    --sysconfdir=/usr/local/etc \
-		    --with-docdir=/usr/local/share/doc/mutt-1.5.24 \
+		    --with-docdir=/usr/local/share/doc/mutt-1.9.0 \
 		    --enable-pop      \
 		    --enable-imap     \
 		    --enable-hcache   \
@@ -5231,8 +5310,22 @@ pari : \
 pcre: $(pcre-ver)
 	$(call SOURCEDIR,$@,xf)
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --enable-unicode-properties \
-	    --enable-pcre16 --enable-pcre32 --enable-pcregrep-libz --enable-pcregrep-libbz2
+	    --enable-pcre16 --enable-pcre32 --enable-pcregrep-libz --enable-pcregrep-libbz2 \
+	    --enable-jit
 	    #--enable-pcretest-libreadline
+	cd $@/`cat $@/untar.dir`/; make
+	cd $@/`cat $@/untar.dir`/; make check || make test
+	$(call PKGINSTALL,$@)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
+
+.PHONY: pcre2
+pcre2: $(pcre2-ver)
+	$(call SOURCEDIR,$@,xf)
+	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --enable-unicode \
+	                --enable-pcre2-16 --enable-pcre2-32 --enable-pcre2grep-libz \
+			--enable-pcre2grep-libbz2 --enable-pcre2test-libreadline \
+			--enable-jit
 	cd $@/`cat $@/untar.dir`/; make
 	cd $@/`cat $@/untar.dir`/; make check || make test
 	$(call PKGINSTALL,$@)
@@ -5718,11 +5811,13 @@ wget-all: \
     $(CPAN-Meta-Check-ver) \
     $(Capture-Tiny-ver) \
     $(Class-Data-Inheritable-ver) \
+    $(Class-Inspector-ver) \
     $(Class-Load-ver) \
     $(Class-Load-XS-ver) \
     $(Class-Loader-ver) \
     $(Class-Method-Modifiers-ver) \
     $(Class-Singleton-ver) \
+    $(Class-Tiny-ver) \
     $(Crypt-Random-Source-ver) \
     $(Crypt-Random-ver) \
     $(Data-OptList-ver) \
@@ -5742,7 +5837,10 @@ wget-all: \
     $(Exception-Class-ver) \
     $(Exporter-Tiny-ver) \
     $(File-pushd-ver) \
+    $(File-Copy-Recursive-ver) \
     $(File-Listing-ver) \
+    $(File-ShareDir-ver) \
+    $(File-ShareDir-Install-ver) \
     $(HTML-Parser-ver) \
     $(HTML-Tagset-ver) \
     $(HTTP-Cookies-ver) \
@@ -5785,11 +5883,13 @@ wget-all: \
     $(Package-Stash-ver) \
     $(Params-Util-ver) \
     $(Params-ValidationCompiler-ver) \
+    $(Path-Tiny-ver) \
     $(Pod-Coverage-ver) \
     $(Python-ver) \
     $(Role-Tiny-ver) \
     $(Scalar-List-Utils-ver) \
     $(Scalar-MoreUtils-ver) \
+    $(Scope-Guard-ver) \
     $(Specio-ver) \
     $(Sub-Exporter-Progressive-ver) \
     $(Sub-Exporter-ver) \
@@ -5803,6 +5903,7 @@ wget-all: \
     $(Test-Deep-ver) \
     $(Test-Exception-ver) \
     $(Test-Fatal-ver) \
+    $(Test-File-ShareDir-ver) \
     $(Test-Inter-ver) \
     $(Test-LeakTrace-ver) \
     $(Test-Needs-ver) \
@@ -5839,6 +5940,7 @@ wget-all: \
     $(binutils-ver) \
     $(bison-ver) \
     $(bzip-ver) \
+    $(c-ares-ver) \
     $(ca-cert-ver) \
     $(cairo-ver) \
     $(check-ver) \
@@ -5940,6 +6042,7 @@ wget-all: \
     $(libxslt-ver) \
     $(lua-ver) \
     $(lxsplit-ver) \
+    $(lynis-ver) \
     $(lzma-ver) \
     $(lzo-ver) \
     $(m4-ver) \
@@ -5962,6 +6065,7 @@ wget-all: \
     $(ntbtls-ver) \
     $(npth-ver) \
     $(ntfs-3g-ver) \
+    $(ocaml-ver) \
     $(octave-ver) \
     $(openssl-ver) \
     $(openvpn-ver) \
@@ -5974,6 +6078,7 @@ wget-all: \
     $(password-store-ver) \
     $(patch-ver) \
     $(pcre-ver) \
+    $(pcre2-ver) \
     $(perl-ver) \
     $(pinentry-ver) \
     $(pixman-ver) \
@@ -6089,6 +6194,9 @@ $(bison-ver):
 $(bzip-ver):
 	$(call SOURCEWGET,"bzip","http://www.bzip.org/1.0.6/bzip2-1.0.6.tar.gz")
 
+$(c-ares-ver):
+	$(call SOURCEWGET,"c-ares","https://c-ares.haxx.se/download/"$(notdir $(c-ares-ver)))
+
 $(ca-cert-ver):
 	$(call SOURCEWGET,"ca-cert","http://anduin.linuxfromscratch.org/sources/other/certdata.txt")
 	cd ca-cert; mkdir -p ca-cert-1.0
@@ -6110,6 +6218,9 @@ $(clang-ver):
 $(Class-Data-Inheritable-ver):
 	$(call SOURCEWGET,"Class-Data-Inheritable","http://search.cpan.org/CPAN/authors/id/T/TM/TMTM/"$(notdir $(Class-Data-Inheritable-ver)))
 
+$(Class-Inspector-ver):
+	$(call SOURCEWGET,"Class-Inspector","http://search.cpan.org/CPAN/authors/id/P/PL/PLICEASE/"$(notdir $(Class-Inspector-ver)))
+
 $(Class-Load-ver):
 	$(call SOURCEWGET,"Class-Load","http://search.cpan.org/CPAN/authors/id/E/ET/ETHER/"$(notdir $(Class-Load-ver)))
 
@@ -6124,6 +6235,9 @@ $(Class-Method-Modifiers-ver):
 
 $(Class-Singleton-ver):
 	$(call SOURCEWGET,"Class-Singleton","http://search.cpan.org/CPAN/authors/id/S/SH/SHAY/"$(notdir $(Class-Singleton-ver)))
+
+$(Class-Tiny-ver):
+	$(call SOURCEWGET,"Class-Tiny","http://search.cpan.org/CPAN/authors/id/D/DA/DAGOLDEN/"$(notdir $(Class-Tiny-ver)))
 
 $(clisp-ver):
 	$(call SOURCEWGET,"clisp","https://ftp.gnu.org/pub/gnu/"$(clisp-ver))
@@ -6251,6 +6365,15 @@ $(file-ver):
 
 $(File-pushd-ver):
 	$(call SOURCEWGET,"File-pushd","http://search.cpan.org/CPAN/authors/id/D/DA/DAGOLDEN/"$(notdir $(File-pushd-ver)))
+
+$(File-Copy-Recursive-ver):
+	$(call SOURCEWGET,"File-Copy-Recursive","http://search.cpan.org/CPAN/authors/id/D/DM/DMUEY/"$(notdir $(File-Copy-Recursive-ver)))
+
+$(File-ShareDir-ver):
+	$(call SOURCEWGET,"File-ShareDir","http://search.cpan.org/CPAN/authors/id/R/RE/REHSACK/"$(notdir $(File-ShareDir-ver)))
+
+$(File-ShareDir-Install-ver):
+	$(call SOURCEWGET,"File-ShareDir-Install","http://search.cpan.org/CPAN/authors/id/E/ET/ETHER/"$(notdir $(File-ShareDir-Install-ver)))
 
 $(findutils-ver):
 	$(call SOURCEWGET,"findutils","https://ftp.gnu.org/pub/gnu/"$(findutils-ver))
@@ -6535,6 +6658,9 @@ $(LWP-Protocol-https-ver):
 $(lxsplit-ver):
 	$(call SOURCEWGET,"lxsplit","http://downloads.sourceforge.net/"$(lxsplit-ver))
 
+$(lynis-ver):
+	$(call SOURCEWGET,"lynis","https://cisofy.com/files/"$(notdir $(lynis-ver)))
+
 $(make-ver):
 	$(call SOURCEWGET,"make","https://ftp.gnu.org/gnu/make/make-4.1.tar.gz")
 
@@ -6658,6 +6784,9 @@ $(ntbtls-ver):
 $(ntfs-3g-ver):
 	$(call SOURCEWGET,"ntfs-3g","http://tuxera.com/opensource/ntfs-3g_ntfsprogs-2013.1.13.tgz")
 
+$(ocaml-ver):
+	$(call SOURCEWGET,"ocaml","http://caml.inria.fr/pub/distrib/ocaml-4.05/"$(notdir $(ocaml-ver)))
+
 $(octave-ver):
 	$(call SOURCEWGET,"octave","https://ftp.gnu.org/gnu/"$(octave-ver))
 
@@ -6706,8 +6835,14 @@ $(password-store-ver):
 $(patch-ver):
 	$(call SOURCEWGET,"patch","http://ftp.gnu.org/gnu/"$(patch-ver))
 
+$(Path-Tiny-ver):
+	$(call SOURCEWGET,"Path-Tiny","http://search.cpan.org/CPAN/authors/id/D/DA/DAGOLDEN/"$(notdir $(Path-Tiny-ver)))
+
 $(pcre-ver):
 	$(call SOURCEWGET,"pcre","ftp://ftp.csx.cam.ac.uk/pub/software/programming/"$(pcre-ver))
+
+$(pcre2-ver):
+	$(call SOURCEWGET,"pcre2","ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/"$(notdir $(pcre2-ver)))
 
 $(perl-ver):
 	$(call SOURCEWGET,"perl","http://www.cpan.org/src/5.0/"$(notdir $(perl-ver)))
@@ -6778,6 +6913,9 @@ $(Scalar-MoreUtils-ver):
 
 $(scons-ver):
 	$(call SOURCEWGET, "scons", "http://prdownloads.sourceforge.net/scons/"$(notdir $(scons-ver)))
+
+$(Scope-Guard-ver):
+	$(call SOURCEWGET,"Scope-Guard","http://search.cpan.org/CPAN/authors/id/C/CH/CHOCOLATE/"$(notdir $(Scope-Guard-ver)))
 
 $(screen-ver):
 	$(call SOURCEWGET,"screen","https://ftp.gnu.org/gnu/"$(screen-ver))
@@ -6886,6 +7024,9 @@ $(Test-Differences-ver):
 
 $(Test-Fatal-ver):
 	$(call SOURCEWGET,"Test-Fatal","http://search.cpan.org/CPAN/authors/id/R/RJ/RJBS/"$(notdir $(Test-Fatal-ver)))
+
+$(Test-File-ShareDir-ver):
+	$(call SOURCEWGET,"Test-File-ShareDir","http://search.cpan.org/CPAN/authors/id/K/KE/KENTNL/"$(notdir $(Test-File-ShareDir-ver)))
 
 $(Test-Inter-ver):
 	$(call SOURCEWGET,"Test-Inter","http://search.cpan.org/CPAN/authors/id/S/SB/SBECK/"$(notdir $(Test-Inter-ver)))
