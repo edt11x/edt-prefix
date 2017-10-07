@@ -2315,6 +2315,7 @@ aftergcc: \
     ca-cert \
     pcre \
     pcre2 \
+    rng-tools \
     git \
     grep \
     db \
@@ -2694,6 +2695,8 @@ afterlibsecret: \
 # ==============================================================
 # Versions
 # ==============================================================
+# 2017-10-06
+rng-tools-ver      = rng-tools/rng-tools-5.tar.gz
 # 2017-10-05
 pcre2-ver          = pcre2/pcre2-10.30.tar.bz2
 # 2017-10-04
@@ -2703,9 +2706,9 @@ pcre-ver           = pcre/pcre-8.41.tar.bz2
 # pcre-ver           = pcre/pcre-8.40.tar.bz2
 # 2016-04-08
 # git-ver            = git/git-2.2.1.tar.xz
-git-ver            = git/git-2.8.1.tar.xz
-# 2017-10-04
-# git-ver            = git/git-2.14.1.tar.xz
+# git-ver            = git/git-2.8.1.tar.xz
+# 2017-10-06
+git-ver            = git/git-2.14.2.tar.xz
 # 2017-10-04
 ocaml-ver          = ocaml/ocaml-4.05.0.tar.gz
 # 2017-10-04
@@ -3599,10 +3602,11 @@ libffi texinfo: \
 .PHONY: pixman
 .PHONY: popt
 .PHONY: protobuf
+.PHONY: rng-tools
 .PHONY: sharutils
 .PHONY: tcc
 .PHONY: yasm
-jnettop libxml2 check file protobuf libtasn1 popt sharutils pixman libxslt tcc libidn daq libdnet fribidi alsa-lib libogg flac libvorbis octave lame yasm opus libmpeg2 : \
+jnettop libxml2 check file protobuf libtasn1 popt sharutils pixman libxslt tcc libidn daq libdnet fribidi alsa-lib libogg flac libvorbis octave lame yasm opus libmpeg2 rng-tools : \
     $(alsa-lib-ver) \
     $(check-ver) \
     $(daq-ver) \
@@ -3624,6 +3628,7 @@ jnettop libxml2 check file protobuf libtasn1 popt sharutils pixman libxslt tcc l
     $(pixman-ver) \
     $(popt-ver) \
     $(protobuf-ver) \
+    $(rng-tools-ver) \
     $(sharutils-ver) \
     $(tcc-ver) \
     $(yasm-ver)
@@ -4534,6 +4539,8 @@ gnupg : \
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --enable-shared
 	cd $@/`cat $@/untar.dir`/; make
 	-cd $@/`cat $@/untar.dir`/; make check || make test
+	sudo /bin/rm -f /usr/local/bin/gpg
+	sudo /bin/ln /usr/local/bin/gpg2 /usr/local/bin/gpg
 	$(call PKGINSTALL,$@)
 	$(call CPLIB,libproto*)
 	$(call CPLIB,lib$@*)
@@ -4967,7 +4974,7 @@ git: $(git-ver)
 	cd $@/`cat $@/untar.dir`/; chmod a+x configure
 	cd $@/`cat $@/untar.dir`/; PYTHON_PATH=/usr/local/bin/python SHELL_PATH=/usr/local/bin/bash SANE_TOOL_PATH="/usr/local/bin:/usr/local/sbin" ./configure --prefix=/usr/local --with-gitconfig=/usr/local/etc/gitconfig --with-libpcre
 	cd $@/`cat $@/untar.dir`/; PYTHON_PATH=/usr/local/bin/python SHELL_PATH=/usr/local/bin/bash SANE_TOOL_PATH="/usr/local/bin:/usr/local/sbin" make
-	cd $@/`cat $@/untar.dir`/; PYTHON_PATH=/usr/local/bin/python SHELL_PATH=/usr/local/bin/bash SANE_TOOL_PATH="/usr/local/bin:/usr/local/sbin" make test
+	cd $@/`cat $@/untar.dir`/; TEST_NO_MALLOC_CHECK=1 PYTHON_PATH=/usr/local/bin/python SHELL_PATH=/usr/local/bin/bash SANE_TOOL_PATH="/usr/local/bin:/usr/local/sbin" make test
 	cd $@/`cat $@/untar.dir`/; sudo /bin/rm -f /usr/local/etc/gitconfig
 	cd $@/`cat $@/untar.dir`/; sudo /bin/rm -f /tmp/gitconfig
 	cd $@/`cat $@/untar.dir`/; echo "$$GITCONFIG" >> /tmp/gitconfig
@@ -6094,6 +6101,7 @@ wget-all: \
     $(rakudo-star-ver) \
     $(random-ver) \
     $(readline-ver) \
+    $(rng-tools-ver) \
     $(ruby-ver) \
     $(scons-ver) \
     $(screen-ver) \
@@ -6898,6 +6906,9 @@ $(rakudo-star-ver):
 
 $(readline-ver):
 	$(call SOURCEWGET,"readline","http://ftp.gnu.org/gnu/"$(readline-ver))
+
+$(rng-tools-ver):
+	$(call SOURCEWGET,"rng-tools","https://downloads.sourceforge.net/project/gkernel/rng-tools/5/rng-tools-5.tar.gz")
 
 $(Role-Tiny-ver):
 	$(call SOURCEWGET,"Role-Tiny","http://search.cpan.org/CPAN/authors/id/H/HA/HAARG/"$(notdir $(Role-Tiny-ver)))
