@@ -2070,7 +2070,7 @@ define SOURCEDIR_W_UNTAR
 	$(call SOURCEBANNER,$1)
 	$(call SOURCEBASE,$1)
 	echo ---###---
-	cd $1; tar $2 $1*.tar* || tar $2 $1*.tgz || tar $2 $1*.tar || tar xf $1*.tar* || /usr/local/bin/tar xf $1*.tar* || unzip $1*.zip || unzip master.zip || ( mkdir $1; cd $1; tar xf ../master.tar.gz ) || test -d $1
+	cd $1; tar $2 $1*.tar* || tar $2 $1*.tgz || tar $2 $1*.tar || tar xf $1*.tar* || /usr/local/bin/tar xf $1*.tar* || unzip $1*.zip || unzip master.zip || tar xf *.tar.gz || ( mkdir $1; cd $1; tar xf ../master.tar.gz ) || test -d $1
 	echo ---###---
 	$(call MAKEUNTARDIR,$1,$3)
 endef
@@ -2537,6 +2537,7 @@ afterlibxml2: \
     check_sudo \
     lzo \
     libarchive \
+    libuv \
     cmake \
     fuse \
     ntfs-3g \
@@ -2655,6 +2656,7 @@ afterpatch: \
     c-ares \
     lynis \
     ocaml \
+    boost \
     afterlibsecret
 
 # Problem children
@@ -2695,6 +2697,49 @@ afterlibsecret: \
 # ==============================================================
 # Versions
 # ==============================================================
+#
+# openssl-ver        = openssl/openssl-1.0.2e.tar.gz
+# 2016-03-11
+# openssl-ver        = openssl/openssl-1.0.2g.tar.gz
+# 2016-05-06
+#
+# Need pthreads.
+# 2016-08-26
+# openssl-ver        = openssl/openssl-1.1.0.tar.gz
+# New version of apr, apr-util
+# openssl-ver        = openssl/openssl-1.0.2h.tar.gz
+# 2017-05-20
+# openssl-ver        = openssl/openssl-1.0.2k.tar.gz
+# 2017-10-11
+openssl-ver        = openssl/openssl-1.0.2l.tar.gz
+# make-ver           = make/make-4.1.tar.gz
+# 2017-10-11
+make-ver           = make/make-4.2.1.tar.gz
+# libtool-ver        = libtool/libtool-2.4.2.tar.gz
+# 2017-10-11
+libtool-ver        = libtool/libtool-2.466.tar.gz
+# 2016-01-23
+# Python-ver         = Python/Python-2.7.10.tar.xz
+# Python-ver         = Python/Python-2.7.11.tar.xz
+# 2017-01-27
+# Python-ver         = Python/Python-2.7.13.tar.xz
+# 2017-10-11
+Python-ver         = Python/Python-2.7.14.tar.xz
+# 2017-10-10
+boost-ver          = boost/boost_1_63_0.tar.bz2
+# 2017-10-10
+libuv-ver          = libuv/v1.15.0.tar.gz
+# 2017-10-10
+# 2016-02-27
+cmake-ver          = cmake/cmake-3.4.3.tar.gz
+# 2017-10-10
+# cmake-ver          = cmake/cmake-3.9.4.tar.gz
+# 2017-10-10
+# automake-ver       = automake/automake-1.15.tar.xz
+automake-ver       = automake/automake-1.15.1.tar.xz
+binutils-ver       = binutils/binutils-2.24.tar.gz
+# 2017-10-07
+# binutils-ver       = binutils/binutils-2.29.1.tar.gz
 # 2017-10-06
 rng-tools-ver      = rng-tools/rng-tools-5.tar.gz
 # 2017-10-05
@@ -2768,18 +2813,6 @@ serf-ver           = serf/serf-1.3.9.tar.bz2
 # 2017-05-20 serf needs new scons
 # scons-ver          = scons/scons-2.3.4.tar.gz
 scons-ver          = scons/scons-2.5.1.tar.gz
-# openssl-ver        = openssl/openssl-1.0.2e.tar.gz
-# 2016-03-11
-# openssl-ver        = openssl/openssl-1.0.2g.tar.gz
-# 2016-05-06
-#
-# Need pthreads.
-# 2016-08-26
-# openssl-ver        = openssl/openssl-1.1.0.tar.gz
-# New version of apr, apr-util
-# openssl-ver        = openssl/openssl-1.0.2h.tar.gz
-# 2017-05-20
-openssl-ver        = openssl/openssl-1.0.2k.tar.gz
 # 2017-03-10
 Digest-HMAC-ver = Digest-HMAC/Digest-HMAC-1.03.tar.gz
 # 2017-03-10
@@ -2953,11 +2986,6 @@ freetype-ver       = freetype/freetype-2.7.1.tar.bz2
 # 2017-01-27
 # fontconfig-ver     = fontconfig/fontconfig-2.11.1.tar.bz2
 fontconfig-ver     = fontconfig/fontconfig-2.12.1.tar.bz2
-# 2016-01-23
-# Python-ver         = Python/Python-2.7.10.tar.xz
-# Python-ver         = Python/Python-2.7.11.tar.xz
-# 2017-01-27
-Python-ver         = Python/Python-2.7.13.tar.xz
 # 2017-01-27
 LMDB-ver           = LMDB/LMDB_0.9.19.tar.gz
 # 2017-01-21
@@ -3172,8 +3200,6 @@ node-ver           = node/node-v4.4.2.tar.gz
 dbus-ver           = dbus/dbus-1.10.6.tar.gz
 # 2016-03-12
 qt-everywhere-opensource-src-ver            = qt-everywhere-opensource-src/qt-everywhere-opensource-src-5.5.1.tar.xz
-# 2016-02-27
-cmake-ver          = cmake/cmake-3.4.3.tar.gz
 # 2016-02-12
 # autossh-ver        = autossh/autossh-1.4c.tgz
 autossh-ver        = autossh/autossh-1.4e.tgz
@@ -3228,10 +3254,8 @@ Archive-Zip-ver    = Archive-Zip/Archive-Zip-1.51.tar.gz
 attr-ver           = attr/attr-2.4.47.src.tar.gz
 autoconf-ver       = autoconf/autoconf-2.69.tar.xz
 autogen-ver        = autogen/autogen-5.18.7.tar.xz
-automake-ver       = automake/automake-1.15.tar.xz
 bash-ver           = bash/bash-4.3.30.tar.gz
 bcrypt-ver         = bcrypt/bcrypt-1.1.tar.gz
-binutils-ver       = binutils/binutils-2.24.tar.gz
 bison-ver          = bison/bison-3.0.tar.gz
 bzip-ver           = bzip/bzip2-1.0.6.tar.gz
 ca-cert-ver        = ca-cert/ca-cert-1.0
@@ -3290,7 +3314,6 @@ jpeg-ver           = jpeg/jpegsrc.v9b.tar.gz
 libpcap-ver        = libpcap/libpcap-1.4.0.tar.gz
 libsecret-ver      = libsecret/libsecret-0.18.3.tar.xz
 libtasn1-ver       = libtasn1/libtasn1-4.3.tar.gz
-libtool-ver        = libtool/libtool-2.4.2.tar.gz
 libunistring-ver   = libunistring/libunistring-0.9.6.tar.xz
 libusb-ver         = libusb/libusb-1.0.19.tar.bz2
 libwww-perl-ver    = libwww-perl/libwww-perl-6.15.tar.gz
@@ -3300,7 +3323,6 @@ llvm-ver           = llvm/llvm-3.4.src.tar.gz
 LWP-MediaTypes-ver = LWP-MediaTypes/LWP-MediaTypes-6.02.tar.gz
 lzma-ver           = lzma/lzma-4.32.7.tar.gz
 lzo-ver            = lzo/lzo-2.08.tar.gz
-make-ver           = make/make-4.1.tar.gz
 mosh-ver           = mosh/mosh-1.2.5.tar.gz
 mpc-ver            = mpc/mpc-1.0.1.tar.gz
 mpfr-ver           = mpfr/mpfr-3.1.2.tar.gz
@@ -4152,6 +4174,13 @@ bash: $(bash-ver)
 	cd $@/$@-build/; make check || make test
 	$(call PKGINSTALLBUILD,$@)
 
+.PHONY: boost
+boost: $(boost-ver)
+	$(call SOURCEDIR,$@,xf)
+	cd $@/`cat $@/untar.dir`/; ./bootstrap.sh --prefix=/usr/local
+	cd $@/`cat $@/untar.dir`/; ./b2 stage
+	cd $@/`cat $@/untar.dir`/; sudo ./b2 install
+
 .PHONY: bzip
 bzip: $(bzip-ver)
 	$(call SOURCEDIR,$@,xfz)
@@ -4196,7 +4225,7 @@ cmake: $(cmake-ver)
 	cd $@/`cat $@/untar.dir`/; sed -i '1 i\
 	set(CURSES_LIBRARY "/usr/local/lib/libncursesw.so")\
 	set(CURSES_INCLUDE_PATH "/usr/local/include/ncursesw")' Modules/FindCurses.cmake
-	cd $@/`cat $@/untar.dir`/; ./bootstrap --prefix=/usr/local --system-libs --mandir=/usr/local/share/man --docdir=/usr/local/share/doc/cmake --no-system-jsoncpp
+	cd $@/`cat $@/untar.dir`/; ./bootstrap --prefix=/usr/local --system-libs --no-system-jsoncpp --mandir=/usr/local/share/man --docdir=/usr/local/share/doc/cmake --no-system-jsoncpp
 	cd $@/`cat $@/untar.dir`/; make
 	-cd $@/`cat $@/untar.dir`/; bin/ctest -j2 -O ../cmake-test.log
 	$(call PKGINSTALL,$@)
@@ -5046,6 +5075,17 @@ libelf: $(libelf-ver)
 	cd $@/`cat $@/untar.dir`/; make
 	cd $@/`cat $@/untar.dir`/; make check || make test
 	$(call PKGINSTALL,$@)
+
+.PHONY: libuv
+libuv: $(libuv-ver)
+	$(call SOURCEDIR,$@,xf)
+	cd $@/`cat $@/untar.dir`/; ./autogen.sh
+	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
+	cd $@/`cat $@/untar.dir`/; make
+	cd $@/`cat $@/untar.dir`/; make check || make test
+	$(call PKGINSTALL,$@)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
 
 # Tests aparently write to /etc/pam.d, which we are using
 # Be carefull, installing this may create a system that
@@ -5943,6 +5983,7 @@ wget-all: \
     $(automake-ver) \
     $(autossh-ver) \
     $(bash-ver) \
+    $(boost-ver) \
     $(bcrypt-ver) \
     $(binutils-ver) \
     $(bison-ver) \
@@ -6041,6 +6082,7 @@ wget-all: \
     $(libtool-ver) \
     $(libunistring-ver) \
     $(libusb-ver) \
+    $(libuv-ver) \
     $(libutempter-ver) \
     $(libvorbis-ver) \
     $(libvpx-ver) \
@@ -6198,6 +6240,9 @@ $(binutils-ver):
 
 $(bison-ver):
 	$(call SOURCEWGET,"bison","http://ftp.gnu.org/gnu/"$(bison-ver))
+
+$(boost-ver):
+	$(call SOURCEWGET,"boost","http://downloads.sourceforge.net/project/boost/boost/1.63.0/"$(notdir $(boost-ver)))
 
 $(bzip-ver):
 	$(call SOURCEWGET,"bzip","http://www.bzip.org/1.0.6/bzip2-1.0.6.tar.gz")
@@ -6620,6 +6665,9 @@ $(libunistring-ver):
 
 $(libusb-ver):
 	$(call SOURCEWGET,"libusb","http://downloads.sourceforge.net/libusb/libusb-1.0.19.tar.bz2")
+
+$(libuv-ver):
+	$(call SOURCEWGET,"libuv","https://github.com/libuv/libuv/archive/v1.15.0.tar.gz")
 
 $(libvorbis-ver):
 	$(call SOURCEWGET,"libvorbis","http://downloads.xiph.org/releases/vorbis/"$(notdir $(libvorbis-ver)))
