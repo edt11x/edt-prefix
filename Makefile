@@ -2697,6 +2697,13 @@ afterlibsecret: \
 # ==============================================================
 # Versions
 # ==============================================================
+# 2016-08-26
+# perl-ver           = perl/perl-5.22.1.tar.gz
+# perl-ver           = perl/perl-5.24.0.tar.gz
+# 2017-11-05
+perl-ver           = perl/perl-5.26.0.tar.gz
+# 2017-10-19
+gcc-7.2-ver          = gcc-7.2/gcc-7.2.0.tar.gz
 #
 # openssl-ver        = openssl/openssl-1.0.2e.tar.gz
 # 2016-03-11
@@ -2711,13 +2718,15 @@ afterlibsecret: \
 # 2017-05-20
 # openssl-ver        = openssl/openssl-1.0.2k.tar.gz
 # 2017-10-11
-openssl-ver        = openssl/openssl-1.0.2l.tar.gz
+# openssl-ver        = openssl/openssl-1.0.2l.tar.gz
+# 2017-11-05
+openssl-ver        = openssl/openssl-1.0.2m.tar.gz
 # make-ver           = make/make-4.1.tar.gz
 # 2017-10-11
 make-ver           = make/make-4.2.1.tar.gz
 # libtool-ver        = libtool/libtool-2.4.2.tar.gz
 # 2017-10-11
-libtool-ver        = libtool/libtool-2.466.tar.gz
+libtool-ver        = libtool/libtool-2.4.6.tar.gz
 # 2016-01-23
 # Python-ver         = Python/Python-2.7.10.tar.xz
 # Python-ver         = Python/Python-2.7.11.tar.xz
@@ -4533,6 +4542,28 @@ gcc-6.3: $(gcc-6.3-ver)
 	$(call CPLIB,libstdc*)
 	@echo "======= Build of $@ Successful ======="
 
+.PHONY: gcc-7.2
+gcc-7.2: $(gcc-7.2-ver)
+	$(call SOURCEDIR,$@,xf)
+	cd $@; mkdir -v $@-build
+	cd $@/$@-build/; readlink -f . | grep $@-build
+	cd $@/$@-build/; ../`cat ../untar.dir`/configure \
+		    LDFLAGS="-L/usr/local/lib -lpth" \
+		    --enable-shared \
+		    --disable-bootstrap \
+		    --enable-tls=no \
+		    --disable-multilib \
+		    --prefix=/usr/local \
+                    --enable-languages=c,c++
+	cd $@/$@-build/; make
+	false
+	-cd $@/$@-build/; C_INCLUDE_PATH=/usr/local/include LIBRARY_PATH=/usr/local/lib make check
+	test -e /usr/local/bin/cc || /usr/bin/sudo ln -sf /usr/local/bin/gcc /usr/local/bin/cc
+	$(call PKGINSTALLBUILD,$@)
+	$(call CPLIB,libssp*)
+	$(call CPLIB,libstdc*)
+	@echo "======= Build of $@ Successful ======="
+
 # 
 # Linux from scratch lets us know 9 tests will fail and do under some conditions
 #
@@ -6025,6 +6056,7 @@ wget-all: \
     $(gawk-ver) \
     $(gc-ver) \
     $(gcc-6.3-ver) \
+    $(gcc-7.2-ver) \
     $(gcc-ver) \
     $(gdb-ver) \
     $(gdbm-ver) \
@@ -6463,6 +6495,9 @@ $(gcc-ver):
 
 $(gcc-6.3-ver):
 	$(call SOURCEWGET,"gcc-6.3","http://www.netgull.com/gcc/releases/"$(basename $(basename $(notdir $(gcc-6.3-ver))))"/"$(notdir $(gcc-6.3-ver)))
+
+$(gcc-7.2-ver):
+	$(call SOURCEWGET,"gcc-7.2","http://www.netgull.com/gcc/releases/"$(basename $(basename $(notdir $(gcc-7.2-ver))))"/"$(notdir $(gcc-7.2-ver)))
 
 $(gdb-ver):
 	$(call SOURCEWGET,"gdb","https://ftp.gnu.org/gnu/"$(gdb-ver))
