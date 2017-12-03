@@ -2676,6 +2676,7 @@ afterlibsecret: \
     pygobject \
     libdnet \
     daq \
+    MoarVM \
     rakudo-star \
     snort \
     qt-everywhere-opensource-src \
@@ -2697,6 +2698,42 @@ afterlibsecret: \
 # ==============================================================
 # Versions
 # ==============================================================
+# Things to always check
+# Perl - http://www.cpan.org/src/
+# OpenSSL - https://www.openssl.org/source/
+# Python - https://www.python.org/downloads/source/
+# GnuPG - https://gnupg.org/download/
+# ==============================================================
+# 2017-07-22
+# ntbtls-ver         = ntbtls/ntbtls-0.1.1.tar.bz2
+# 2017-12-02
+ntbtls-ver         = ntbtls/ntbtls-0.1.2.tar.bz2
+# 2016-08-20
+# libassuan-ver      = libassuan/libassuan-2.3.0.tar.bz2
+# libassuan-ver      = libassuan/libassuan-2.4.3.tar.bz2
+# 2017-12-02
+libassuan-ver      = libassuan/libassuan-2.4.5.tar.bz2
+# 2017-07-22
+# libgcrypt-ver      = libgcrypt/libgcrypt-1.6.4.tar.bz2
+# libgcrypt-ver      = libgcrypt/libgcrypt-1.7.0.tar.bz2
+# libgcrypt-ver      = libgcrypt/libgcrypt-1.7.3.tar.bz2
+# libgcrypt-ver      = libgcrypt/libgcrypt-1.7.3.tar.bz2
+# libgcrypt-ver      = libgcrypt/libgcrypt-1.8.0.tar.bz2
+# 2017-12-02
+libgcrypt-ver      = libgcrypt/libgcrypt-1.8.1.tar.bz2
+# 2016-08-26
+# perl-ver           = perl/perl-5.22.1.tar.gz
+# perl-ver           = perl/perl-5.24.0.tar.gz
+# 2017-11-05
+# perl-ver           = perl/perl-5.26.0.tar.gz
+# 2017-12-02
+perl-ver           = perl/perl-5.26.1.tar.gz
+# 2017-12-02
+MoarVM-ver = MoarVM/MoarVM-2017.09.1.tar.gz
+# 2016-07-24
+# rakudo-star-ver    = rakudo-star/rakudo-star-2016.07.tar.gz
+# 2017-12-02
+rakudo-star-ver    = rakudo-star/rakudo-star-2017.10.tar.gz
 # 2016-08-26
 # perl-ver           = perl/perl-5.22.1.tar.gz
 # perl-ver           = perl/perl-5.24.0.tar.gz
@@ -2792,11 +2829,6 @@ tar-ver            = tar/tar-1.29.tar.gz
 # npth-ver      = npth/npth-1.2.tar.bz2
 npth-ver      = npth/npth-1.5.tar.bz2
 # 2017-07-22
-ntbtls-ver         = ntbtls/ntbtls-0.1.1.tar.bz2
-# 2016-08-20
-# libassuan-ver      = libassuan/libassuan-2.3.0.tar.bz2
-libassuan-ver      = libassuan/libassuan-2.4.3.tar.bz2
-# 2017-07-22
 # libksba-ver        = libksba/libksba-1.3.3.tar.bz2
 # libksba-ver        = libksba/libksba-1.3.4.tar.bz2
 libksba-ver        = libksba/libksba-1.3.5.tar.bz2
@@ -2808,12 +2840,6 @@ gnupg-ver          = gnupg/gnupg-2.1.21.tar.bz2
 # libgpg-error-ver   = libgpg-error/libgpg-error-1.20.tar.bz2
 # libgpg-error-ver   = libgpg-error/libgpg-error-1.24.tar.bz2
 libgpg-error-ver   = libgpg-error/libgpg-error-1.27.tar.bz2
-# 2017-07-22
-# libgcrypt-ver      = libgcrypt/libgcrypt-1.6.4.tar.bz2
-# libgcrypt-ver      = libgcrypt/libgcrypt-1.7.0.tar.bz2
-# libgcrypt-ver      = libgcrypt/libgcrypt-1.7.3.tar.bz2
-# libgcrypt-ver      = libgcrypt/libgcrypt-1.7.3.tar.bz2
-libgcrypt-ver      = libgcrypt/libgcrypt-1.8.0.tar.bz2
 # serf-ver           = serf/serf-1.3.5.tar.bz2
 # 2017-05-20 serf is failing to build, trying a new version
 # Nope, it fails due to certificates that are now expired
@@ -3079,8 +3105,6 @@ gawk-ver           = gawk/gawk-4.1.4.tar.gz
 # 2016-08-20
 # pinentry-ver       = pinentry/pinentry-0.9.5.tar.bz2
 pinentry-ver       = pinentry/pinentry-0.9.7.tar.bz2
-# 2016-07-24
-rakudo-star-ver    = rakudo-star/rakudo-star-2016.07.tar.gz
 # 2016-07-16
 # gnutls-ver         = gnutls/gnutls-3.4.7.tar.xz
 # gnutls-ver         = gnutls/gnutls-3.4.8.tar.xz
@@ -3614,6 +3638,7 @@ libffi texinfo: \
 	$(call CPLIB,$@*)
 
 # Standard build, post tar rule, no separate build directory
+# Try this one first!!!
 .PHONY: alsa-lib
 .PHONY: check
 .PHONY: daq
@@ -4041,6 +4066,18 @@ Sub-Name Class-Load Class-Load-XS Test-Warnings Package-DeprecationManager Devel
 	cd $@/`cat $@/untar.dir`/; make
 	cd $@/`cat $@/untar.dir`/; OPENSSL_DIR=/usr/local OPENSSL_PREFIX=/usr/local LD_LIBRARY_PATH=:/usr/local/lib:/usr/lib make test || make check
 	$(call PKGINSTALL,$@)
+
+
+# Standard build, post tar rule, no separate build directory, Perl Configure.pl
+.PHONY: MoarVM
+MoarVM: $(MoarVM-ver)
+	$(call SOURCEDIR,$@,xf)
+	cd $@/`cat $@/untar.dir`/; /usr/local/bin/perl Configure.pl
+	cd $@/`cat $@/untar.dir`/; make
+	$(call PKGINSTALL,$@)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
+
 
 # Perl Rule using Build
 .PHONY: Module-Build-XSUtil
@@ -5560,7 +5597,7 @@ random : \
 .PHONY: rakudo-star
 rakudo-star: $(rakudo-star-ver)
 	$(call SOURCEDIR,$@,xf)
-	cd $@/`cat $@/untar.dir`/; perl Configure.pl --gen-moar --gen-nqp --backend=moar
+	cd $@/`cat $@/untar.dir`/; /usr/local/bin/perl Configure.pl --gen-moar --gen-nqp --backend=moar
 	cd $@/`cat $@/untar.dir`/; make
 	cd $@/`cat $@/untar.dir`/; make rakudo-test
 	cd $@/`cat $@/untar.dir`/; make rakudo-spectest
@@ -5941,6 +5978,7 @@ wget-all: \
     $(Math-Pari-ver) \
     $(Math-Random-ISAAC-ver) \
     $(Math-Random-Secure-ver) \
+    $(MoarVM-ver) \
     $(Module-Build-XSUtil-ver) \
     $(Module-Build-ver) \
     $(Module-Find-ver) \
@@ -6784,6 +6822,9 @@ $(mercurial-ver):
 
 $(Module-Build-ver):
 	$(call SOURCEWGET,"Module-Build","http://search.cpan.org/CPAN/authors/id/L/LE/LEONT/"$(notdir $(Module-Build-ver)))
+
+$(MoarVM-ver):
+	$(call SOURCEWGET,"MoarVM","https://www.moarvm.org/releases/"$(notdir $(MoarVM-ver)))
 
 $(Module-Build-XSUtil-ver):
 	$(call SOURCEWGET,"Module-Build-XSUtil","http://search.cpan.org/CPAN/authors/id/H/HI/HIDEAKIO/"$(notdir $(Module-Build-XSUtil-ver)))
