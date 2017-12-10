@@ -2703,7 +2703,35 @@ afterlibsecret: \
 # OpenSSL - https://www.openssl.org/source/
 # Python - https://www.python.org/downloads/source/
 # GnuPG - https://gnupg.org/download/
+# Subversion - https://subversion.apache.org/download.cgi
 # ==============================================================
+# 2016-08-20
+# libassuan-ver      = libassuan/libassuan-2.3.0.tar.bz2
+# libassuan-ver      = libassuan/libassuan-2.4.3.tar.bz2
+# 2017-12-02
+# libassuan-ver      = libassuan/libassuan-2.4.5.tar.bz2
+# 2017-12-10
+libassuan-ver      = libassuan/libassuan-2.5.1.tar.bz2
+# 2016-08-20
+# pinentry-ver       = pinentry/pinentry-0.9.5.tar.bz2
+pinentry-ver       = pinentry/pinentry-0.9.7.tar.bz2
+# 2017-12-10
+# pinentry-ver       = pinentry/pinentry-1.1.0.tar.bz2
+# 2016-05-19
+# p7zip-ver          = p7zip/p7zip_9.38.1_src_all.tar.bz2
+# p7zip-ver         = p7zip/p7zip_15.14.1_src_all.tar.bz2
+# 2017-12-10
+p7zip-ver         = p7zip/p7zip_16.02_src_all.tar.bz2
+# 2016-09-17
+# xz-ver             = xz/xz-5.0.5.tar.gz
+# xz-ver             = xz/xz-5.2.2.tar.gz
+# 2017-12-10
+xz-ver             = xz/xz-5.2.3.tar.gz
+# 2016-01-10
+# subversion-ver     = subversion/subversion-1.8.9.tar.bz2
+# subversion-ver     = subversion/subversion-1.9.3.tar.bz2
+# 2017-12-10
+subversion-ver     = subversion/subversion-1.9.7.tar.bz2
 # 2017-07-22
 # ntbtls-ver         = ntbtls/ntbtls-0.1.1.tar.bz2
 # 2017-12-02
@@ -3078,9 +3106,6 @@ zlib-ver           = zlib/zlib-1.2.8.tar.gz
 # 2016-09-21
 # db-ver             = db/db-6.1.26.tar
 db-ver             = db/db-6.2.23.tar.gz
-# 2016-09-17
-# xz-ver             = xz/xz-5.0.5.tar.gz
-xz-ver             = xz/xz-5.2.2.tar.gz
 # 2016-09-09
 # openvpn-ver        = openvpn/openvpn-2.3.8.tar.xz
 openvpn-ver        = openvpn/openvpn-2.3.12.tar.xz
@@ -3102,9 +3127,6 @@ gzip-ver           = gzip/gzip-1.8.tar.gz
 # 2016-08-26
 # gawk-ver           = gawk/gawk-4.1.1.tar.gz
 gawk-ver           = gawk/gawk-4.1.4.tar.gz
-# 2016-08-20
-# pinentry-ver       = pinentry/pinentry-0.9.5.tar.bz2
-pinentry-ver       = pinentry/pinentry-0.9.7.tar.bz2
 # 2016-07-16
 # gnutls-ver         = gnutls/gnutls-3.4.7.tar.xz
 # gnutls-ver         = gnutls/gnutls-3.4.8.tar.xz
@@ -3197,9 +3219,6 @@ Mouse-ver         = Mouse/Mouse-v2.4.5.tar.gz
 Any-Moose-ver     = Any-Moose/Any-Moose-0.26.tar.gz
 # 2016-06-04
 Math-Random-Secure-ver = Math-Random-Secure/Math-Random-Secure-0.06.tar.gz
-# 2016-05-19
-# p7zip-ver          = p7zip/p7zip_9.38.1_src_all.tar.bz2
-p7zip-ver         = p7zip/p7zip_15.14.1_src_all.tar.bz2
 # 2016-05-18
 gnuplot-ver       = gnuplot/gnuplot-5.0.3.tar.gz
 # 2016-05-17
@@ -3275,9 +3294,6 @@ hashdeep-ver       = hashdeep/hashdeep-4.4.tar.gz
 # 2016-01-10
 # httpd-ver          = httpd/httpd-2.4.12.tar.bz2
 httpd-ver          = httpd/httpd-2.4.18.tar.bz2
-# 2016-01-10
-# subversion-ver     = subversion/subversion-1.8.9.tar.bz2
-subversion-ver     = subversion/subversion-1.9.3.tar.bz2
 # 2016-01-09 Lua
 lua-ver            = lua/lua-5.3.2.tar.gz
 acl-ver            = acl/acl-2.2.52.src.tar.gz
@@ -7017,7 +7033,7 @@ $(pygobject-ver):
 	$(call SOURCEWGET, "pygobject", "http://ftp.gnome.org/pub/gnome/sources/pygobject/2.28/"$(notdir $(pygobject-ver)))
 
 $(p7zip-ver):
-	$(call SOURCEWGET,"p7zip","http://downloads.sourceforge.net/project/p7zip/p7zip/15.14.1/"$(notdir $(p7zip-ver)))
+	$(call SOURCEWGET,"p7zip","http://downloads.sourceforge.net/project/p7zip/p7zip/16.02/"$(notdir $(p7zip-ver)))
 
 $(qt-everywhere-opensource-src-ver):
 	$(call SOURCEWGET,"qt-everywhere-opensource-src","http://download.qt.io/archive/qt/5.5/5.5.1/single/qt-everywhere-opensource-src-5.5.1.tar.xz")
