@@ -2657,6 +2657,7 @@ afterpatch: \
     lynis \
     ocaml \
     boost \
+    global \
     afterlibsecret
 
 # Problem children
@@ -2704,7 +2705,27 @@ afterlibsecret: \
 # Python - https://www.python.org/downloads/source/
 # GnuPG - https://gnupg.org/download/
 # Subversion - https://subversion.apache.org/download.cgi
+# Screen - https://ftp.gnu.org/gnu/screen/
+# Libgcrypt - https://www.gnupg.org/download/index.html#libgcrypt
 # ==============================================================
+# doxygen-ver        = doxygen/doxygen-1.8.9.1.src.tar.gz
+# 2017-12-31
+doxygen-ver        = doxygen/Release_1_8_14.tar.gz
+# 2017-12-15
+global-ver        = global/global-6.6.tar.gz
+# 2017-07-22
+# libgcrypt-ver      = libgcrypt/libgcrypt-1.6.4.tar.bz2
+# libgcrypt-ver      = libgcrypt/libgcrypt-1.7.0.tar.bz2
+# libgcrypt-ver      = libgcrypt/libgcrypt-1.7.3.tar.bz2
+# libgcrypt-ver      = libgcrypt/libgcrypt-1.7.3.tar.bz2
+# libgcrypt-ver      = libgcrypt/libgcrypt-1.8.0.tar.bz2
+# 2017-12-02
+# libgcrypt-ver      = libgcrypt/libgcrypt-1.8.1.tar.bz2
+# 2017-12-15
+libgcrypt-ver      = libgcrypt/libgcrypt-1.8.2.tar.bz2
+# screen-ver         = screen/screen-4.3.1.tar.gz
+# 2017-12-15
+screen-ver         = screen/screen-4.6.2.tar.gz
 # 2016-08-20
 # libassuan-ver      = libassuan/libassuan-2.3.0.tar.bz2
 # libassuan-ver      = libassuan/libassuan-2.4.3.tar.bz2
@@ -2741,14 +2762,6 @@ ntbtls-ver         = ntbtls/ntbtls-0.1.2.tar.bz2
 # libassuan-ver      = libassuan/libassuan-2.4.3.tar.bz2
 # 2017-12-02
 libassuan-ver      = libassuan/libassuan-2.4.5.tar.bz2
-# 2017-07-22
-# libgcrypt-ver      = libgcrypt/libgcrypt-1.6.4.tar.bz2
-# libgcrypt-ver      = libgcrypt/libgcrypt-1.7.0.tar.bz2
-# libgcrypt-ver      = libgcrypt/libgcrypt-1.7.3.tar.bz2
-# libgcrypt-ver      = libgcrypt/libgcrypt-1.7.3.tar.bz2
-# libgcrypt-ver      = libgcrypt/libgcrypt-1.8.0.tar.bz2
-# 2017-12-02
-libgcrypt-ver      = libgcrypt/libgcrypt-1.8.1.tar.bz2
 # 2016-08-26
 # perl-ver           = perl/perl-5.22.1.tar.gz
 # perl-ver           = perl/perl-5.24.0.tar.gz
@@ -2766,7 +2779,7 @@ rakudo-star-ver    = rakudo-star/rakudo-star-2017.10.tar.gz
 # perl-ver           = perl/perl-5.22.1.tar.gz
 # perl-ver           = perl/perl-5.24.0.tar.gz
 # 2017-11-05
-perl-ver           = perl/perl-5.26.0.tar.gz
+# perl-ver           = perl/perl-5.26.0.tar.gz
 # 2017-10-19
 gcc-7.2-ver          = gcc-7.2/gcc-7.2.0.tar.gz
 #
@@ -3316,7 +3329,6 @@ coreutils-ver      = coreutils/coreutils-8.22.tar.xz
 dejagnu-ver        = dejagnu/dejagnu-1.5.3.tar.gz
 Devel-Symdump-ver  = Devel-Symdump/Devel-Symdump-2.15.tar.gz
 Digest-SHA1-ver    = Digest-SHA1/Digest-SHA1-2.13.tar.gz
-doxygen-ver        = doxygen/doxygen-1.8.9.1.src.tar.gz
 e2fsprogs-ver      = e2fsprogs/master.zip
 ecj-ver            = ecj/ecj-latest.jar
 Encode-Locale-ver  = Encode-Locale/Encode-Locale-1.05.tar.gz
@@ -3395,7 +3407,6 @@ pth-ver            = pth/pth-2.0.7.tar.gz
 pygobject-ver      = pygobject/pygobject-2.28.6.tar.xz
 readline-ver       = readline/readline-6.3.tar.gz
 Scalar-MoreUtils-ver = Scalar-MoreUtils/Scalar-MoreUtils-0.02.tar.gz
-screen-ver         = screen/screen-4.3.1.tar.gz
 scrypt-ver         = scrypt/scrypt-1.1.6.tgz
 sed-ver            = sed/sed-4.2.2.tar.gz
 sharutils-ver      = sharutils/sharutils-4.15.1.tar.xz
@@ -4411,10 +4422,15 @@ dejagnu: $(dejagnu-ver)
 doxygen: $(doxygen-ver)
 	$(call SOURCEDIR,$@,xf)
 	# Need to add libiconv, normally in glibc, but in our environment it is separate
-	cd $@/`cat $@/untar.dir`/; sed -i -e 's/TMAKE_LIBS[ 	]*=.*/TMAKE_LIBS      = -liconv/' tmake/lib/linux-g++/tmake.conf
-	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
-	cd $@/`cat $@/untar.dir`/; make
-	$(call PKGINSTALL,$@)
+	# cd $@/`cat $@/untar.dir`/; sed -i -e 's/TMAKE_LIBS[ 	]*=.*/TMAKE_LIBS      = -liconv/' tmake/lib/linux-g++/tmake.conf
+	# cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
+	# cd $@/`cat $@/untar.dir`/; make
+	cd $@; mkdir $@-build
+	cd $@/$@-build/; readlink -f . | grep $@-build
+	cd $@/$@-build/; cmake -DICONV_INCLUDE_DIR=/usr/local/include -DICONV_LIBRARY=/usr/local/lib/libiconv.so -DCMAKE_REQUIRED_INCLUDES=/usr/local/include -G "Unix Makefiles" ../`cat ../untar.dir`/
+	cd $@/$@-build/; make
+	cd $@/$@-build/; make tests
+	$(call PKGINSTALLBUILD,$@)
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
 
@@ -4628,6 +4644,17 @@ gcc-7.2: $(gcc-7.2-ver)
 .PHONY: gettext
 gettext: $(gettext-ver)
 	$(call SOURCEDIR,$@,xfz)
+	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
+	cd $@/`cat $@/untar.dir`/; make
+	-cd $@/`cat $@/untar.dir`/; $(PHASE1_NOCHECK) make check || $(PHASE1_NOCHECK) make test
+	$(call PKGINSTALL,$@)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
+
+.PHONY: global
+global: $(global-ver)
+	$(call SOURCEDIR,$@,xfz)
+	cd $@/`cat $@/untar.dir`/; bash reconf.sh
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/; make
 	-cd $@/`cat $@/untar.dir`/; $(PHASE1_NOCHECK) make check || $(PHASE1_NOCHECK) make test
@@ -5873,13 +5900,15 @@ vera++ : \
 
 # Vim may need to be in a foreground window to support its tests
 # unset DISPLAY to get the tests to pass
+# unset GUI_TESTTARGET from trying to test the GUI component. I want to build both, but may be running
+# on a headless server, so I don't want to fail the tests for the GUI component.
 .PHONY: vim
 vim: $(vim-ver)
 	$(call SOURCEDIR,$@,xf)
 	# cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --with-features=huge --enable-perlinterp --enable-pythoninterp --enable-tclinterp --enable-rubyinterp
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --with-features=huge --enable-pythoninterp --enable-tclinterp --enable-rubyinterp --with-x --enable-gui --with-tlib=ncursesw
 	cd $@/`cat $@/untar.dir`/; LANG=C LC_ALL=C make
-	cd $@/`cat $@/untar.dir`/; LANG=C LC_ALL=C make test || LANG=C LC_ALL=C make check
+	cd $@/`cat $@/untar.dir`/; LANG=C LC_ALL=C GUI_TESTTARGET= make test || LANG=C LC_ALL=C make check
 	$(call PKGINSTALL,$@)
 
 .PHONY: wget
@@ -6118,6 +6147,7 @@ wget-all: \
     $(git-ver) \
     $(glib-ver) \
     $(glibc-ver) \
+    $(global-ver) \
     $(gmp-ver) \
     $(gntls-ver) \
     $(gnupg-ver) \
@@ -6467,7 +6497,7 @@ $(Dist-CheckConflicts-ver):
 	$(call SOURCEWGET,"Dist-CheckConflicts","http://search.cpan.org/CPAN/authors/id/D/DO/DOY/"$(notdir $(Dist-CheckConflicts-ver)))
 
 $(doxygen-ver):
-	$(call SOURCEWGET,"doxygen","http://ftp.stack.nl/pub/"$(doxygen-ver))
+	$(call SOURCEWGET,"doxygen","https://github.com/doxygen/doxygen/archive/"$(notdir $(doxygen-ver)))
 
 $(e2fsprogs-ver):
 	$(call SOURCEGIT,"e2fsprogs","git://git.kernel.org/pub/scm/fs/ext2/e2fsprogs.git")
@@ -6570,6 +6600,9 @@ $(glib-ver):
 
 $(glibc-ver):
 	$(call SOURCEWGET,"glibc","https://ftp.gnu.org/gnu/"$(glibc-ver))
+
+$(global-ver):
+	$(call SOURCEWGET,"global","http://tamacom.com/"$(global-ver))
 
 $(gmp-ver):
 	$(call SOURCEWGET,"gmp","http://ftp.gnu.org/gnu/"$(gmp-ver))
