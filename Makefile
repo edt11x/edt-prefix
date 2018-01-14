@@ -2708,6 +2708,25 @@ afterlibsecret: \
 # Screen - https://ftp.gnu.org/gnu/screen/
 # Libgcrypt - https://www.gnupg.org/download/index.html#libgcrypt
 # ==============================================================
+#
+# openssl-ver        = openssl/openssl-1.0.2e.tar.gz
+# 2016-03-11
+# openssl-ver        = openssl/openssl-1.0.2g.tar.gz
+# 2016-05-06
+#
+# Need pthreads.
+# 2016-08-26
+# openssl-ver        = openssl/openssl-1.1.0.tar.gz
+# New version of apr, apr-util
+# openssl-ver        = openssl/openssl-1.0.2h.tar.gz
+# 2017-05-20
+# openssl-ver        = openssl/openssl-1.0.2k.tar.gz
+# 2017-10-11
+# openssl-ver        = openssl/openssl-1.0.2l.tar.gz
+# 2017-11-05
+# openssl-ver        = openssl/openssl-1.0.2m.tar.gz
+# 2018-01-12
+openssl-ver        = openssl/openssl-1.0.2n.tar.gz
 # doxygen-ver        = doxygen/doxygen-1.8.9.1.src.tar.gz
 # 2017-12-31
 doxygen-ver        = doxygen/Release_1_8_14.tar.gz
@@ -2782,23 +2801,6 @@ rakudo-star-ver    = rakudo-star/rakudo-star-2017.10.tar.gz
 # perl-ver           = perl/perl-5.26.0.tar.gz
 # 2017-10-19
 gcc-7.2-ver          = gcc-7.2/gcc-7.2.0.tar.gz
-#
-# openssl-ver        = openssl/openssl-1.0.2e.tar.gz
-# 2016-03-11
-# openssl-ver        = openssl/openssl-1.0.2g.tar.gz
-# 2016-05-06
-#
-# Need pthreads.
-# 2016-08-26
-# openssl-ver        = openssl/openssl-1.1.0.tar.gz
-# New version of apr, apr-util
-# openssl-ver        = openssl/openssl-1.0.2h.tar.gz
-# 2017-05-20
-# openssl-ver        = openssl/openssl-1.0.2k.tar.gz
-# 2017-10-11
-# openssl-ver        = openssl/openssl-1.0.2l.tar.gz
-# 2017-11-05
-openssl-ver        = openssl/openssl-1.0.2m.tar.gz
 # make-ver           = make/make-4.1.tar.gz
 # 2017-10-11
 make-ver           = make/make-4.2.1.tar.gz
