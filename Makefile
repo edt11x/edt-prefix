@@ -2658,6 +2658,8 @@ afterpatch: \
     ocaml \
     boost \
     global \
+    xmlsec1 \
+    oath-toolkit \
     afterlibsecret
 
 # Problem children
@@ -2709,6 +2711,19 @@ afterlibsecret: \
 # Libgcrypt - https://www.gnupg.org/download/index.html#libgcrypt
 # ==============================================================
 #
+# libxml2-ver        = libxml2/libxml2-2.9.3.tar.gz
+# 2018-01-27
+libxml2-ver        = libxml2/libxml2-2.9.7.tar.gz
+# libxslt-ver        = libxslt/libxslt-1.1.28.tar.gz
+# 2018-01-27
+libxslt-ver        = libxslt/libxslt-1.1.32.tar.gz
+# 2018-01-27
+xmlsec1-ver = xmlsec1/xmlsec1-1.2.25.tar.gz
+# 2018-01-27
+oath-toolkit-ver = oath-toolkit/oath-toolkit-2.6.2.tar.gz
+# par2cmdline-ver    = par2cmdline/master.zip
+# 2018-01-27
+par2cmdline-ver    = par2cmdline/v0.8.0.tar.gz
 # openssl-ver        = openssl/openssl-1.0.2e.tar.gz
 # 2016-03-11
 # openssl-ver        = openssl/openssl-1.0.2g.tar.gz
@@ -3380,8 +3395,6 @@ libtasn1-ver       = libtasn1/libtasn1-4.3.tar.gz
 libunistring-ver   = libunistring/libunistring-0.9.6.tar.xz
 libusb-ver         = libusb/libusb-1.0.19.tar.bz2
 libwww-perl-ver    = libwww-perl/libwww-perl-6.15.tar.gz
-libxml2-ver        = libxml2/libxml2-2.9.3.tar.gz
-libxslt-ver        = libxslt/libxslt-1.1.28.tar.gz
 llvm-ver           = llvm/llvm-3.4.src.tar.gz
 LWP-MediaTypes-ver = LWP-MediaTypes/LWP-MediaTypes-6.02.tar.gz
 lzma-ver           = lzma/lzma-4.32.7.tar.gz
@@ -3397,7 +3410,6 @@ nettle-ver         = nettle/nettle-3.1.1.tar.gz
 ntfs-3g-ver        = ntfs-3g/ntfs-3g_ntfsprogs-2013.1.13.tgz
 p11-kit-ver        = p11-kit/p11-kit-0.23.2.tar.gz
 pango-ver          = pango/pango-1.36.8.tar.xz
-par2cmdline-ver    = par2cmdline/master.zip
 patch-ver          = patch/patch-2.7.tar.gz
 pixman-ver         = pixman/pixman-0.32.6.tar.gz
 pkg-config-ver     = pkg-config/pkg-config-0.29.tar.gz
@@ -3594,12 +3606,21 @@ apr findutils gdbm jpeg libgpg-error libassuan libksba libpng ntbtls npth which:
 # No make check or make test
 # We should have a good version of tar that
 # automatically detects file type
+#
+# oath-toolkit does have a check, but you are supposed
+# to run it after install, it needs a connection to the
+# internet, and it detects _dl_map_object() leaking
+# memory in my old ld-2.3.4.so. So I will go without
+# it for now. Most tests do pass.
+#
 .PHONY: libvpx
-libvpx : \
-    $(libvpx-ver)
+.PHONY: oath-toolkit
+libvpx oath-toolkit : \
+    $(libvpx-ver) \
+    $(oath-toolkit)
 	$(call SOURCEDIR,$@,xf)
-	cd $@/`cat $@/untar.dir`/; sed -i -e 's/\boff_t\b/int/' third_party/libwebm/mkvmuxer/mkvwriter.cc
-	cd $@/`cat $@/untar.dir`/; sed -i -e 's/\boff_t\b/int/' third_party/libwebm/mkvparser/mkvreader.cc
+	-cd $@/`cat $@/untar.dir`/; sed -i -e 's/\boff_t\b/int/' third_party/libwebm/mkvmuxer/mkvwriter.cc
+	-cd $@/`cat $@/untar.dir`/; sed -i -e 's/\boff_t\b/int/' third_party/libwebm/mkvparser/mkvreader.cc
 	cd $@; mkdir $@-build
 	cd $@/$@-build/; readlink -f . | grep $@-build
 	cd $@/$@-build/; ../`cat ../untar.dir`/configure --prefix=/usr/local
@@ -3690,8 +3711,9 @@ libffi texinfo: \
 .PHONY: rng-tools
 .PHONY: sharutils
 .PHONY: tcc
+.PHONY: xmlsec1
 .PHONY: yasm
-jnettop libxml2 check file protobuf libtasn1 popt sharutils pixman libxslt tcc libidn daq libdnet fribidi alsa-lib libogg flac libvorbis octave lame yasm opus libmpeg2 rng-tools : \
+jnettop libxml2 check file protobuf libtasn1 popt sharutils pixman libxslt tcc libidn daq libdnet fribidi alsa-lib libogg flac libvorbis octave lame yasm opus libmpeg2 rng-tools xmlsec1 : \
     $(alsa-lib-ver) \
     $(check-ver) \
     $(daq-ver) \
@@ -3716,6 +3738,7 @@ jnettop libxml2 check file protobuf libtasn1 popt sharutils pixman libxslt tcc l
     $(rng-tools-ver) \
     $(sharutils-ver) \
     $(tcc-ver) \
+    $(xmlsec1-ver) \
     $(yasm-ver)
 	$(call SOURCEDIR,$@,xf)
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --enable-shared
@@ -6232,6 +6255,7 @@ wget-all: \
     $(ntbtls-ver) \
     $(npth-ver) \
     $(ntfs-3g-ver) \
+    $(oath-toolkit-ver) \
     $(ocaml-ver) \
     $(octave-ver) \
     $(openssl-ver) \
@@ -6300,6 +6324,7 @@ wget-all: \
     $(whois-ver) \
     $(wipe-ver) \
     $(x264-ver) \
+    $(xmlsec1-ver) \
     $(yasm-ver) \
     $(zip-ver) \
     $(zlib-ver) \
@@ -6967,6 +6992,9 @@ $(ntbtls-ver):
 $(ntfs-3g-ver):
 	$(call SOURCEWGET,"ntfs-3g","http://tuxera.com/opensource/ntfs-3g_ntfsprogs-2013.1.13.tgz")
 
+$(oath-toolkit-ver):
+	$(call SOURCEWGET,"oath-toolkit","http://download.savannah.nongnu.org/releases/"$(oath-toolkit-ver))
+
 $(ocaml-ver):
 	$(call SOURCEWGET,"ocaml","http://caml.inria.fr/pub/distrib/ocaml-4.05/"$(notdir $(ocaml-ver)))
 
@@ -7010,7 +7038,7 @@ $(Params-Util-ver):
 	$(call SOURCEWGET,"Params-Util","http://search.cpan.org/CPAN/authors/id/A/AD/ADAMK/"$(notdir $(Params-Util-ver)))
 
 $(par2cmdline-ver):
-	$(call SOURCEWGET,"par2cmdline","https://github.com/Parchive/par2cmdline/archive/master.zip")
+	$(call SOURCEWGET,"par2cmdline","https://github.com/Parchive/par2cmdline/archive/"$(notdir $(par2cmdline-ver)))
 
 $(password-store-ver):
 	$(call SOURCEWGET,"password-store","https://git.zx2c4.com/password-store/snapshot/"$(notdir $(password-store-ver)))
@@ -7319,6 +7347,9 @@ $(wipe-ver):
 
 $(WWW-RobotRules-ver):
 	$(call SOURCEWGET,"WWW-RobotRules","http://search.cpan.org/CPAN/authors/id/G/GA/GAAS/"$(notdir $(WWW-RobotRules-ver)))
+
+$(xmlsec1-ver):
+	$(call SOURCEWGET,"xmlsec1","http://www.aleksey.com/xmlsec/download/"$(notdir $(xmlsec1-ver)))
 
 $(x264-ver):
 	$(call SOURCEWGET,"x264","http://download.videolan.org/pub/videolan/x264/snapshots/"$(notdir $(x264-ver)))
