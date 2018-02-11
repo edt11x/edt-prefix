@@ -2311,6 +2311,7 @@ phase1: \
 .PHONY: aftergcc
 aftergcc: \
     check_sudo \
+    musl \
     ca-cert \
     ca-cert \
     pcre \
@@ -2660,6 +2661,8 @@ afterpatch: \
     global \
     xmlsec1 \
     oath-toolkit \
+    pixman \
+    octave \
     afterlibsecret
 
 # Problem children
@@ -2673,7 +2676,7 @@ afterpatch: \
 #
 .PHONY: afterlibsecret
 afterlibsecret: \
-    pixman \
+    busybox \
     cairo \
     py2cairo \
     pygobject \
@@ -2694,7 +2697,6 @@ afterlibsecret: \
     glibc \
     pinentry \
     node \
-    octave \
     Net-DNS \
     truecrypt
 
@@ -2711,6 +2713,24 @@ afterlibsecret: \
 # Libgcrypt - https://www.gnupg.org/download/index.html#libgcrypt
 # ==============================================================
 #
+# libunistring-ver   = libunistring/libunistring-0.9.6.tar.xz
+# 2018-02-10
+libunistring-ver   = libunistring/libunistring-0.9.8.tar.xz
+texinfo-ver        = texinfo/texinfo-5.2.tar.gz
+# 2018-02-10
+# texinfo-ver        = texinfo/texinfo-6.5.tar.xz
+# unrar-ver          = unrar/unrarsrc-5.3.3.tar.gz
+# 2018-02-10
+unrar-ver          = unrar/unrarsrc-5.5.8.tar.gz
+# 2016-09-23
+# vim-ver            = vim/vim-7.4.tar.bz2
+# vim-ver            = vim/v8.0.0008.tar.gz
+# 2018-02-10
+vim-ver            = vim/v8.0.1493.tar.gz
+# 2018-02-03 
+busybox-ver = busybox/busybox-1.28.0.tar.bz2
+# 2018-02-03 
+musl-ver = musl/musl-1.1.18.tar.gz
 # libxml2-ver        = libxml2/libxml2-2.9.3.tar.gz
 # 2018-01-27
 libxml2-ver        = libxml2/libxml2-2.9.7.tar.gz
@@ -3114,9 +3134,6 @@ vala-ver           = vala/vala-0.34.0.tar.xz
 # URI-ver            = URI/URI-1.69.tar.gz
 URI-ver            = URI/URI-1.71.tar.gz
 # 2016-09-23
-vim-ver            = vim/vim-7.4.tar.bz2
-# vim-ver            = vim/v8.0.0008.tar.gz
-# 2016-09-23
 # wget-ver           = wget/wget-1.16.3.tar.xz
 wget-ver           = wget/wget-1.18.tar.xz
 # 2016-09-23
@@ -3392,7 +3409,6 @@ jpeg-ver           = jpeg/jpegsrc.v9b.tar.gz
 libpcap-ver        = libpcap/libpcap-1.4.0.tar.gz
 libsecret-ver      = libsecret/libsecret-0.18.3.tar.xz
 libtasn1-ver       = libtasn1/libtasn1-4.3.tar.gz
-libunistring-ver   = libunistring/libunistring-0.9.6.tar.xz
 libusb-ver         = libusb/libusb-1.0.19.tar.bz2
 libwww-perl-ver    = libwww-perl/libwww-perl-6.15.tar.gz
 llvm-ver           = llvm/llvm-3.4.src.tar.gz
@@ -3436,9 +3452,7 @@ tcp_wrappers-patch-ver = tcp_wrappers/tcp_wrappers-7.6-shared_lib_plus_plus-1.pa
 tcp_wrappers-ver   = tcp_wrappers/tcp_wrappers_7.6.tar.gz
 Test-Pod-Coverage-ver = Test-Pod-Coverage/Test-Pod-Coverage-1.10.tar.gz
 Test-Pod-ver       = Test-Pod/Test-Pod-1.49.tar.gz
-texinfo-ver        = texinfo/texinfo-5.2.tar.gz
 truecrypt-ver      = truecrypt/truecrypt-7.1a-linux-console-x86.tar.gz
-unrar-ver          = unrar/unrarsrc-5.3.3.tar.gz
 unzip-ver          = unzip/unzip60.tar.gz
 util-linux-ng-ver  = util-linux-ng/util-linux-ng-2.18.tar.xz
 
@@ -3637,15 +3651,18 @@ libvpx oath-toolkit : \
 # With test-update-copyright.sh failure that is in several packages
 # patch hardcodes /bin/vi and fails tests because the installed vi
 # is too old to handle the command line arguments that are passed.
+# skip tests for texinfo needs a newer version of gzip to pass
 .PHONY: diffutils
 .PHONY: grep
 .PHONY: m4
 .PHONY: patch
-diffutils grep m4 patch: \
+.PHONY: texinfo
+diffutils grep m4 patch texinfo : \
     $(diffutils-ver) \
     $(grep-ver) \
     $(m4-ver) \
-    $(patch-ver)
+    $(patch-ver) \
+    $(texinfo-ver)
 	$(call SOURCEDIR,$@,xf)
 	cd $@; mkdir $@-build
 	cd $@/$@-build/; readlink -f . | grep $@-build
@@ -3667,15 +3684,12 @@ diffutils grep m4 patch: \
 #
 # skip tests for autoconf, we may not have Fortran in PHASE1
 # skip tests for libffi, we may not have a C++ compiler in PHASE1
-# skip tests for texinfo needs a newer version of gzip to pass
 # its tests, it may fail in tests phase1
 .PHONY: libffi
 .PHONY: libunistring
-.PHONY: texinfo
-libffi texinfo: \
+libffi libunistring : \
     $(libffi-ver) \
-    $(libunistring-ver) \
-    $(texinfo-ver)
+    $(libunistring-ver)
 	$(call SOURCEDIR,$@,xf)
 	cd $@; mkdir $@-build
 	cd $@/$@-build/; readlink -f . | grep $@-build
@@ -3705,7 +3719,6 @@ libffi texinfo: \
 .PHONY: libxslt
 .PHONY: octave
 .PHONY: opus
-.PHONY: pixman
 .PHONY: popt
 .PHONY: protobuf
 .PHONY: rng-tools
@@ -3713,7 +3726,7 @@ libffi texinfo: \
 .PHONY: tcc
 .PHONY: xmlsec1
 .PHONY: yasm
-jnettop libxml2 check file protobuf libtasn1 popt sharutils pixman libxslt tcc libidn daq libdnet fribidi alsa-lib libogg flac libvorbis octave lame yasm opus libmpeg2 rng-tools xmlsec1 : \
+jnettop libxml2 check file protobuf libtasn1 popt sharutils libxslt tcc libidn daq libdnet fribidi alsa-lib libogg flac libvorbis octave lame yasm opus libmpeg2 rng-tools xmlsec1 : \
     $(alsa-lib-ver) \
     $(check-ver) \
     $(daq-ver) \
@@ -3732,7 +3745,6 @@ jnettop libxml2 check file protobuf libtasn1 popt sharutils pixman libxslt tcc l
     $(libxslt-ver) \
     $(octave-ver) \
     $(opus-ver) \
-    $(pixman-ver) \
     $(popt-ver) \
     $(protobuf-ver) \
     $(rng-tools-ver) \
@@ -3744,6 +3756,22 @@ jnettop libxml2 check file protobuf libtasn1 popt sharutils pixman libxslt tcc l
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --enable-shared
 	cd $@/`cat $@/untar.dir`/; make
 	cd $@/`cat $@/untar.dir`/; make check || make test
+	$(call PKGINSTALL,$@)
+	$(call CPLIB,libproto*)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
+
+# Standard build using MUSL, post tar rule, no separate build directory
+# We can not easily replace GLIBC, but we can use the MUSL libc, which
+# will coexist and has thread support. I would like to try to recompile
+# a bunch of this with MUSL support
+.PHONY: pixman
+pixman : \
+    $(pixman-ver)
+	$(call SOURCEDIR,$@,xf)
+	cd $@/`cat $@/untar.dir`/; CC=/usr/local/musl/bin/musl-gcc ./configure --prefix=/usr/local --enable-shared
+	cd $@/`cat $@/untar.dir`/; CC=/usr/local/musl/bin/musl-gcc make
+	cd $@/`cat $@/untar.dir`/; CC=/usr/local/musl/bin/musl-gcc make check || make test
 	$(call PKGINSTALL,$@)
 	$(call CPLIB,libproto*)
 	$(call CPLIB,lib$@*)
@@ -4378,6 +4406,17 @@ binutils: $(binutils-ver)
 	cd $@/$@-build/; make
 	cd $@/$@-build/; $(PHASE1_NOCHECK) make check || $(PHASE1_NOCHECK) make test
 	$(call PKGINSTALLBUILD,$@)
+
+.PHONY: busybox
+busybox : \
+    $(busybox-ver)
+	$(call SOURCEDIR,$@,xf)
+	cd $@/`cat $@/untar.dir`/; make defconfig
+	cd $@/`cat $@/untar.dir`/; make
+	# $(call PKGINSTALL,$@)
+	# $(call CPLIB,libproto*)
+	# $(call CPLIB,lib$@*)
+	# $(call CPLIB,$@*)
 
 .PHONY: clisp
 clisp: $(clisp-ver)
@@ -5358,6 +5397,17 @@ mpfr: $(mpfr-ver)
 	cd $@/`cat $@/untar.dir`/; make check || make test
 	$(call PKGINSTALL,$@)
 
+.PHONY: musl
+musl : \
+    $(musl-ver)
+	$(call SOURCEDIR,$@,xf)
+	cd $@/`cat $@/untar.dir`/; ./configure --enable-shared
+	cd $@/`cat $@/untar.dir`/; make
+	$(call PKGINSTALL,$@)
+	$(call CPLIB,libproto*)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
+
 .PHONY: mutt
 mutt : \
     $(mutt-ver)
@@ -5927,13 +5977,15 @@ vera++ : \
 # unset DISPLAY to get the tests to pass
 # unset GUI_TESTTARGET from trying to test the GUI component. I want to build both, but may be running
 # on a headless server, so I don't want to fail the tests for the GUI component.
+# The newer tests do things like grep the grub configuration file for specific strings. Well, we are
+# old enough we do not have grub. So I will let it run the tests, but not score them.
 .PHONY: vim
 vim: $(vim-ver)
 	$(call SOURCEDIR,$@,xf)
 	# cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --with-features=huge --enable-perlinterp --enable-pythoninterp --enable-tclinterp --enable-rubyinterp
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --with-features=huge --enable-pythoninterp --enable-tclinterp --enable-rubyinterp --with-x --enable-gui --with-tlib=ncursesw
 	cd $@/`cat $@/untar.dir`/; LANG=C LC_ALL=C make
-	cd $@/`cat $@/untar.dir`/; LANG=C LC_ALL=C GUI_TESTTARGET= make test || LANG=C LC_ALL=C make check
+	-cd $@/`cat $@/untar.dir`/; LANG=C LC_ALL=C GUI_TESTTARGET= make test || LANG=C LC_ALL=C make check
 	$(call PKGINSTALL,$@)
 
 .PHONY: wget
@@ -6126,6 +6178,7 @@ wget-all: \
     $(bcrypt-ver) \
     $(binutils-ver) \
     $(bison-ver) \
+    $(busybox-ver) \
     $(bzip-ver) \
     $(c-ares-ver) \
     $(ca-cert-ver) \
@@ -6243,6 +6296,7 @@ wget-all: \
     $(mpc-ver) \
     $(mpfr-ver) \
     $(multitail-ver) \
+    $(musl-ver) \
     $(mutt-ver) \
     $(namespace-autoclean-ver) \
     $(namespace-clean-ver) \
@@ -6386,6 +6440,9 @@ $(bison-ver):
 
 $(boost-ver):
 	$(call SOURCEWGET,"boost","http://downloads.sourceforge.net/project/boost/boost/1.63.0/"$(notdir $(boost-ver)))
+
+$(busybox-ver):
+	$(call SOURCEWGET,"busybox","http://busybox.net/downloads/"$(notdir $(busybox-ver)))
 
 $(bzip-ver):
 	$(call SOURCEWGET,"bzip","http://www.bzip.org/1.0.6/bzip2-1.0.6.tar.gz")
@@ -6947,6 +7004,9 @@ $(MRO-Compat-ver):
 $(multitail-ver):
 	$(call SOURCEWGET,"multitail","http://www.vanheusden.com/"$(multitail-ver))
 
+$(musl-ver):
+	$(call SOURCEWGET,"musl","https://www.musl-libc.org/releases/"$(notdir $(musl-ver)))
+
 $(mutt-ver):
 	$(call SOURCEWGET,"mutt","ftp://ftp.mutt.org/pub/"$(mutt-ver))
 
@@ -7288,7 +7348,7 @@ $(Text-Diff-ver):
 	$(call SOURCEWGET,"Text-Diff","http://search.cpan.org/CPAN/authors/id/N/NE/NEILB/"$(notdir $(Text-Diff-ver)))
 
 $(texinfo-ver):
-	$(call SOURCEWGET,"texinfo","https://ftp.gnu.org/gnu/texinfo/texinfo-5.2.tar.gz")
+	$(call SOURCEWGET,"texinfo","https://ftp.gnu.org/gnu/texinfo/"$(notdir $(texinfo-ver)))
 
 $(tmux-ver):
 	$(call SOURCEWGET,"tmux","https://github.com/tmux/tmux/releases/download/2.2/"$(notdir $(tmux-ver)))
@@ -7330,8 +7390,8 @@ $(vera++-ver):
 	$(call SOURCEWGET,"vera++","https://bitbucket.org/verateam/vera/downloads/"$(notdir $(vera++-ver)))
 
 $(vim-ver):
-	$(call SOURCEWGET,"vim","ftp://ftp.vim.org/pub/vim/unix/vim-7.4.tar.bz2")
-	# (call SOURCEWGET,"vim","https://github.com/vim/vim/archive/"$(notdir $(vim-ver)))
+	# (call SOURCEWGET,"vim","ftp://ftp.vim.org/pub/vim/unix/vim-7.4.tar.bz2")
+	$(call SOURCEWGET,"vim","https://github.com/vim/vim/archive/"$(notdir $(vim-ver)))
 
 $(wget-ver):
 	$(call SOURCEWGET,"wget","http://ftp.gnu.org/gnu/"$(wget-ver))
