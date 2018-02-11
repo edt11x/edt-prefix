@@ -2713,6 +2713,9 @@ afterlibsecret: \
 # Libgcrypt - https://www.gnupg.org/download/index.html#libgcrypt
 # ==============================================================
 #
+# 2016-09-23, Checked, zlib is still 1.2.8 2013-04-28
+# zlib-ver           = zlib/zlib-1.2.8.tar.gz
+zlib-ver           = zlib/zlib-1.2.11.tar.gz
 # libunistring-ver   = libunistring/libunistring-0.9.6.tar.xz
 # 2018-02-10
 libunistring-ver   = libunistring/libunistring-0.9.8.tar.xz
@@ -3148,8 +3151,6 @@ WWW-RobotRules-ver = WWW-RobotRules/WWW-RobotRules-6.02.tar.gz
 XML-Parser-ver     = XML-Parser/XML-Parser-2.44.tar.gz
 # 2016-09-23, Checked, Info-Zip is still 3.0 2008-09-24
 zip-ver            = zip/zip30.tar.gz
-# 2016-09-23, Checked, zlib is still 1.2.8 2013-04-28
-zlib-ver           = zlib/zlib-1.2.8.tar.gz
 # 2016-09-21
 # db-ver             = db/db-6.1.26.tar
 db-ver             = db/db-6.2.23.tar.gz
@@ -7431,5 +7432,5 @@ $(zip-ver):
 	$(call SOURCEWGET,"zip","http://downloads.sourceforge.net/infozip/zip30.tar.gz")
 
 $(zlib-ver):
-	$(call SOURCEWGET,"zlib","http://zlib.net/zlib-1.2.8.tar.gz")
+	$(call SOURCEWGET,"zlib","https://www.zlib.net/"$(notdir $(zlib-ver)))
 
