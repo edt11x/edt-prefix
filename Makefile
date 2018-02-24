@@ -3720,7 +3720,6 @@ libffi libunistring : \
 .PHONY: file
 .PHONY: flac
 .PHONY: flex
-.PHONY: fribidi
 .PHONY: jnettop
 .PHONY: lame
 .PHONY: libogg
@@ -3738,14 +3737,13 @@ libffi libunistring : \
 .PHONY: tcc
 .PHONY: xmlsec1
 .PHONY: yasm
-jnettop libxml2 check file protobuf libtasn1 popt sharutils libxslt libidn daq libdnet fribidi alsa-lib libogg flac libvorbis octave lame yasm opus libmpeg2 rng-tools xmlsec1 tcc flex : \
+jnettop libxml2 check file protobuf libtasn1 popt sharutils libxslt libidn daq libdnet alsa-lib libogg flac libvorbis octave lame yasm opus libmpeg2 rng-tools xmlsec1 tcc flex : \
     $(alsa-lib-ver) \
     $(check-ver) \
     $(daq-ver) \
     $(file-ver) \
     $(flac-ver) \
     $(flex-ver) \
-    $(fribidi-ver) \
     $(jnettop-ver) \
     $(lame-ver) \
     $(libdnet-ver) \
@@ -4598,6 +4596,19 @@ freetype: $(freetype-ver)
 .PHONY: freetype-nohb
 freetype-nohb:
 	make freetype HBOPT="--without-harfbuzz"
+
+.PHONY: fribidi
+fribidi : \
+    $(fribidi-ver)
+	$(call SOURCEDIR,$@,xf)
+	cd $@/`cat $@/untar.dir`/; ./bootstrap
+	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --enable-shared
+	cd $@/`cat $@/untar.dir`/; make
+	cd $@/`cat $@/untar.dir`/; make check || make test
+	$(call PKGINSTALL,$@)
+	$(call CPLIB,libproto*)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
 
 .PHONY: fuse
 fuse: $(fuse-ver)
@@ -6649,7 +6660,7 @@ $(freetype-ver):
 	$(call SOURCEWGET,"freetype","http://downloads.sourceforge.net/"$(freetype-ver))
 
 $(fribidi-ver):
-	$(call SOURCEWGET,"fribidi","https://github.com/fribidi/fribidi/archive/$(notdir $(fribidi-ver)))
+	$(call SOURCEWGET,"fribidi","https://github.com/fribidi/fribidi/archive/"$(notdir $(fribidi-ver)))
 
 $(fuse-ver):
 	$(call SOURCEWGET,"fuse","https://github.com/libfuse/libfuse/releases/download/fuse_2_9_4/"$(notdir $(fuse-ver)))
