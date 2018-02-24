@@ -6948,8 +6948,9 @@ $(Math-Random-ISAAC-ver):
 $(Math-Random-Secure-ver):
 	$(call SOURCEWGET,"Math-Random-Secure","http://search.cpan.org/CPAN/authors/id/M/MK/MKANAT/"$(notdir $(Math-Random-Secure-ver)))
 
+# http://jnettop.kubs.info/dist/jnettop-0.13.0.tar.gz
 $(jnettop-ver):
-	$(call SOURCEWGET,"jnettop","http://jnettop.kubs.info/dist/jnettop-0.13.0.tar.gz")
+	$(call SOURCEWGET,"jnettop","http://downloads.sourceforge.net/project/jnettop/jnettop/0.13/"$(notdir $(jnettop-ver)))
 
 $(lzma-ver):
 	$(call SOURCEWGET,"lzma","http://tukaani.org/"$(lzma-ver))
