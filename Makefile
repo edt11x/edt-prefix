@@ -2616,7 +2616,6 @@ aftersharutils: \
 afterpatch: \
     vala \
     gobject-introspection \
-    tcc \
     jpeg \
     lxsplit \
     crosextrafonts \
@@ -2661,8 +2660,8 @@ afterpatch: \
     global \
     xmlsec1 \
     oath-toolkit \
-    pixman \
     octave \
+    tcpdump \
     afterlibsecret
 
 # Problem children
@@ -2676,7 +2675,9 @@ afterpatch: \
 #
 .PHONY: afterlibsecret
 afterlibsecret: \
+    pixman \
     busybox \
+    tcc \
     cairo \
     py2cairo \
     pygobject \
@@ -2713,6 +2714,16 @@ afterlibsecret: \
 # Libgcrypt - https://www.gnupg.org/download/index.html#libgcrypt
 # ==============================================================
 #
+# tcl-ver            = tcl/tcl8.6.3-src.tar.gz
+tcl-ver            = tcl/tcl8.6.8-src.tar.gz
+# flex-ver           = flex/flex-2.5.39.tar.gz
+# 2018-02-23
+flex-ver           = flex/flex-2.6.4.tar.gz
+# binutils-ver       = binutils/binutils-2.24.tar.gz
+# 2017-10-07
+# binutils-ver       = binutils/binutils-2.29.1.tar.gz
+# 2018-02-17
+binutils-ver       = binutils/binutils-2.30.tar.gz
 # 2016-09-23, Checked, zlib is still 1.2.8 2013-04-28
 # zlib-ver           = zlib/zlib-1.2.8.tar.gz
 zlib-ver           = zlib/zlib-1.2.11.tar.gz
@@ -2864,9 +2875,6 @@ cmake-ver          = cmake/cmake-3.4.3.tar.gz
 # 2017-10-10
 # automake-ver       = automake/automake-1.15.tar.xz
 automake-ver       = automake/automake-1.15.1.tar.xz
-binutils-ver       = binutils/binutils-2.24.tar.gz
-# 2017-10-07
-# binutils-ver       = binutils/binutils-2.29.1.tar.gz
 # 2017-10-06
 rng-tools-ver      = rng-tools/rng-tools-5.tar.gz
 # 2017-10-05
@@ -3372,7 +3380,6 @@ expect-ver         = expect/expect5.45.tar.gz
 File-Listing-ver   = File-Listing/File-Listing-6.04.tar.gz
 file-ver           = file/file-5.17.tar.gz
 findutils-ver      = findutils/findutils-4.4.2.tar.gz
-flex-ver           = flex/flex-2.5.39.tar.gz
 fuse-ver           = fuse/fuse-2.9.4.tar.gz
 gcc-ver            = gcc/gcc-4.7.3.tar.bz2
 gc-ver             = gc/gc-7.4.2.tar.gz
@@ -3446,7 +3453,6 @@ srm-ver            = srm/srm-1.2.15.tar.gz
 swig-ver           = swig/swig-3.0.0.tar.gz
 symlinks-ver       = symlinks/symlinks-1.4.tar.gz
 tcc-ver            = tcc/tcc-0.9.26.tar.bz2
-tcl-ver            = tcl/tcl8.6.3-src.tar.gz
 tclx-ver           = tclx/tclx8.4.1.tar.bz2
 tcpdump-ver        = tcpdump/tcpdump-4.5.1.tar.gz
 tcp_wrappers-patch-ver = tcp_wrappers/tcp_wrappers-7.6-shared_lib_plus_plus-1.patch
@@ -3709,6 +3715,7 @@ libffi libunistring : \
 .PHONY: daq
 .PHONY: file
 .PHONY: flac
+.PHONY: flex
 .PHONY: fribidi
 .PHONY: jnettop
 .PHONY: lame
@@ -3727,12 +3734,13 @@ libffi libunistring : \
 .PHONY: tcc
 .PHONY: xmlsec1
 .PHONY: yasm
-jnettop libxml2 check file protobuf libtasn1 popt sharutils libxslt tcc libidn daq libdnet fribidi alsa-lib libogg flac libvorbis octave lame yasm opus libmpeg2 rng-tools xmlsec1 : \
+jnettop libxml2 check file protobuf libtasn1 popt sharutils libxslt libidn daq libdnet fribidi alsa-lib libogg flac libvorbis octave lame yasm opus libmpeg2 rng-tools xmlsec1 tcc flex : \
     $(alsa-lib-ver) \
     $(check-ver) \
     $(daq-ver) \
     $(file-ver) \
     $(flac-ver) \
+    $(flex-ver) \
     $(fribidi-ver) \
     $(jnettop-ver) \
     $(lame-ver) \
@@ -3768,9 +3776,9 @@ jnettop libxml2 check file protobuf libtasn1 popt sharutils libxslt tcc libidn d
 # a bunch of this with MUSL support
 .PHONY: pixman
 pixman : \
-    $(pixman-ver)
+    $(pixman-ver) \
 	$(call SOURCEDIR,$@,xf)
-	cd $@/`cat $@/untar.dir`/; CC=/usr/local/musl/bin/musl-gcc ./configure --prefix=/usr/local --enable-shared
+	cd $@/`cat $@/untar.dir`/; CC=/usr/local/musl/bin/musl-gcc ./configure --prefix=/usr/local --enable-shared 
 	cd $@/`cat $@/untar.dir`/; CC=/usr/local/musl/bin/musl-gcc make
 	cd $@/`cat $@/untar.dir`/; CC=/usr/local/musl/bin/musl-gcc make check || make test
 	$(call PKGINSTALL,$@)
@@ -4405,7 +4413,7 @@ binutils: $(binutils-ver)
 	cd $@/$@-build/; readlink -f . | grep $@-build
 	cd $@/$@-build/; ../`cat ../untar.dir`/configure --prefix=/usr/local
 	cd $@/$@-build/; make
-	cd $@/$@-build/; $(PHASE1_NOCHECK) make check || $(PHASE1_NOCHECK) make test
+	-cd $@/$@-build/; $(PHASE1_NOCHECK) make check || $(PHASE1_NOCHECK) make test
 	$(call PKGINSTALLBUILD,$@)
 
 .PHONY: busybox
@@ -4537,15 +4545,6 @@ expect: $(expect-ver)
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --with-tcl=/usr/local/lib --with-tclinclude=/usr/local/include
 	cd $@/`cat $@/untar.dir`/; make
 	cd $@/`cat $@/untar.dir`/; make check || make test
-	$(call PKGINSTALL,$@)
-
-.PHONY: flex
-flex: $(flex-ver)
-	$(call SOURCEDIR,$@,xfj)
-	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
-	cd $@/`cat $@/untar.dir`/; make
-	# fails because of the old Glibc
-	# cd $@/`cat $@/untar.dir`/; make check || make test
 	$(call PKGINSTALL,$@)
 
 .PHONY: ffmpeg
@@ -5963,7 +5962,6 @@ valgrind : \
 
 .PHONY: vera++
 vera++ : \
-    $(tcc-ver) \
     $(vera++-ver)
 	$(call SOURCEDIR,$@,xf)
 	cd $@/`cat $@/untar.dir`/; cmake -G "Unix Makefiles" -DLLVM_PATH="/usr/local/lib" -DVERA_USE_SYSTEM_LUA=OFF
@@ -6636,7 +6634,7 @@ $(flac-ver):
 	$(call SOURCEWGET,"flac","http://downloads.xiph.org/releases/flac/"$(notdir $(flac-ver)))
 
 $(flex-ver):
-	$(call SOURCEWGET,"flex","http://sourceforge.net/projects/flex/files/flex-2.5.39.tar.gz")
+	$(call SOURCEWGET,"flex","https://github.com/westes/flex/releases/download/v2.6.4/"$(notdir $(flex-ver)))
 
 $(ffmpeg-ver):
 	$(call SOURCEWGET,"ffmpeg","http://ffmpeg.org/releases/"$(notdir $(ffmpeg-ver)))
