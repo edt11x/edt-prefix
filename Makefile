@@ -2714,6 +2714,10 @@ afterlibsecret: \
 # Libgcrypt - https://www.gnupg.org/download/index.html#libgcrypt
 # ==============================================================
 #
+# 2017-02-18
+# fribidi-ver        = fribidi/fribidi-0.19.7.tar.bz2
+# 2018-02-24
+fribidi-ver        = fribidi/v1.0.1.tar.gz
 # symlinks-ver       = symlinks/symlinks-1.4.tar.gz
 # 2018-02-24
 symlinks-ver       = symlinks/v1.4.3.tar.gz
@@ -3085,8 +3089,6 @@ nasm-ver           = nasm/nasm-2.12.02.tar.xz
 fdk-aac-ver        = fdk-aac/fdk-aac-0.1.5.tar.gz
 # 2017-02-18
 libass-ver         = libass/libass-0.13.6.tar.xz
-# 2017-02-18
-fribidi-ver        = fribidi/fribidi-0.19.7.tar.bz2
 # 2017-04-11
 # m4-ver             = m4/m4-1.4.17.tar.gz
 m4-ver             = m4/m4-1.4.18.tar.gz
@@ -6647,7 +6649,7 @@ $(freetype-ver):
 	$(call SOURCEWGET,"freetype","http://downloads.sourceforge.net/"$(freetype-ver))
 
 $(fribidi-ver):
-	$(call SOURCEWGET,"fribidi","http://fribidi.org/download/"$(notdir $(fribidi-ver)))
+	$(call SOURCEWGET,"fribidi","https://github.com/fribidi/fribidi/archive/$(notdir $(fribidi-ver)))
 
 $(fuse-ver):
 	$(call SOURCEWGET,"fuse","https://github.com/libfuse/libfuse/releases/download/fuse_2_9_4/"$(notdir $(fuse-ver)))
