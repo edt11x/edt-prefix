@@ -2714,6 +2714,9 @@ afterlibsecret: \
 # Libgcrypt - https://www.gnupg.org/download/index.html#libgcrypt
 # ==============================================================
 #
+# symlinks-ver       = symlinks/symlinks-1.4.tar.gz
+# 2018-02-24
+symlinks-ver       = symlinks/v1.4.3.tar.gz
 # tcl-ver            = tcl/tcl8.6.3-src.tar.gz
 tcl-ver            = tcl/tcl8.6.8-src.tar.gz
 # flex-ver           = flex/flex-2.5.39.tar.gz
@@ -3451,7 +3454,6 @@ sharutils-ver      = sharutils/sharutils-4.15.1.tar.xz
 sparse-ver         = sparse/sparse-0.5.0.tar.gz
 srm-ver            = srm/srm-1.2.15.tar.gz
 swig-ver           = swig/swig-3.0.0.tar.gz
-symlinks-ver       = symlinks/symlinks-1.4.tar.gz
 tcc-ver            = tcc/tcc-0.9.26.tar.bz2
 tclx-ver           = tclx/tclx8.4.1.tar.bz2
 tcpdump-ver        = tcpdump/tcpdump-4.5.1.tar.gz
@@ -6355,7 +6357,6 @@ wget-all: \
     $(subversion-ver) \
     $(swig-ver) \
     $(symlinks-ver) \
-    $(symlinks-ver) \
     $(tar-ver) \
     $(tcc-ver) \
     $(tcl-ver) \
@@ -7237,7 +7238,7 @@ $(subversion-ver):
 	$(call SOURCEWGET,"subversion","http://www.us.apache.org/dist/"$(subversion-ver))
 
 $(symlinks-ver):
-	$(call SOURCEWGET,"symlinks","http://pkgs.fedoraproject.org/repo/pkgs/symlinks/symlinks-1.4.tar.gz/c38ef760574c25c8a06fd2b5b141307d/symlinks-1.4.tar.gz")
+	$(call SOURCEWGET,"symlinks","https://github.com/brandt/symlinks/archive/"$(notdir $(symlinks-ver)))
 
 $(snort-ver):
 	$(call SOURCEWGET, "snort", "https://www.snort.org/downloads/"$(snort-ver))
