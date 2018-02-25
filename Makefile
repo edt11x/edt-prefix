@@ -2714,6 +2714,10 @@ afterlibsecret: \
 # Libgcrypt - https://www.gnupg.org/download/index.html#libgcrypt
 # ==============================================================
 #
+# protobuf-ver       = protobuf/protobuf-2.5.0.tar.bz2
+# not sure that I can tolerate protobuf proto3 yet
+# 2018-02-24
+protobuf-ver       = protobuf/protobuf-2.6.1.tar.gz
 # nettle-ver         = nettle/nettle-3.1.1.tar.gz
 # 2018-02-24
 nettle-ver         = nettle/nettle-3.4.tar.gz
@@ -3446,7 +3450,6 @@ pixman-ver         = pixman/pixman-0.32.6.tar.gz
 pkg-config-ver     = pkg-config/pkg-config-0.29.tar.gz
 Pod-Coverage-ver   = Pod-Coverage/Pod-Coverage-0.23.tar.gz
 popt-ver           = popt/popt-1.16.tar.gz
-protobuf-ver       = protobuf/protobuf-2.5.0.tar.bz2
 psmisc-ver         = psmisc/psmisc-22.21.tar.gz
 pth-ver            = pth/pth-2.0.7.tar.gz
 pygobject-ver      = pygobject/pygobject-2.28.6.tar.xz
@@ -7154,7 +7157,7 @@ $(popt-ver):
 	$(call SOURCEWGET,"popt","http://rpm5.org/files/popt/popt-1.16.tar.gz")
 
 $(protobuf-ver):
-	$(call SOURCEWGET,"protobuf", "https://protobuf.googlecode.com/files/protobuf-2.5.0.tar.bz2")
+	$(call SOURCEWGET,"protobuf", "https://github.com/google/protobuf/releases/download/v2.6.1/"$(notdir $(protobuf-ver)))
 
 $(psmisc-ver):
 	$(call SOURCEWGET, "psmisc", "http://downloads.sourceforge.net/psmisc/psmisc-22.21.tar.gz")
