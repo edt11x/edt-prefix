@@ -2714,6 +2714,10 @@ afterlibsecret: \
 # Libgcrypt - https://www.gnupg.org/download/index.html#libgcrypt
 # ==============================================================
 #
+# unzip-ver          = unzip/unzip60.tar.gz
+# changing to info-zip rather than sourceforge
+# 2016-02-25
+unzip-ver          = unzip/unzip60.tgz
 # protobuf-ver       = protobuf/protobuf-2.5.0.tar.bz2
 # not sure that I can tolerate protobuf proto3 yet
 # 2018-02-24
@@ -3469,7 +3473,6 @@ tcp_wrappers-ver   = tcp_wrappers/tcp_wrappers_7.6.tar.gz
 Test-Pod-Coverage-ver = Test-Pod-Coverage/Test-Pod-Coverage-1.10.tar.gz
 Test-Pod-ver       = Test-Pod/Test-Pod-1.49.tar.gz
 truecrypt-ver      = truecrypt/truecrypt-7.1a-linux-console-x86.tar.gz
-unzip-ver          = unzip/unzip60.tar.gz
 util-linux-ng-ver  = util-linux-ng/util-linux-ng-2.18.tar.xz
 
 # ==============================================================
@@ -7257,7 +7260,7 @@ $(subversion-ver):
 	$(call SOURCEWGET,"subversion","http://www.us.apache.org/dist/"$(subversion-ver))
 
 $(symlinks-ver):
-	$(call SOURCEWGET,"symlinks","https://github.com/brandt/symlinks/archive/"$(notdir $(symlinks-ver)))
+	$(call SOURCEWGET,"symlinks","http://github.com/brandt/symlinks/archive/"$(notdir $(symlinks-ver)))
 
 $(snort-ver):
 	$(call SOURCEWGET, "snort", "https://www.snort.org/downloads/"$(snort-ver))
@@ -7391,7 +7394,7 @@ $(unrar-ver):
 	$(call SOURCEWGET,"unrar","http://www.rarlab.com/rar/"$(notdir $(unrar-ver)))
 
 $(unzip-ver):
-	$(call SOURCEWGET,"unzip","http://downloads.sourceforge.net/infozip/unzip60.tar.gz")
+	$(call SOURCEWGET,"unzip","ftp://ftp.info-zip.org/pub/infozip/src/"$(notdir $(zip-ver)))
 
 $(URI-ver):
 	$(call SOURCEWGET,"URI","http://search.cpan.org/CPAN/authors/id/E/ET/ETHER/"$(notdir $(URI-ver)))
