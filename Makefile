@@ -2714,6 +2714,9 @@ afterlibsecret: \
 # Libgcrypt - https://www.gnupg.org/download/index.html#libgcrypt
 # ==============================================================
 #
+# nettle-ver         = nettle/nettle-3.1.1.tar.gz
+# 2018-02-24
+nettle-ver         = nettle/nettle-3.4.tar.gz
 # 2017-02-18
 # fribidi-ver        = fribidi/fribidi-0.19.7.tar.bz2
 # 2018-02-24
@@ -3435,7 +3438,6 @@ multitail-ver      = multitail/multitail-6.4.2.tgz
 ncurses-ver        = ncurses/ncurses-6.0.tar.gz
 Net-HTTP-ver       = Net-HTTP/Net-HTTP-6.09.tar.gz
 netpbm-ver         = netpbm/netpbm-10.35.95.tgz
-nettle-ver         = nettle/nettle-3.1.1.tar.gz
 ntfs-3g-ver        = ntfs-3g/ntfs-3g_ntfsprogs-2013.1.13.tgz
 p11-kit-ver        = p11-kit/p11-kit-0.23.2.tar.gz
 pango-ver          = pango/pango-1.36.8.tar.xz
