@@ -2070,7 +2070,7 @@ define SOURCEDIR_W_UNTAR
 	$(call SOURCEBANNER,$1)
 	$(call SOURCEBASE,$1)
 	echo ---###---
-	cd $1; tar $2 $1*.tar* || tar $2 $1*.tgz || tar $2 $1*.tar || tar xf $1*.tar* || /usr/local/bin/tar xf $1*.tar* || unzip $1*.zip || unzip master.zip || tar xf *.tar.gz || ( mkdir $1; cd $1; tar xf ../master.tar.gz ) || test -d $1
+	cd $1; tar $2 $1*.tar* || tar $2 $1*.tgz || tar $2 $1*.tar || tar xf $1*.tar* || /usr/local/bin/tar xf $1*.tar* || unzip $1*.zip || unzip master.zip || tar xfz *.tar.gz || tar xfz *.tgz || ( mkdir $1; cd $1; tar xf ../master.tar.gz ) || test -d $1
 	echo ---###---
 	$(call MAKEUNTARDIR,$1,$3)
 endef
@@ -3170,7 +3170,7 @@ WWW-RobotRules-ver = WWW-RobotRules/WWW-RobotRules-6.02.tar.gz
 # XML-Parser-ver     = XML-Parser/XML-Parser-2.36.tar.gz
 XML-Parser-ver     = XML-Parser/XML-Parser-2.44.tar.gz
 # 2016-09-23, Checked, Info-Zip is still 3.0 2008-09-24
-zip-ver            = zip/zip30.tar.gz
+zip-ver            = zip/zip30.tgz
 # 2016-09-21
 # db-ver             = db/db-6.1.26.tar
 db-ver             = db/db-6.2.23.tar.gz
@@ -7447,7 +7447,7 @@ $(xz-ver):
 	$(call SOURCEWGET,"xz","http://tukaani.org/"$(xz-ver))
 
 $(zip-ver):
-	$(call SOURCEWGET,"zip","http://downloads.sourceforge.net/infozip/zip30.tar.gz")
+	$(call SOURCEWGET,"zip","ftp://ftp.info-zip.org/pub/infozip/src/"$(notdir $(zip-ver)))
 
 $(zlib-ver):
 	$(call SOURCEWGET,"zlib","https://www.zlib.net/"$(notdir $(zlib-ver)))
