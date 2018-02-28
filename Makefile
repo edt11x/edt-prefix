@@ -97,6 +97,38 @@ backslash := \$(strip)
 ###################################################################################
 ###################################################################################
 ###################################################################################
+#
+# Need this patch to compile GCC 4.7.3 with newer versions of GCC, where the C
+# standard is post C89
+#
+# https://github.com/DragonFlyBSD/DPorts/issues/136
+#
+define GCC_4_7_3_PATCH
+--- gcc/cp/cfns.h.orig	2015-02-13 08:27:46.000000000 +0200
++++ gcc/cp/cfns.h	2015-02-13 10:23:53.000000000 +0200
+@@ -53,6 +53,9 @@
+ static unsigned int hash (const char *, unsigned int);
+ #ifdef __GNUC__
+ __inline
++#ifdef __GNUC_STDC_INLINE__
++__attribute__ ((__gnu_inline__))
++#endif
+ #endif
+ const char * libc_name_p (const char *, unsigned int);
+ /* maximum key range = 391, duplicates = 0 */
+@@ -96,7 +99,7 @@
+       400, 400, 400, 400, 400, 400, 400, 400, 400, 400,
+       400, 400, 400, 400, 400, 400, 400
+     };
+-  register int hval = len;
++  register int hval = (int)len;
+ 
+   switch (hval)
+     {
+endef
+###################################################################################
+###################################################################################
+###################################################################################
 define COMPILERRTPATCH
 --- sanitizer_platform_limits_posix.cc.orig	2014-03-30 02:07:36.565541221 -0400
 +++ sanitizer_platform_limits_posix.cc	2014-03-30 02:08:36.928098455 -0400
@@ -2662,6 +2694,7 @@ afterpatch: \
     oath-toolkit \
     octave \
     tcpdump \
+    pixman \
     afterlibsecret
 
 # Problem children
@@ -2675,7 +2708,6 @@ afterpatch: \
 #
 .PHONY: afterlibsecret
 afterlibsecret: \
-    pixman \
     busybox \
     tcc \
     cairo \
@@ -2714,6 +2746,9 @@ afterlibsecret: \
 # Libgcrypt - https://www.gnupg.org/download/index.html#libgcrypt
 # ==============================================================
 #
+# pixman-ver         = pixman/pixman-0.32.6.tar.gz
+# 2018-02-27
+pixman-ver         = pixman/pixman-0.34.0.tar.gz
 # unzip-ver          = unzip/unzip60.tar.gz
 # changing to info-zip rather than sourceforge
 # 2016-02-25
@@ -3450,7 +3485,6 @@ ntfs-3g-ver        = ntfs-3g/ntfs-3g_ntfsprogs-2013.1.13.tgz
 p11-kit-ver        = p11-kit/p11-kit-0.23.2.tar.gz
 pango-ver          = pango/pango-1.36.8.tar.xz
 patch-ver          = patch/patch-2.7.tar.gz
-pixman-ver         = pixman/pixman-0.32.6.tar.gz
 pkg-config-ver     = pkg-config/pkg-config-0.29.tar.gz
 Pod-Coverage-ver   = Pod-Coverage/Pod-Coverage-0.23.tar.gz
 popt-ver           = popt/popt-1.16.tar.gz
@@ -3786,7 +3820,7 @@ jnettop libxml2 check file protobuf libtasn1 popt sharutils libxslt libidn daq l
 # a bunch of this with MUSL support
 .PHONY: pixman
 pixman : \
-    $(pixman-ver) \
+    $(pixman-ver)
 	$(call SOURCEDIR,$@,xf)
 	cd $@/`cat $@/untar.dir`/; CC=/usr/local/musl/bin/musl-gcc ./configure --prefix=/usr/local --enable-shared 
 	cd $@/`cat $@/untar.dir`/; CC=/usr/local/musl/bin/musl-gcc make
@@ -4638,8 +4672,13 @@ gc: $(gc-ver)
 	$(call CPLIB,lib$@.*)
 	$(call CPLIB,lib$@cpp.*)
 
+export GCC_4_7_3_PATCH
+patches/gcc.patch:
+	-mkdir -p patches
+	echo "$$GCC_4_7_3_PATCH" >> $@
+
 .PHONY: gcc
-gcc: $(gcc-ver)
+gcc: $(gcc-ver) patches/gcc.patch
 	$(call SOURCEDIR,$@,xf)
 	cd $@/`cat $@/untar.dir`; /usr/local/bin/tar xf ../../mpfr/mpfr*.tar*
 	cd $@/`cat $@/untar.dir`; ln -sf mpfr-* mpfr
@@ -4648,6 +4687,7 @@ gcc: $(gcc-ver)
 	cd $@/`cat $@/untar.dir`; /usr/local/bin/tar xf ../../mpc/mpc*.tar*
 	cd $@/`cat $@/untar.dir`; ln -sf mpc-* mpc
 	cd $@/`cat $@/untar.dir`; cp ../../ecj/ecj*.jar ./ecj.jar
+	cd $@/`cat $@/untar.dir`/gcc/cp; patch -p2 < ../../../../patches/gcc.patch
 	# this will let us build glibc
 	# XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX
 	# XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX
@@ -7144,7 +7184,7 @@ $(pinentry-ver):
 	$(call SOURCEWGET,"pinentry","ftp://ftp.gnupg.org/gcrypt/"$(pinentry-ver))
 
 $(pixman-ver):
-	$(call SOURCEWGET,"pixman","http://cairographics.org/releases/pixman-0.32.6.tar.gz")
+	$(call SOURCEWGET,"pixman","http://cairographics.org/releases/"$(notdir $(pixman-ver)))
 
 $(pkg-config-ver):
 	$(call SOURCEWGET,"pkg-config","http://pkgconfig.freedesktop.org/releases/"$(notdir $(pkg-config-ver)))
@@ -7394,7 +7434,7 @@ $(unrar-ver):
 	$(call SOURCEWGET,"unrar","http://www.rarlab.com/rar/"$(notdir $(unrar-ver)))
 
 $(unzip-ver):
-	$(call SOURCEWGET,"unzip","ftp://ftp.info-zip.org/pub/infozip/src/"$(notdir $(zip-ver)))
+	$(call SOURCEWGET,"unzip","ftp://ftp.info-zip.org/pub/infozip/src/"$(notdir $(unzip-ver)))
 
 $(URI-ver):
 	$(call SOURCEWGET,"URI","http://search.cpan.org/CPAN/authors/id/E/ET/ETHER/"$(notdir $(URI-ver)))
