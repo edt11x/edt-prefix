@@ -2746,6 +2746,11 @@ afterlibsecret: \
 # Libgcrypt - https://www.gnupg.org/download/index.html#libgcrypt
 # ==============================================================
 #
+# libunistring-ver   = libunistring/libunistring-0.9.6.tar.xz
+# 2018-02-10
+# libunistring-ver   = libunistring/libunistring-0.9.8.tar.xz
+# 2018-02-28
+libunistring-ver   = libunistring/libunistring-0.9.9.tar.xz
 # pixman-ver         = pixman/pixman-0.32.6.tar.gz
 # 2018-02-27
 pixman-ver         = pixman/pixman-0.34.0.tar.gz
@@ -2780,9 +2785,6 @@ binutils-ver       = binutils/binutils-2.30.tar.gz
 # 2016-09-23, Checked, zlib is still 1.2.8 2013-04-28
 # zlib-ver           = zlib/zlib-1.2.8.tar.gz
 zlib-ver           = zlib/zlib-1.2.11.tar.gz
-# libunistring-ver   = libunistring/libunistring-0.9.6.tar.xz
-# 2018-02-10
-libunistring-ver   = libunistring/libunistring-0.9.8.tar.xz
 texinfo-ver        = texinfo/texinfo-5.2.tar.gz
 # 2018-02-10
 # texinfo-ver        = texinfo/texinfo-6.5.tar.xz
@@ -3747,7 +3749,7 @@ libffi libunistring : \
 	cd $@; mkdir $@-build
 	cd $@/$@-build/; readlink -f . | grep $@-build
 	-cd $@/`cat $@/untar.dir`/; sed -i -e '/gets is a security/d' lib/stdio.in.h
-	cd $@/$@-build/; ../`cat ../untar.dir`/configure --prefix=/usr/local
+	cd $@/$@-build/; ../`cat ../untar.dir`/configure --prefix=/usr/local --with-libiconv-prefix=/usr/local
 	cd $@/$@-build/; make
 	cd $@/$@-build/; $(PHASE1_NOCHECK) make check || $(PHASE1_NOCHECK) make test
 	$(call PKGINSTALLBUILD,$@)
