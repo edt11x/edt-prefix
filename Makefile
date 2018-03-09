@@ -2746,6 +2746,18 @@ afterlibsecret: \
 # Libgcrypt - https://www.gnupg.org/download/index.html#libgcrypt
 # ==============================================================
 #
+# 2016-08-26
+# perl-ver           = perl/perl-5.22.1.tar.gz
+# perl-ver           = perl/perl-5.24.0.tar.gz
+# 2017-11-05
+# perl-ver           = perl/perl-5.26.0.tar.gz
+# 2017-12-02
+# perl-ver           = perl/perl-5.26.1.tar.gz
+# 2018-03-08
+perl-ver           = perl/perl-5.27.9.tar.gz
+# libiconv-ver       = libiconv/libiconv-1.14.tar.gz
+# 2018-02-10
+libiconv-ver       = libiconv/libiconv-1.15.tar.gz
 # libunistring-ver   = libunistring/libunistring-0.9.6.tar.xz
 # 2018-02-10
 # libunistring-ver   = libunistring/libunistring-0.9.8.tar.xz
@@ -2885,24 +2897,12 @@ ntbtls-ver         = ntbtls/ntbtls-0.1.2.tar.bz2
 # libassuan-ver      = libassuan/libassuan-2.4.3.tar.bz2
 # 2017-12-02
 libassuan-ver      = libassuan/libassuan-2.4.5.tar.bz2
-# 2016-08-26
-# perl-ver           = perl/perl-5.22.1.tar.gz
-# perl-ver           = perl/perl-5.24.0.tar.gz
-# 2017-11-05
-# perl-ver           = perl/perl-5.26.0.tar.gz
-# 2017-12-02
-perl-ver           = perl/perl-5.26.1.tar.gz
 # 2017-12-02
 MoarVM-ver = MoarVM/MoarVM-2017.09.1.tar.gz
 # 2016-07-24
 # rakudo-star-ver    = rakudo-star/rakudo-star-2016.07.tar.gz
 # 2017-12-02
 rakudo-star-ver    = rakudo-star/rakudo-star-2017.10.tar.gz
-# 2016-08-26
-# perl-ver           = perl/perl-5.22.1.tar.gz
-# perl-ver           = perl/perl-5.24.0.tar.gz
-# 2017-11-05
-# perl-ver           = perl/perl-5.26.0.tar.gz
 # 2017-10-19
 gcc-7.2-ver          = gcc-7.2/gcc-7.2.0.tar.gz
 # make-ver           = make/make-4.1.tar.gz
@@ -3221,9 +3221,6 @@ openvpn-ver        = openvpn/openvpn-2.3.12.tar.xz
 # 2016-08-27
 # diffutils-ver      = diffutils/diffutils-3.3.tar.xz
 diffutils-ver      = diffutils/diffutils-3.5.tar.xz
-# 2016-08-26
-# perl-ver           = perl/perl-5.22.1.tar.gz
-perl-ver           = perl/perl-5.24.0.tar.gz
 # 2016-05-15
 # ImageMagick-ver   = ImageMagick/ImageMagick-7.0.1-3.tar.xz
 # 2016-08-26
@@ -3465,7 +3462,6 @@ libcap-ver         = libcap/libcap-2.24.tar.xz
 libelf-ver         = libelf/libelf-0.8.13.tar.gz
 libevent-ver       = libevent/libevent-2.0.21-stable.tar.gz
 libffi-ver         = libffi/libffi-3.2.1.tar.gz
-libiconv-ver       = libiconv/libiconv-1.14.tar.gz
 jpeg-ver           = jpeg/jpegsrc.v9b.tar.gz
 libpcap-ver        = libpcap/libpcap-1.4.0.tar.gz
 libsecret-ver      = libsecret/libsecret-0.18.3.tar.xz
@@ -5721,7 +5717,8 @@ perl: $(perl-ver)
 	    -Dvendorprefix=/usr/local \
 	    -Dman1dir=/usr/local/share/man/man1 \
 	    -Dman3dir=/usr/local/share/man/man3 \
-	    -Duseshrplib
+	    -Duseshrplib \
+	    -Dusedevel
 	cd $@/`cat $@/untar.dir`/; make
 	-cd $@/`cat $@/untar.dir`/; $(PHASE1_NOCHECK) make test
 	/usr/bin/sudo /bin/rm -f /usr/local/lib/libperl.so
