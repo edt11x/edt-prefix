@@ -3740,7 +3740,7 @@ diffutils grep m4 patch texinfo : \
 # its tests, it may fail in tests phase1
 .PHONY: libffi
 libffi : \
-    $(libffi-ver) \
+    $(libffi-ver)
 	$(call SOURCEDIR,$@,xf)
 	cd $@; mkdir $@-build
 	cd $@/$@-build/; readlink -f . | grep $@-build
