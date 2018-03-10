@@ -2746,6 +2746,9 @@ afterlibsecret: \
 # Libgcrypt - https://www.gnupg.org/download/index.html#libgcrypt
 # ==============================================================
 #
+# libarchive-ver     = libarchive/libarchive-3.1.2.tar.gz
+# 2018-03-09
+libarchive-ver     = libarchive/libarchive-3.3.2.tar.gz
 # 2016-08-26
 # perl-ver           = perl/perl-5.22.1.tar.gz
 # perl-ver           = perl/perl-5.24.0.tar.gz
@@ -3456,7 +3459,6 @@ IO-Socket-SSL-ver  = IO-Socket-SSL/IO-Socket-SSL-2.012.tar.gz
 iptraf-ng-ver      = iptraf-ng/iptraf-ng-1.1.4.tar.gz
 iwyu-ver           = include-what-you-use/include-what-you-use-3.4.src.tar.gz
 jnettop-ver        = jnettop/jnettop-0.13.0.tar.gz
-libarchive-ver     = libarchive/libarchive-3.1.2.tar.gz
 libatomic_ops-ver  = libatomic_ops/libatomic_ops-7.4.2.tar.gz
 libcap-ver         = libcap/libcap-2.24.tar.xz
 libelf-ver         = libelf/libelf-0.8.13.tar.gz
@@ -3737,10 +3739,8 @@ diffutils grep m4 patch texinfo : \
 # skip tests for libffi, we may not have a C++ compiler in PHASE1
 # its tests, it may fail in tests phase1
 .PHONY: libffi
-.PHONY: libunistring
-libffi libunistring : \
+libffi : \
     $(libffi-ver) \
-    $(libunistring-ver)
 	$(call SOURCEDIR,$@,xf)
 	cd $@; mkdir $@-build
 	cd $@/$@-build/; readlink -f . | grep $@-build
@@ -3762,6 +3762,7 @@ libffi libunistring : \
 .PHONY: flex
 .PHONY: jnettop
 .PHONY: lame
+.PHONY: libarchive
 .PHONY: libogg
 .PHONY: libdnet
 .PHONY: libmpeg2
@@ -3777,7 +3778,7 @@ libffi libunistring : \
 .PHONY: tcc
 .PHONY: xmlsec1
 .PHONY: yasm
-jnettop libxml2 check file protobuf libtasn1 popt sharutils libxslt libidn daq libdnet alsa-lib libogg flac libvorbis octave lame yasm opus libmpeg2 rng-tools xmlsec1 tcc flex : \
+jnettop libxml2 check file protobuf libtasn1 popt sharutils libxslt libidn daq libdnet alsa-lib libogg flac libvorbis octave lame yasm opus libmpeg2 rng-tools xmlsec1 tcc flex libarchive : \
     $(alsa-lib-ver) \
     $(check-ver) \
     $(daq-ver) \
@@ -3786,6 +3787,7 @@ jnettop libxml2 check file protobuf libtasn1 popt sharutils libxslt libidn daq l
     $(flex-ver) \
     $(jnettop-ver) \
     $(lame-ver) \
+    $(libarchive-ver) \
     $(libdnet-ver) \
     $(libidn-ver) \
     $(libmpeg2-ver) \
@@ -3907,7 +3909,6 @@ srm wipe mosh socat tmux psmisc libusb htop cairo iptraf-ng hwloc nano libass fd
 # bison fails the glibc version test, we have too old of a GLIBC
 # gobject-introspection wants cairo installed for testing
 # lmza fails the glibc version test, we have too old of a GLIBC
-# libunistring fails one test of 418, that appears to be because
 #  we are linking to an old librt in GLIBC
 # libpcap does not appear to have any tests
 # tcpdump fails on PPOE
@@ -4973,16 +4974,6 @@ jq : \
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
 
-.PHONY: libarchive
-libarchive : $(libarchive-ver)
-	$(call SOURCEDIR,$@,xf)
-	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
-	cd $@/`cat $@/untar.dir`/; make
-	cd $@/`cat $@/untar.dir`/; make check || make test
-	$(call PKGINSTALL,$@)
-	$(call CPLIB,lib$@*)
-	$(call CPLIB,$@*)
-
 .PHONY: libatomic_ops
 libatomic_ops: $(libatomic_ops-ver)
 	$(call SOURCEDIR,$@,xf)
@@ -5096,6 +5087,23 @@ export LUASHAREDLIBPATCH
 patches/lua-5.3.2-shared_library-1.patch:
 	-mkdir -p patches
 	echo "$$LUASHAREDLIBPATCH" >> $@
+
+# We need to use the internal libiconv. At some point a call libiconv, added an extra parameter
+# If you link with a version with a mismatch in the parameter list, you end up with a segfault.
+# Consequently we need to use the libiconv internal to the libunistring package.
+.PHONY: libunistring
+libunistring : \
+    $(libunistring-ver)
+	$(call SOURCEDIR,$@,xf)
+	cd $@; mkdir $@-build
+	cd $@/$@-build/; readlink -f . | grep $@-build
+	-cd $@/`cat $@/untar.dir`/; sed -i -e '/gets is a security/d' lib/stdio.in.h
+	cd $@/$@-build/; ../`cat ../untar.dir`/configure --prefix=/usr/local --without-libiconv-prefix
+	cd $@/$@-build/; make
+	cd $@/$@-build/; $(PHASE1_NOCHECK) make check || $(PHASE1_NOCHECK) make test
+	$(call PKGINSTALLBUILD,$@)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
 
 # No configure, no make check or test, does not have a good install
 .PHONY: libutempter
@@ -6855,7 +6863,7 @@ $(lame-ver):
 	$(call SOURCEWGET,"lame","http://downloads.sourceforge.net/"$(lame-ver))
 
 $(libarchive-ver):
-	$(call SOURCEWGET,"libarchive","http://www.libarchive.org/downloads/libarchive-3.1.2.tar.gz")
+	$(call SOURCEWGET,"libarchive","http://www.libarchive.org/downloads/"$(notdir $(libarchive-ver)))
 
 $(libass-ver):
 	$(call SOURCEWGET,"libass","https://github.com/libass/libass/releases/download/"$(word 2,$(subst -, ,$(basename $(basename $(notdir $(libass-ver))))))"/"$(notdir $(libass-ver)))
