@@ -2746,6 +2746,10 @@ afterlibsecret: \
 # Libgcrypt - https://www.gnupg.org/download/index.html#libgcrypt
 # ==============================================================
 #
+# 2017-10-05
+# pcre2-ver          = pcre2/pcre2-10.30.tar.bz2
+# 2018-03-11
+pcre2-ver          = pcre2/pcre2-10.31.tar.bz2
 # libarchive-ver     = libarchive/libarchive-3.1.2.tar.gz
 # 2018-03-09
 libarchive-ver     = libarchive/libarchive-3.3.2.tar.gz
@@ -2935,8 +2939,6 @@ cmake-ver          = cmake/cmake-3.4.3.tar.gz
 automake-ver       = automake/automake-1.15.1.tar.xz
 # 2017-10-06
 rng-tools-ver      = rng-tools/rng-tools-5.tar.gz
-# 2017-10-05
-pcre2-ver          = pcre2/pcre2-10.30.tar.bz2
 # 2017-10-04
 pcre-ver           = pcre/pcre-8.41.tar.bz2
 # 2017-01-27
@@ -5621,12 +5623,17 @@ pcre: $(pcre-ver)
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
 
+# The first time we build pcre2, we might not have a development readline. The only place this
+# hurts us is in the pcre2test program. I am going to give up on the readline capability
+# on the readline support in pcre2test.
+# --enable-pcre2test-libreadline
+#
 .PHONY: pcre2
 pcre2: $(pcre2-ver)
 	$(call SOURCEDIR,$@,xf)
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --enable-unicode \
 	                --enable-pcre2-16 --enable-pcre2-32 --enable-pcre2grep-libz \
-			--enable-pcre2grep-libbz2 --enable-pcre2test-libreadline \
+			--enable-pcre2grep-libbz2 \
 			--enable-jit
 	cd $@/`cat $@/untar.dir`/; make
 	cd $@/`cat $@/untar.dir`/; make check || make test
