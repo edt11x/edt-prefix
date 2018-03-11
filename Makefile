@@ -2746,6 +2746,10 @@ afterlibsecret: \
 # Libgcrypt - https://www.gnupg.org/download/index.html#libgcrypt
 # ==============================================================
 #
+# 2017-10-06
+# rng-tools-ver      = rng-tools/rng-tools-5.tar.gz
+# 2018-03-11
+rng-tools-ver      = rng-tools/v6.1.tar.gz
 # 2017-10-05
 # pcre2-ver          = pcre2/pcre2-10.30.tar.bz2
 # 2018-03-11
@@ -2937,8 +2941,6 @@ cmake-ver          = cmake/cmake-3.4.3.tar.gz
 # 2017-10-10
 # automake-ver       = automake/automake-1.15.tar.xz
 automake-ver       = automake/automake-1.15.1.tar.xz
-# 2017-10-06
-rng-tools-ver      = rng-tools/rng-tools-5.tar.gz
 # 2017-10-04
 pcre-ver           = pcre/pcre-8.41.tar.bz2
 # 2017-01-27
@@ -3775,12 +3777,11 @@ libffi : \
 .PHONY: opus
 .PHONY: popt
 .PHONY: protobuf
-.PHONY: rng-tools
 .PHONY: sharutils
 .PHONY: tcc
 .PHONY: xmlsec1
 .PHONY: yasm
-jnettop libxml2 check file protobuf libtasn1 popt sharutils libxslt libidn daq libdnet alsa-lib libogg flac libvorbis octave lame yasm opus libmpeg2 rng-tools xmlsec1 tcc flex libarchive : \
+jnettop libxml2 check file protobuf libtasn1 popt sharutils libxslt libidn daq libdnet alsa-lib libogg flac libvorbis octave lame yasm opus libmpeg2 xmlsec1 tcc flex libarchive : \
     $(alsa-lib-ver) \
     $(check-ver) \
     $(daq-ver) \
@@ -3802,7 +3803,6 @@ jnettop libxml2 check file protobuf libtasn1 popt sharutils libxslt libidn daq l
     $(opus-ver) \
     $(popt-ver) \
     $(protobuf-ver) \
-    $(rng-tools-ver) \
     $(sharutils-ver) \
     $(tcc-ver) \
     $(xmlsec1-ver) \
@@ -3813,6 +3813,20 @@ jnettop libxml2 check file protobuf libtasn1 popt sharutils libxslt libidn daq l
 	cd $@/`cat $@/untar.dir`/; make check || make test
 	$(call PKGINSTALL,$@)
 	$(call CPLIB,libproto*)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
+
+# Standard build, post tar rule, no separate build directory, but with autogen.sh
+.PHONY: libuv
+.PHONY: rng-tools
+libuv rng-tools : $(libuv-ver) \
+    $(rng-tools-ver)
+	$(call SOURCEDIR,$@,xf)
+	cd $@/`cat $@/untar.dir`/; ./autogen.sh
+	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --without-nistbeacon
+	cd $@/`cat $@/untar.dir`/; make
+	cd $@/`cat $@/untar.dir`/; make check || make test
+	$(call PKGINSTALL,$@)
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
 
@@ -7247,7 +7261,7 @@ $(readline-ver):
 	$(call SOURCEWGET,"readline","http://ftp.gnu.org/gnu/"$(readline-ver))
 
 $(rng-tools-ver):
-	$(call SOURCEWGET,"rng-tools","https://downloads.sourceforge.net/project/gkernel/rng-tools/5/rng-tools-5.tar.gz")
+	$(call SOURCEWGET,"rng-tools","https://github.com/nhorman/rng-tools/archive/"$(notdir $(rng-tools-ver)))
 
 $(Role-Tiny-ver):
 	$(call SOURCEWGET,"Role-Tiny","http://search.cpan.org/CPAN/authors/id/H/HA/HAARG/"$(notdir $(Role-Tiny-ver)))
