@@ -2056,7 +2056,38 @@ endef
 ###################################################################################
 ###################################################################################
 ###################################################################################
-
+define PERL5_PATCH
+@@ -6788,6 +6788,26 @@
+ #  define DOUBLE_VAX_ENDIAN
+ #endif
+ 
++/* We have somehow managed not to define the denormal/subnormal
++ * detection.
++ *
++ * This may happen if the compiler doesn't expose the C99 math like
++ * the fpclassify() without some special switches.  Perl tries to
++ * stay C89, so for example -std=c99 is not an option.
++ *
++ * The Perl_isinf() and Perl_isnan() should have been defined even if
++ * the C99 isinf() and isnan() are unavailable, and the NV_MIN becomes
++ * from the C89 DBL_MIN or moral equivalent. */
++#if !defined(Perl_fp_class_denorm) && defined(Perl_isinf) && defined(Perl_isnan) && defined(NV_MIN)
++#  define Perl_fp_class_denorm(x) ((x) != 0.0 && !Perl_isinf(x) && !Perl_isnan(x) && PERL_ABS(x) < NV_MIN)
++#endif
++
++/* This is not a great fallback: subnormals tests will fail,
++ * but at least Perl will link and 99.999% of tests will work. */
++#if !defined(Perl_fp_class_denorm)
++#  define Perl_fp_class_denorm(x) FALSE
++#endif
++
+ #ifdef DOUBLE_IS_IEEE_FORMAT
+ /* All the basic IEEE formats have the implicit bit,
+  * except for the x86 80-bit extended formats, which will undef this.
+endef
+###################################################################################
+###################################################################################
+###################################################################################
 #
 # Function Defines
 #
@@ -2070,6 +2101,7 @@ define LNLIB
 endef
 
 define MKVRFYDIR
+	echo mkdir -p --verbose $1
 	mkdir -p --verbose $1
 	cd $1; readlink -f . | grep $1
 endef
@@ -2348,8 +2380,6 @@ aftergcc: \
     ca-cert \
     pcre \
     pcre2 \
-    rng-tools \
-    git \
     grep \
     db \
     lzma \
@@ -2381,6 +2411,7 @@ afterpython: \
     Archive-Zip \
     Digest-SHA1 \
     Scalar-MoreUtils \
+    Test-Needs \
     URI \
     HTML-Tagset \
     HTML-Parser \
@@ -2392,10 +2423,10 @@ afterpython: \
     IO-HTML \
     LWP-MediaTypes \
     HTTP-Date \
+    Encode-Locale \
+    HTTP-Message \
     HTTP-Daemon \
     WWW-RobotRules \
-    HTTP-Message \
-    Encode-Locale \
     File-Listing \
     HTTP-Cookies \
     HTTP-Negotiate \
@@ -2406,55 +2437,60 @@ afterpython: \
 afternethttp: \
     inc-latest \
     PAR-Dist \
+    File-Path \
+    PathTools \
+    File-Remove \
+    Test-Requires \
+    Module-ScanDeps \
+    YAML-Tiny \
+    Module-Install \
     Module-Build \
     Module-Build-XSUtil \
     Test-Exception \
     Sub-Uplevel \
-    Test-Fatal \
     Try-Tiny \
-    Test-Requires \
+    Test-Fatal \
     Test-LeakTrace \
     Class-Loader \
     pari \
     Math-Pari \
     Sub-Name \
+    Params-Util \
+    Sub-Install \
+    Data-OptList \
+    Module-Runtime \
+    Module-Implementation \
+    Package-Stash-XS \
+    Dist-CheckConflicts \
+    Package-Stash \
     Class-Load \
     Class-Load-XS \
+    Test-Warn \
+    Test-Warnings \
     Package-DeprecationManager \
     File-pushd \
-    Test-CleanNamespaces \
     Module-Runtime-Conflicts \
-    Moose \
-    MouseX-Types \
-    Mouse \
-    Any-Moose \
     Capture-Tiny \
     Module-Find \
-    Module-Runtime \
     Class-Method-Modifiers \
     Sub-Exporter-Progressive \
     Role-Tiny \
     Devel-GlobalDestruction \
     Moo \
-    Params-Util \
     Sub-Exporter \
-    Sub-Install \
+    Test-Deep \
     Exporter-Tiny \
     Type-Tiny \
-    Data-OptList \
     Variable-Magic \
-    Module-Implementation \
     B-Hooks-EndOfScope \
-    Package-Stash-XS \
-    Dist-CheckConflicts \
-    Package-Stash \
     namespace-clean \
+    ExtUtils-Config \
+    ExtUtils-Helpers \
+    ExtUtils-InstallPaths \
+    Module-Build-Tiny \
     Crypt-Random-Source \
     List-MoreUtils \
-    Math-Random-Secure \
     Test-NoWarnings \
-    Math-Random-ISAAC \
-    Test-Warn \
     Net-SSLeay \
     Test-Inter \
     Date-Manip \
@@ -2463,7 +2499,16 @@ afternethttp: \
     Eval-Closure \
     MRO-Compat \
     Devel-StackTrace \
-    Test-Needs \
+    Test-CleanNamespaces \
+    CPAN-Meta-Check \
+    Devel-OverloadInfo \
+    Moose \
+    Mouse \
+    Any-Moose \
+    MouseX-Types \
+    Test-SharedFork \
+    Math-Random-ISAAC \
+    Math-Random-Secure \
     Specio \
     Test-Simple \
     Importer \
@@ -2479,7 +2524,6 @@ afternethttp: \
     Text-Diff \
     Test-Differences \
     Scalar-List-Utils \
-    CPAN-Meta-Check \
     Class-Singleton \
     Class-Inspector \
     Class-Tiny \
@@ -2507,6 +2551,7 @@ afternethttp: \
 afterbison: \
     check_sudo \
     autogen \
+    rng-tools \
     tcl \
     tclx \
     expect \
@@ -2530,6 +2575,7 @@ afterbison: \
     pth \
     gnupg \
     bash \
+    git \
     apr \
     apr-util \
     lua \
@@ -2746,6 +2792,145 @@ afterlibsecret: \
 # Libgcrypt - https://www.gnupg.org/download/index.html#libgcrypt
 # ==============================================================
 #
+# 2018-03-18
+Test-SharedFork-ver = Test-SharedFork/Test-SharedFork-0.35.tar.gz
+# 2016-06-04
+Math-Random-Secure-ver = Math-Random-Secure/Math-Random-Secure-0.080001.tar.gz
+# 2018-03-18
+ExtUtils-InstallPaths-ver = ExtUtils-InstallPaths/ExtUtils-InstallPaths-0.011.tar.gz
+# 2018-03-18
+ExtUtils-Helpers-ver = ExtUtils-Helpers/ExtUtils-Helpers-0.026.tar.gz
+# 2018-03-18
+ExtUtils-Config-ver = ExtUtils-Config/ExtUtils-Config-0.008.tar.gz
+# 2018-03-18
+Module-Build-Tiny-ver = Module-Build-Tiny/Module-Build-Tiny-0.039.tar.gz
+# 2016-06-04
+# Mouse-ver         = Mouse/Mouse-v2.4.5.tar.gz
+# 2018-03-18
+Mouse-ver         = Mouse/Mouse-v2.5.2.tar.gz
+# 2017-03-04
+# Devel-StackTrace-ver = Devel-StackTrace/Devel-StackTrace-2.02.tar.gz
+# 2018-03-18
+Devel-StackTrace-ver = Devel-StackTrace/Devel-StackTrace-2.03.tar.gz
+# 2017-03-10
+# Devel-OverloadInfo-ver = Devel-OverloadInfo/Devel-OverloadInfo-0.004.tar.gz
+# 2017-03-18
+Devel-OverloadInfo-ver = Devel-OverloadInfo/Devel-OverloadInfo-0.005.tar.gz
+# HTTP-Message-ver   = HTTP-Message/HTTP-Message-6.11.tar.gz
+# 2018-03-17
+HTTP-Message-ver   = HTTP-Message/HTTP-Message-6.15.tar.gz
+# 2018-03-17
+File-Path-ver = File-Path/File-Path-2.15.tar.gz
+# 2018-03-17
+PathTools-ver = PathTools/PathTools-3.74.tar.gz
+# 2016-08-26
+# perl-ver           = perl/perl-5.22.1.tar.gz
+# perl-ver           = perl/perl-5.24.0.tar.gz
+# 2017-11-05
+# perl-ver           = perl/perl-5.26.0.tar.gz
+# 2017-12-02
+# perl-ver           = perl/perl-5.26.1.tar.gz
+# 2018-03-08
+# perl-ver           = perl/perl-5.27.9.tar.gz
+# 2018-03-17 moving back to the stable version
+perl-ver           = perl/perl-5.26.1.tar.gz
+# 2016-06-05
+# List-MoreUtils-ver = List-MoreUtils/List-MoreUtils-0.413.tar.gz
+# List-MoreUtils-ver = List-MoreUtils/List-MoreUtils-0.415.tar.gz
+# 2018-03-12
+List-MoreUtils-ver = List-MoreUtils/List-MoreUtils-0.428.tar.gz
+# 2016-06-05
+# Module-Runtime-ver = Module-Runtime/Module-Runtime-0.014.tar.gz
+# 2018-03-12
+Module-Runtime-ver = Module-Runtime/Module-Runtime-0.016.tar.gz
+# 2016-06-04
+pari-ver         = pari/pari-2.3.5.tar.gz
+# 2018-03-12
+# pari-ver         = pari/pari-2.9.4.tar.gz
+# 2018-03-12
+YAML-Tiny-ver = YAML-Tiny/YAML-Tiny-1.73.tar.gz
+# 2018-03-12
+Module-ScanDeps-ver = Module-ScanDeps/Module-ScanDeps-1.24.tar.gz
+# 2018-03-12
+File-Remove-ver = File-Remove/File-Remove-1.57.tar.gz
+# 2018-03-12
+Module-Install-ver = Module-Install/Module-Install-1.19.tar.gz
+# 2016-06-04
+# Module-Build-ver  = Module-Build/Module-Build-0.4218.tar.gz
+# 2018-03-12
+Module-Build-ver  = Module-Build/Module-Build-0.4224.tar.gz
+# 2016-06-04
+# PAR-Dist-ver      = PAR-Dist/PAR-Dist-0.11.tar.gz
+# 2018-03-12
+PAR-Dist-ver      = PAR-Dist/PAR-Dist-0.49.tar.gz
+# 2016-06-05
+# Variable-Magic-ver = Variable-Magic/Variable-Magic-0.59.tar.gz
+# 2018-03-11
+Variable-Magic-ver = Variable-Magic/Variable-Magic-0.62.tar.gz
+# 2016-09-23
+# URI-ver            = URI/URI-1.69.tar.gz
+# URI-ver            = URI/URI-1.71.tar.gz
+# 2018-03-11
+URI-ver            = URI/URI-1.73.tar.gz
+# 2016-06-04
+# Try-Tiny-ver      = Try-Tiny/Try-Tiny-0.24.tar.gz
+# 2018-03-11
+Try-Tiny-ver      = Try-Tiny/Try-Tiny-0.30.tar.gz
+# 2017-03-10
+# Text-Diff-ver = Text-Diff/Text-Diff-1.44.tar.gz
+# 2018-03-11
+Text-Diff-ver = Text-Diff/Text-Diff-1.45.tar.gz
+# 2017-03-04
+# Test2-Suite-ver = Test2-Suite/Test2-Suite-0.000067.tar.gz
+# 2018-03-11
+Test2-Suite-ver = Test2-Suite/Test2-Suite-0.000108.tar.gz
+# 2017-03-05
+# Test-Simple-ver = Test-Simple/Test-Simple-1.302075.tar.gz
+# 2018-03-11
+Test-Simple-ver = Test-Simple/Test-Simple-1.302133.tar.gz
+# 2017-03-05
+# Term-Table-ver = Term-Table/Term-Table-0.006.tar.gz
+# 2018-03-11
+Term-Table-ver = Term-Table/Term-Table-0.012.tar.gz
+# 2017-03-04
+# Specio-ver = Specio/Specio-0.31.tar.gz
+# 2018-03-11
+Specio-ver = Specio/Specio-0.42.tar.gz
+# 2017-03-10
+# Scalar-List-Utils-ver = Scalar-List-Utils/Scalar-List-Utils-1.47.tar.gz
+# 2018-03-11
+Scalar-List-Utils-ver = Scalar-List-Utils/Scalar-List-Utils-1.50.tar.gz
+# 2017-03-04
+# Params-ValidationCompiler-ver = Params-ValidationCompiler/Params-ValidationCompiler-0.13.tar.gz
+# 2018-03-11
+Params-ValidationCompiler-ver = Params-ValidationCompiler/Params-ValidationCompiler-0.27.tar.gz
+# 2017-03-10
+# Moose-ver = Moose/Moose-2.2004.tar.gz
+# 2018-03-11
+Moose-ver = Moose/Moose-2.2010.tar.gz
+# 2017-03-10
+# Mojolicious-ver = Mojolicious/Mojolicious-7.28.tar.gz
+# 2018-03-11
+Mojolicious-ver = Mojolicious/Mojolicious-7.70.tar.gz
+# 2017-10-04
+# File-Copy-Recursive-ver = File-Copy-Recursive/File-Copy-Recursive-0.38.tar.gz
+# 2018-03-11
+File-Copy-Recursive-ver = File-Copy-Recursive/File-Copy-Recursive-0.40.tar.gz
+# Devel-Symdump-ver  = Devel-Symdump/Devel-Symdump-2.15.tar.gz
+# 2018-03-11
+Devel-Symdump-ver  = Devel-Symdump/Devel-Symdump-2.18.tar.gz
+# 2017-03-04
+# DateTime-ver       = DateTime/DateTime-1.42.tar.gz
+# 2018-03-11
+DateTime-ver       = DateTime/DateTime-1.46.tar.gz
+# 2017-03-04
+# DateTime-TimeZone-ver = DateTime-TimeZone/DateTime-TimeZone-2.10.tar.gz
+# 2018-03-11
+DateTime-TimeZone-ver = DateTime-TimeZone/DateTime-TimeZone-2.17.tar.gz
+# 2017-03-04
+# Date-Manip-ver     = Date-Manip/Date-Manip-6.58.tar.gz
+# 2018-03-11
+Date-Manip-ver     = Date-Manip/Date-Manip-6.70.tar.gz
 # 2017-10-06
 # rng-tools-ver      = rng-tools/rng-tools-5.tar.gz
 # 2018-03-11
@@ -2757,15 +2942,6 @@ pcre2-ver          = pcre2/pcre2-10.31.tar.bz2
 # libarchive-ver     = libarchive/libarchive-3.1.2.tar.gz
 # 2018-03-09
 libarchive-ver     = libarchive/libarchive-3.3.2.tar.gz
-# 2016-08-26
-# perl-ver           = perl/perl-5.22.1.tar.gz
-# perl-ver           = perl/perl-5.24.0.tar.gz
-# 2017-11-05
-# perl-ver           = perl/perl-5.26.0.tar.gz
-# 2017-12-02
-# perl-ver           = perl/perl-5.26.1.tar.gz
-# 2018-03-08
-perl-ver           = perl/perl-5.27.9.tar.gz
 # libiconv-ver       = libiconv/libiconv-1.14.tar.gz
 # 2018-02-10
 libiconv-ver       = libiconv/libiconv-1.15.tar.gz
@@ -2954,8 +3130,6 @@ git-ver            = git/git-2.14.2.tar.xz
 # 2017-10-04
 ocaml-ver          = ocaml/ocaml-4.05.0.tar.gz
 # 2017-10-04
-File-Copy-Recursive-ver = File-Copy-Recursive/File-Copy-Recursive-0.38.tar.gz
-# 2017-10-04
 Path-Tiny-ver       = Path-Tiny-ver/Path-Tiny-0.104.tar.gz
 # 2017-10-04
 Scope-Guard-ver     = Scope-Guard-ver/Scope-Guard-0.21.tar.gz
@@ -3004,8 +3178,6 @@ Digest-HMAC-ver = Digest-HMAC/Digest-HMAC-1.03.tar.gz
 # 2017-03-10
 Net-DNS-ver = Net-DNS/Net-DNS-1.08.tar.gz
 # 2017-03-10
-Mojolicious-ver = Mojolicious/Mojolicious-7.28.tar.gz
-# 2017-03-10
 Log-Log4perl-ver = Log-Log4perl/Log-Log4perl-1.49.tar.gz
 # 2017-03-10
 Test-RequiresInternet-ver = Test-RequiresInternet/Test-RequiresInternet-0.05.tar.gz
@@ -3026,8 +3198,6 @@ Test-CleanNamespaces-ver = Test-CleanNamespaces/Test-CleanNamespaces-0.22.tar.gz
 # 2017-03-10
 Class-Load-XS-ver = Class-Load-XS/Class-Load-XS-0.09.tar.gz
 # 2017-03-10
-Devel-OverloadInfo-ver = Devel-OverloadInfo/Devel-OverloadInfo-0.004.tar.gz
-# 2017-03-10
 Test-Warnings-ver = Test-Warnings/Test-Warnings-0.026.tar.gz
 # 2017-03-10
 Package-DeprecationManager-ver = Package-DeprecationManager/Package-DeprecationManager-0.17.tar.gz
@@ -3036,15 +3206,9 @@ Sub-Name-ver = Sub-Name/Sub-Name-0.21.tar.gz
 # 2017-03-10
 Class-Load-ver = Class-Load/Class-Load-0.23.tar.gz
 # 2017-03-10
-Moose-ver = Moose/Moose-2.2004.tar.gz
-# 2017-03-10
 MouseX-Types-ver = MouseX-Types/MouseX-Types-0.06.tar.gz
 # 2017-03-10
-Scalar-List-Utils-ver = Scalar-List-Utils/Scalar-List-Utils-1.47.tar.gz
-# 2017-03-10
 Algorithm-Diff-ver = Algorithm-Diff/Algorithm-Diff-1.1903.tar.gz
-# 2017-03-10
-Text-Diff-ver = Text-Diff/Text-Diff-1.44.tar.gz
 # 2017-03-10
 Test-Differences-ver = Test-Differences/Test-Differences-0.64.tar.gz
 # 2017-03-10
@@ -3060,39 +3224,21 @@ Test-Without-Module-ver = Test-Without-Module/Test-Without-Module-0.18.tar.gz
 # 2017-03-05
 Test2-Plugin-NoWarnings-ver = Test2-Plugin-NoWarnings/Test2-Plugin-NoWarnings-0.05.tar.gz
 # 2017-03-05
-Term-Table-ver = Term-Table/Term-Table-0.006.tar.gz
-# 2017-03-05
 Sub-Info-ver = Sub-Info/Sub-Info-0.002.tar.gz
 # 2017-03-05
 Importer-ver = Importer/Importer-0.024.tar.gz
-# 2017-03-05
-Test-Simple-ver = Test-Simple/Test-Simple-1.302075.tar.gz
-# 2017-03-04
-Test2-Suite-ver = Test2-Suite/Test2-Suite-0.000067.tar.gz
-# 2017-03-04
-Params-ValidationCompiler-ver = Params-ValidationCompiler/Params-ValidationCompiler-0.13.tar.gz
 # 2017-03-04
 Test-Needs-ver = Test-Needs/Test-Needs-0.002001.tar.gz
-# 2017-03-04
-Devel-StackTrace-ver = Devel-StackTrace/Devel-StackTrace-2.02.tar.gz
 # 2017-03-04
 MRO-Compat-ver = MRO-Compat/MRO-Compat-0.12.tar.gz
 # 2017-03-04
 Eval-Closure-ver = Eval-Closure/Eval-Closure-0.14.tar.gz
 # 2017-03-04
-Specio-ver = Specio/Specio-0.31.tar.gz
-# 2017-03-04
 Sub-Identify-ver   = Sub-Identify/Sub-Identify-0.12.tar.gz
 # 2017-03-04
 namespace-autoclean-ver = namespace-autoclean/namespace-autoclean-0.28.tar.gz
 # 2017-03-04
-DateTime-ver       = DateTime/DateTime-1.42.tar.gz
-# 2017-03-04
-DateTime-TimeZone-ver = DateTime-TimeZone/DateTime-TimeZone-2.10.tar.gz
-# 2017-03-04
 Test-Inter-ver     = Test-Inter/Test-Inter-1.06.tar.gz
-# 2017-03-04
-Date-Manip-ver     = Date-Manip/Date-Manip-6.58.tar.gz
 # 2016-06-05
 # Capture-Tiny-ver = Capture-Tiny/Capture-Tiny-0.42.tar.gz
 # 2017-03-04
@@ -3202,9 +3348,6 @@ password-store-ver = password-store/password-store-1.6.5.tar.xz
 # vala-ver           = vala/vala-0.28.1.tar.xz
 vala-ver           = vala/vala-0.34.0.tar.xz
 # 2016-09-23
-# URI-ver            = URI/URI-1.69.tar.gz
-URI-ver            = URI/URI-1.71.tar.gz
-# 2016-09-23
 # wget-ver           = wget/wget-1.16.3.tar.xz
 wget-ver           = wget/wget-1.18.tar.xz
 # 2016-09-23
@@ -3254,16 +3397,11 @@ Test-NoWarnings-ver   = Test-NoWarnings/Test-NoWarnings-1.04.tar.gz
 # 2016-06-05
 Math-Random-ISAAC-ver = Math-Random-ISAAC/Math-Random-ISAAC-1.004.tar.gz
 # 2016-06-05
-# List-MoreUtils-ver = List-MoreUtils/List-MoreUtils-0.413.tar.gz
-List-MoreUtils-ver = List-MoreUtils/List-MoreUtils-0.415.tar.gz
-# 2016-06-05
 Dist-CheckConflicts-ver = Dist-CheckConflicts/Dist-CheckConflicts-0.11.tar.gz
 # 2016-06-05
 Package-Stash-XS-ver = Package-Stash-XS/Package-Stash-XS-0.28.tar.gz
 # 2016-06-05
 Package-Stash-ver  = Package-Stash/Package-Stash-0.37.tar.gz
-# 2016-06-05
-Variable-Magic-ver = Variable-Magic/Variable-Magic-0.59.tar.gz
 # 2016-06-05
 Module-Implementation-ver = Module-Implementation/Module-Implementation-0.09.tar.gz
 # 2016-06-05
@@ -3293,13 +3431,9 @@ Class-Method-Modifiers-ver = Class-Method-Modifiers/Class-Method-Modifiers-2.12.
 # 2016-06-05
 Moo-ver          = Moo/Moo-2.001001.tar.gz
 # 2016-06-05
-Module-Runtime-ver = Module-Runtime/Module-Runtime-0.014.tar.gz
-# 2016-06-05
 Module-Find-ver  = Module-Find/Module-Find-0.13.tar.gz
 # 2016-06-05
 Crypt-Random-Source-ver = Crypt-Random-Source/Crypt-Random-Source-0.12.tar.gz
-# 2016-06-04
-pari-ver         = pari/pari-2.3.5.tar.gz
 # 2016-06-04
 Math-Pari-ver    = Math-Pari/Math-Pari-2.01080900.zip
 # 2016-06-04
@@ -3311,8 +3445,6 @@ Test-LeakTrace-ver = Test-LeakTrace/Test-LeakTrace-0.15.tar.gz
 # 2016-06-04
 Test-Requires-ver = Test-Requires/Test-Requires-0.10.tar.gz
 # 2016-06-04
-Try-Tiny-ver      = Try-Tiny/Try-Tiny-0.24.tar.gz
-# 2016-06-04
 Test-Fatal-ver    = Test-Fatal/Test-Fatal-0.014.tar.gz
 # 2016-06-04
 Sub-Uplevel-ver   = Sub-Uplevel/Sub-Uplevel-0.25.tar.gz
@@ -3321,17 +3453,9 @@ Test-Exception-ver = Test-Exception/Test-Exception-0.43.tar.gz
 # 2016-06-04
 Module-Build-XSUtil-ver = Module-Build-XSUtil/Module-Build-XSUtil-0.16.tar.gz
 # 2016-06-04
-PAR-Dist-ver      = PAR-Dist/PAR-Dist-0.11.tar.gz
-# 2016-06-04
 inc-latest-ver    = inc-latest/inc-latest-0.500.tar.gz
 # 2016-06-04
-Module-Build-ver  = Module-Build/Module-Build-0.4218.tar.gz
-# 2016-06-04
-Mouse-ver         = Mouse/Mouse-v2.4.5.tar.gz
-# 2016-06-04
 Any-Moose-ver     = Any-Moose/Any-Moose-0.26.tar.gz
-# 2016-06-04
-Math-Random-Secure-ver = Math-Random-Secure/Math-Random-Secure-0.06.tar.gz
 # 2016-05-18
 gnuplot-ver       = gnuplot/gnuplot-5.0.3.tar.gz
 # 2016-05-17
@@ -3427,7 +3551,6 @@ clisp-ver          = clisp/clisp-2.49.tar.gz
 compiler-rt-ver    = compiler-rt/compiler-rt-3.4.src.tar.gz
 coreutils-ver      = coreutils/coreutils-8.22.tar.xz
 dejagnu-ver        = dejagnu/dejagnu-1.5.3.tar.gz
-Devel-Symdump-ver  = Devel-Symdump/Devel-Symdump-2.15.tar.gz
 Digest-SHA1-ver    = Digest-SHA1/Digest-SHA1-2.13.tar.gz
 e2fsprogs-ver      = e2fsprogs/master.zip
 ecj-ver            = ecj/ecj-latest.jar
@@ -3453,7 +3576,6 @@ htop-ver           = htop/htop-1.0.1.tar.gz
 HTTP-Cookies-ver   = HTTP-Cookies/HTTP-Cookies-6.01.tar.gz
 HTTP-Daemon-ver    = HTTP-Daemon/HTTP-Daemon-6.01.tar.gz
 HTTP-Date-ver      = HTTP-Date/HTTP-Date-6.02.tar.gz
-HTTP-Message-ver   = HTTP-Message/HTTP-Message-6.11.tar.gz
 HTTP-Negotiate-ver = HTTP-Negotiate/HTTP-Negotiate-6.01.tar.gz
 hwloc-ver          = hwloc/hwloc-1.11.0.tar.gz
 inetutils-ver      = inetutils/inetutils-1.9.tar.gz
@@ -3561,7 +3683,7 @@ foo:
 	echo -- $(GCC_LANGS)
 	echo -- $(shell perl -e '$$b = "$(grep-ver)"; $$b =~ s/-\d+\.\d.*//; print $$b')
 	echo -- $(shell perl -e 'print map{s/-\d+\.\d.*//;$$_}($$a="$(grep-ver)")')
-	echo -- $(word 2,$(subst -, ,$(basename $(basename $(notdir $(Python-ver))))))
+	echo -- $(word 2,$(subst -, ,$(basename $(basename $(notdir $(perl-ver))))))
 	true
 
 .PHONY: bundle-scripts
@@ -3990,7 +4112,6 @@ bcrypt libcap multitail symlinks unrar lxsplit password-store: $(bcrypt-ver) $(m
 .PHONY: Crypt-Random-Source
 .PHONY: Data-OptList
 .PHONY: DataTime-Locale
-.PHONY: Date-Manip
 .PHONY: DateTime
 .PHONY: DateTime-Locale
 .PHONY: DateTime-TimeZone
@@ -4005,9 +4126,14 @@ bcrypt libcap multitail symlinks unrar lxsplit password-store: $(bcrypt-ver) $(m
 .PHONY: Eval-Closure
 .PHONY: Exception-Class
 .PHONY: Exporter-Tiny
+.PHONY: ExtUtils-Config
+.PHONY: ExtUtils-Helpers
+.PHONY: ExtUtils-InstallPaths
 .PHONY: File-pushd
 .PHONY: File-Copy-Recursive
 .PHONY: File-Listing
+.PHONY: File-Path
+.PHONY: File-Remove
 .PHONY: File-ShareDir
 .PHONY: File-ShareDir-Install
 .PHONY: HTML-Parser
@@ -4023,7 +4149,6 @@ bcrypt libcap multitail symlinks unrar lxsplit password-store: $(bcrypt-ver) $(m
 .PHONY: JSON-MaybeXS
 .PHONY: LWP-MediaTypes
 .PHONY: LWP-Protocol-https
-.PHONY: List-MoreUtils
 .PHONY: Log-Log4perl
 .PHONY: MRO-Compat
 .PHONY: Math-Random-ISAAC
@@ -4032,8 +4157,10 @@ bcrypt libcap multitail symlinks unrar lxsplit password-store: $(bcrypt-ver) $(m
 .PHONY: Module-Build-XSUtil
 .PHONY: Module-Find
 .PHONY: Module-Implementation
+.PHONY: Module-Install
 .PHONY: Module-Runtime
 .PHONY: Module-Runtime-Conflicts
+.PHONY: Module-ScanDeps
 .PHONY: Mojolicious
 .PHONY: Moo
 .PHONY: Moose
@@ -4048,6 +4175,7 @@ bcrypt libcap multitail symlinks unrar lxsplit password-store: $(bcrypt-ver) $(m
 .PHONY: Params-Util
 .PHONY: Params-ValidationCompiler
 .PHONY: Path-Tiny
+.PHONY: PathTools
 .PHONY: Pod-Coverage
 .PHONY: Role-Tiny
 .PHONY: Scalar-List-Utils
@@ -4069,30 +4197,31 @@ bcrypt libcap multitail symlinks unrar lxsplit password-store: $(bcrypt-ver) $(m
 .PHONY: Test-File-ShareDir
 .PHONY: Test-Inter
 .PHONY: Test-LeakTrace
-.PHONY: Test-Needs
 .PHONY: Test-NoWarnings
 .PHONY: Test-Pod
 .PHONY: Test-Pod-Coverage
 .PHONY: Test-Requires
 .PHONY: Test-RequiresInternet
 .PHONY: Test-Simple
+.PHONY: Test-SharedFork
 .PHONY: Test-Warn
+.PHONY: Test-Warnings
 .PHONY: Tests-Warnings
 .PHONY: Test-Without-Module
 .PHONY: Test2-Plugin-NoWarnings
 .PHONY: Test2-Suite
 .PHONY: Text-Diff
 .PHONY: Try-Tiny
-.PHONY: Type-Tiny
 .PHONY: URI
 .PHONY: Variable-Magic
 .PHONY: WWW-RobotRules
 .PHONY: XML-Parser
+.PHONY: YAML-Tiny
 .PHONY: inc-latest
 .PHONY: libwww-perl
 .PHONY: namespace-autoclean
 .PHONY: namespace-clean
-Sub-Name Class-Load Class-Load-XS Test-Warnings Package-DeprecationManager Devel-OverloadInfo Test-Deep File-pushd Test-CleanNamespaces Module-Runtime-Conflicts Moose MouseX-Types Any-Moose Archive-Zip Capture-Tiny B-Hooks-EndOfScope Class-Loader Class-Method-Modifiers Crypt-Random Crypt-Random-Source Data-OptList Devel-GlobalDestruction Digest-SHA1 Dist-CheckConflicts Encode-Locale Exporter-Tiny File-Listing Scalar-MoreUtils URI HTML-Tagset HTML-Parser HTTP-Daemon HTTP-Cookies HTTP-Date WWW-RobotRules HTTP-Message HTTP-Negotiate inc-latest IO-HTML IO-Socket-SSL LWP-MediaTypes Module-Find Module-Implementation Module-Runtime Math-Random-ISAAC Math-Random-Secure Module-Build Moo Net-HTTP Devel-Symdump List-MoreUtils namespace-clean Package-Stash Package-Stash-XS PAR-Dist Params-Util Pod-Coverage Role-Tiny Sub-Exporter Sub-Exporter-Progressive Sub-Install Sub-Uplevel Test-Fatal Test-LeakTrace Test-NoWarnings Test-Pod Test-Pod-Coverage Test-Requires Test-Warn Type-Tiny Try-Tiny Variable-Magic libwww-perl XML-Parser Test-Inter Date-Manip Sub-Identify namespace-autoclean Eval-Closure MRO-Compat Devel-StackTrace Test-Needs Specio Test-Simple Importer Sub-Info Term-Table Test-Without-Module Test2-Plugin-NoWarnings Test2-Suite Exception-Class Class-Data-Inheritable Params-ValidationCompiler Class-Inspector Class-Tiny Scope-Guard Path-Tiny File-Copy-Recursive File-ShareDir-Install File-ShareDir Test-File-ShareDir DateTime-Locale Algorithm-Diff Text-Diff Test-Differences Scalar-List-Utils CPAN-Meta-Check Class-Singleton DateTime DateTime-TimeZone JSON-MaybeXS Test-RequiresInternet LWP-Protocol-https Log-Log4perl Mojolicious Digest-HMAC Net-DNS : \
+Sub-Name Class-Load Class-Load-XS Test-Warnings Package-DeprecationManager Devel-OverloadInfo Test-Deep File-pushd Test-CleanNamespaces Module-Runtime-Conflicts Moose MouseX-Types Any-Moose Archive-Zip Capture-Tiny B-Hooks-EndOfScope Class-Loader Class-Method-Modifiers Crypt-Random Crypt-Random-Source Data-OptList Devel-GlobalDestruction Digest-SHA1 Dist-CheckConflicts Encode-Locale Exporter-Tiny ExtUtils-Config ExtUtils-Helpers ExtUtils-InstallPaths File-Listing Scalar-MoreUtils URI HTML-Tagset HTML-Parser HTTP-Daemon HTTP-Cookies HTTP-Date WWW-RobotRules HTTP-Message HTTP-Negotiate inc-latest IO-HTML IO-Socket-SSL LWP-MediaTypes Module-Find Module-Implementation Module-Runtime Math-Random-ISAAC Math-Random-Secure File-Path PathTools File-Remove YAML-Tiny Module-ScanDeps Module-Build Module-Install Moo Net-HTTP Devel-Symdump namespace-clean Package-Stash Package-Stash-XS PAR-Dist Params-Util Pod-Coverage Role-Tiny Sub-Exporter Sub-Exporter-Progressive Sub-Install Sub-Uplevel Test-Fatal Test-LeakTrace Test-NoWarnings Test-Pod Test-Pod-Coverage Test-Requires Test-SharedFork Test-Warn Try-Tiny Variable-Magic libwww-perl XML-Parser Test-Inter Sub-Identify namespace-autoclean Eval-Closure MRO-Compat Devel-StackTrace Specio Test-Simple Importer Sub-Info Term-Table Test-Without-Module Test2-Plugin-NoWarnings Test2-Suite Exception-Class Class-Data-Inheritable Params-ValidationCompiler Class-Inspector Class-Tiny Scope-Guard Path-Tiny File-Copy-Recursive File-ShareDir-Install File-ShareDir Test-File-ShareDir DateTime-Locale Algorithm-Diff Text-Diff Test-Differences Scalar-List-Utils CPAN-Meta-Check Class-Singleton DateTime DateTime-TimeZone JSON-MaybeXS Test-RequiresInternet LWP-Protocol-https Log-Log4perl Mojolicious Digest-HMAC Net-DNS : \
     $(Algorithm-Diff-ver) \
     $(Any-Moose-ver) \
     $(Archive-Zip-ver) \
@@ -4110,7 +4239,6 @@ Sub-Name Class-Load Class-Load-XS Test-Warnings Package-DeprecationManager Devel
     $(Crypt-Random-ver) \
     $(Class-Singleton-ver) \
     $(Data-OptList-ver) \
-    $(Date-Manip-ver) \
     $(DateTime-Locale-ver) \
     $(DateTime-TimeZone-ver) \
     $(DateTime-ver) \
@@ -4125,9 +4253,14 @@ Sub-Name Class-Load Class-Load-XS Test-Warnings Package-DeprecationManager Devel
     $(Eval-Closure-ver) \
     $(Exception-Class-ver) \
     $(Exporter-Tiny-ver) \
+    $(ExtUtils-Config-ver) \
+    $(ExtUtils-Helpers-ver) \
+    $(ExtUtils-InstallPaths-ver) \
     $(File-pushd-ver) \
     $(File-Copy-Recursive-ver) \
     $(File-Listing-ver) \
+    $(File-Path-ver) \
+    $(File-Remove-ver) \
     $(File-ShareDir-ver) \
     $(File-ShareDir-Install-ver) \
     $(HTML-Parser-ver) \
@@ -4142,7 +4275,6 @@ Sub-Name Class-Load Class-Load-XS Test-Warnings Package-DeprecationManager Devel
     $(JSON-MaybeXS-ver) \
     $(LWP-MediaTypes-ver) \
     $(LWP-Protocol-https-ver) \
-    $(List-MoreUtils-ver) \
     $(Log-Log4perl-ver) \
     $(MRO-Compat-ver) \
     $(Math-Random-ISAAC-ver) \
@@ -4150,8 +4282,10 @@ Sub-Name Class-Load Class-Load-XS Test-Warnings Package-DeprecationManager Devel
     $(Module-Build-ver) \
     $(Module-Find-ver) \
     $(Module-Implementation-ver) \
+    $(Module-Install-ver) \
     $(Module-Runtime-ver) \
     $(Module-Runtime-Conflicts-ver) \
+    $(Module-ScanDeps-ver) \
     $(Mojolicious-ver) \
     $(Moo-ver) \
     $(Moose-ver) \
@@ -4165,6 +4299,7 @@ Sub-Name Class-Load Class-Load-XS Test-Warnings Package-DeprecationManager Devel
     $(Params-Util-ver) \
     $(Params-ValidationCompiler-ver) \
     $(Path-Tiny-ver) \
+    $(PathTools-ver) \
     $(Pod-Coverage-ver) \
     $(Role-Tiny-ver) \
     $(Scalar-List-Utils-ver) \
@@ -4186,12 +4321,12 @@ Sub-Name Class-Load Class-Load-XS Test-Warnings Package-DeprecationManager Devel
     $(Test-File-ShareDir-ver) \
     $(Test-Inter-ver) \
     $(Test-LeakTrace-ver) \
-    $(Test-Needs-ver) \
     $(Test-NoWarnings-ver) \
     $(Test-Pod-Coverage-ver) \
     $(Test-Pod-ver) \
     $(Test-Requires-ver) \
     $(Test-RequiresInternet-ver) \
+    $(Test-SharedFork-ver) \
     $(Test-Simple-ver) \
     $(Test-Warn-ver) \
     $(Test-Warnings-ver) \
@@ -4200,11 +4335,11 @@ Sub-Name Class-Load Class-Load-XS Test-Warnings Package-DeprecationManager Devel
     $(Test2-Suite-ver) \
     $(Text-Diff-ver) \
     $(Try-Tiny-ver) \
-    $(Type-Tiny-ver) \
     $(URI-ver) \
     $(Variable-Magic-ver) \
     $(WWW-RobotRules-ver) \
     $(XML-Parser-ver) \
+    $(YAML-Tiny-ver) \
     $(inc-latest-ver) \
     $(namespace-autoclean-ver) \
     $(namespace-clean-ver) \
@@ -4215,8 +4350,19 @@ Sub-Name Class-Load Class-Load-XS Test-Warnings Package-DeprecationManager Devel
 	cd $@/`cat $@/untar.dir`/; OPENSSL_DIR=/usr/local OPENSSL_PREFIX=/usr/local LD_LIBRARY_PATH=:/usr/local/lib:/usr/lib make test || make check
 	$(call PKGINSTALL,$@)
 
+# Perl has taken out the ability to automatically include . in the INC, include, path. This makes
+# a lot of sense from a security perspective, but breaks packages that have not been updated.
+.PHONY: XDate-Manip
+XDate-Manip: $(XDate-Manip-ver)
+	$(call SOURCEDIR,$@,xfz)
+	echo "Adding PERLUSE_UNSAFE_INC=1 for now, too many packages have problems, especially in tests"
+	cd $@/`cat $@/untar.dir`/; PERL_USE_UNSAFE_INC=1 perl Makefile.PL LIBS='-L/usr/local/lib -L/usr/lib -L/lib' INC='-I/usr/local/include -I/usr/include'
+	cd $@/`cat $@/untar.dir`/; PERL_USE_UNSAFE_INC=1 make
+	cd $@/`cat $@/untar.dir`/; PERL_USE_UNSAFE_INC=1 OPENSSL_DIR=/usr/local OPENSSL_PREFIX=/usr/local LD_LIBRARY_PATH=:/usr/local/lib:/usr/lib make test || make check
+	$(call PKGINSTALL,$@)
 
-# Standard build, post tar rule, no separate build directory, Perl Configure.pl
+
+# Standard build, post tar rule, no separate build directory, Perl Configure.pl rather than Makefile.PL
 .PHONY: MoarVM
 MoarVM: $(MoarVM-ver)
 	$(call SOURCEDIR,$@,xf)
@@ -4227,10 +4373,12 @@ MoarVM: $(MoarVM-ver)
 	$(call CPLIB,$@*)
 
 
-# Perl Rule using Build
+# Perl Rule using Build, Build.PL rather than Makefile.PL
+.PHONY: Module-Build-Tiny
 .PHONY: Module-Build-XSUtil
 .PHONY: Mouse
-Module-Build-XSUtil Mouse :\
+Module-Build-Tiny Module-Build-XSUtil Mouse :\
+    $(Module-Build-Tiny-ver) \
     $(Module-Build-XSUtil-ver) \
     $(Mouse-ver)
 	$(call SOURCEDIR,$@,xfz)
@@ -4244,11 +4392,23 @@ Module-Build-XSUtil Mouse :\
 # PERL_MM_USE_DEFAULT=1 is the way to answer 'no' to 
 # Makefile.PL for external tests question.
 # Test-Exception needs Test-Exception installed to run its tests
+# Type-Tiny tests need upgraded regular expression to avoid unescaped braces
+# List-MoreUtils misunderstands the perl version of newer versions of perl
+# Test-Needs misunderstands the perl version of newer versions of perl
+# Date-Manip looks like it needs its tests to be upgraded
+.PHONY: Date-Manip
+.PHONY: List-MoreUtils
 .PHONY: Net-SSLeay
 .PHONY: Test-Exception
-Net-SSLeay Test-Exception : \
+.PHONY: Test-Needs
+.PHONY: Type-Tiny
+Date-Manip List-MoreUtils Net-SSLeay Test-Exception Test-Needs Type-Tiny : \
+    $(Date-Manip-ver) \
+    $(List-MoreUtils-ver) \
     $(Net-SSLeay-ver) \
-    $(Test-Exception-ver)
+    $(Test-Exception-ver) \
+    $(Test-Needs) \
+    $(Type-Tiny-ver)
 	$(call SOURCEDIR,$@,xfz)
 	cd $@/`cat $@/untar.dir`/; PERL_MM_USE_DEFAULT=1 perl Makefile.PL
 	cd $@/`cat $@/untar.dir`/; make
@@ -5255,6 +5415,9 @@ gdb: $(gdb-ver)
 #
 # Define SANE_TOOL_PATH to a colon-separated list of paths to prepend
 # to PATH if your tools in /usr/bin are broken.
+#
+# git needs to come after bash, so we have a good, required, version of
+# bash to build against.
 # 
 export GITCONFIG
 .PHONY: git
@@ -5335,17 +5498,6 @@ libelf: $(libelf-ver)
 	cd $@/`cat $@/untar.dir`/; make
 	cd $@/`cat $@/untar.dir`/; make check || make test
 	$(call PKGINSTALL,$@)
-
-.PHONY: libuv
-libuv: $(libuv-ver)
-	$(call SOURCEDIR,$@,xf)
-	cd $@/`cat $@/untar.dir`/; ./autogen.sh
-	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
-	cd $@/`cat $@/untar.dir`/; make
-	cd $@/`cat $@/untar.dir`/; make check || make test
-	$(call PKGINSTALL,$@)
-	$(call CPLIB,lib$@*)
-	$(call CPLIB,$@*)
 
 # Tests aparently write to /etc/pam.d, which we are using
 # Be carefull, installing this may create a system that
@@ -5450,9 +5602,9 @@ LMDB: $(LMDB-ver)
 Math-Pari : \
     $(Math-Pari-ver)
 	$(call SOURCEDIR,$@,xfz)
-	cd $@/`cat $@/untar.dir`/; perl Makefile.PL LIBS='-L/usr/local/lib -L/usr/lib -L/lib' INC='-I/usr/local/include -I/usr/include -I../../pari/pari-2.3.5/src' pari_tgz=../../pari/pari-2.3.5.tar.gz version23_ok=1
-	cd $@/`cat $@/untar.dir`/; make
-	cd $@/`cat $@/untar.dir`/; OPENSSL_DIR=/usr/local OPENSSL_PREFIX=/usr/local LD_LIBRARY_PATH=:/usr/local/lib:/usr/lib make test || make check
+	cd $@/`cat $@/untar.dir`/; PERL_USE_UNSAFE_INC=1 perl Makefile.PL LIBS='-L/usr/local/lib -L/usr/lib -L/lib' INC='-I/usr/local/include -I/usr/include -I../../pari/pari-2.3.5/src' pari_tgz=../../pari/pari-2.3.5.tar.gz version23_ok=1
+	cd $@/`cat $@/untar.dir`/; PERL_USE_UNSAFE_INC=1 make
+	cd $@/`cat $@/untar.dir`/; PERL_USE_UNSAFE_INC=1 OPENSSL_DIR=/usr/local OPENSSL_PREFIX=/usr/local LD_LIBRARY_PATH=:/usr/local/lib:/usr/lib make test || make check
 	$(call PKGINSTALL,$@)
 
 .PHONY: maldetect
@@ -5607,10 +5759,10 @@ p11-kit : \
 pari : \
     $(pari-ver)
 	$(call SOURCEDIR,$@,xf)
-	cd $@/`cat $@/untar.dir`/; ./Configure --prefix=/usr/local
-	cd $@/`cat $@/untar.dir`/; make all
-	cd $@/`cat $@/untar.dir`/; make gp
-	cd $@/`cat $@/untar.dir`/; make bench
+	cd $@/`cat $@/untar.dir`/; PERL_USE_UNSAFE_INC=1 ./Configure --prefix=/usr/local
+	cd $@/`cat $@/untar.dir`/; PERL_USE_UNSAFE_INC=1 make all
+	cd $@/`cat $@/untar.dir`/; PERL_USE_UNSAFE_INC=1 make gp
+	cd $@/`cat $@/untar.dir`/; PERL_USE_UNSAFE_INC=1 make bench
 	cd $@/`cat $@/untar.dir`/; sudo cp misc/gprc.dft /etc/gprc
 	cd $@/`cat $@/untar.dir`/; sudo ln -sf /usr/local/include/pari/* /usr/local/include/
 	cd $@/`cat $@/untar.dir`/; sudo mkdir -p /usr/local/include/gp
@@ -5736,8 +5888,13 @@ py2cairo : \
 	cd $@/`cat $@/untar.dir`/; ./waf build
 	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo ./waf install
 
+export PERL5_PATCH
+patches/perl5.patch:
+	-mkdir -p patches
+	echo "$$PERL5_PATCH" >> $@
+
 .PHONY: perl
-perl: $(perl-ver)
+perl: $(perl-ver) patches/perl5.patch
 	$(call SOURCEDIR,$@,xzf)
 	# srand is not being called automatically, probably because of old glibc
 	# cd $@/`cat $@/untar.dir`/; /bin/sed -i -e 's/^\(.*srand.*called.*automatically.*\)/@first_run  = mk_rand; \1/' t/op/srand.t
@@ -5748,11 +5905,16 @@ perl: $(perl-ver)
 	    -Dman3dir=/usr/local/share/man/man3 \
 	    -Duseshrplib \
 	    -Dusedevel
+	cd $@/`cat $@/untar.dir`/; patch perl.h < ../../patches/perl5.patch
 	cd $@/`cat $@/untar.dir`/; make
 	-cd $@/`cat $@/untar.dir`/; $(PHASE1_NOCHECK) make test
 	/usr/bin/sudo /bin/rm -f /usr/local/lib/libperl.so
 	cd $@/`cat $@/untar.dir`/; sudo cp libperl.so /usr/local/lib/.
+	/usr/bin/sudo /bin/rm -f /usr/local/bin/perl
+	cd $@/`cat $@/untar.dir`/; sudo make install PERLNAME=perl
 	$(call PKGINSTALL,$@)
+	/usr/bin/sudo /bin/rm -f /usr/local/perl
+	cd /usr/local/bin; /usr/sbin/sudo ln -s "perl"$(word 2,$(subst -, ,$(basename $(basename $(notdir $(perl-ver))))))
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
 
@@ -6163,9 +6325,14 @@ wget-all: \
     $(Eval-Closure-ver) \
     $(Exception-Class-ver) \
     $(Exporter-Tiny-ver) \
+    $(ExtUtils-Config-ver) \
+    $(ExtUtils-Helpers-ver) \
+    $(ExtUtils-InstallPaths-ver) \
     $(File-pushd-ver) \
     $(File-Copy-Recursive-ver) \
     $(File-Listing-ver) \
+    $(File-Path-ver) \
+    $(File-Remove-ver) \
     $(File-ShareDir-ver) \
     $(File-ShareDir-Install-ver) \
     $(HTML-Parser-ver) \
@@ -6193,10 +6360,13 @@ wget-all: \
     $(MoarVM-ver) \
     $(Module-Build-XSUtil-ver) \
     $(Module-Build-ver) \
+    $(Module-Build-Tiny-ver) \
     $(Module-Find-ver) \
     $(Module-Implementation-ver) \
+    $(Module-Install-ver) \
     $(Module-Runtime-ver) \
     $(Module-Runtime-Conflicts-ver) \
+    $(Module-ScanDeps-ver) \
     $(Mojolicious-ver) \
     $(Moo-ver) \
     $(Moose-ver) \
@@ -6212,6 +6382,7 @@ wget-all: \
     $(Params-Util-ver) \
     $(Params-ValidationCompiler-ver) \
     $(Path-Tiny-ver) \
+    $(PathTools-ver) \
     $(Pod-Coverage-ver) \
     $(Python-ver) \
     $(Role-Tiny-ver) \
@@ -6240,6 +6411,7 @@ wget-all: \
     $(Test-Pod-ver) \
     $(Test-Requires-ver) \
     $(Test-RequiresInternet-ver) \
+    $(Test-SharedFork-ver) \
     $(Test-Simple-ver) \
     $(Test-Warn-ver) \
     $(Test-Warnings-ver) \
@@ -6253,6 +6425,7 @@ wget-all: \
     $(Variable-Magic-ver) \
     $(WWW-RobotRules-ver) \
     $(XML-Parser-ver) \
+    $(YAML-Tiny-ver) \
     $(ack-ver) \
     $(acl-ver) \
     $(alsa-lib-ver) \
@@ -6636,7 +6809,7 @@ $(DateTime-TimeZone-ver):
 	$(call SOURCEWGET,"DateTime-TimeZone","http://search.cpan.org/CPAN/authors/id/D/DR/DROLSKY/"$(notdir $(DateTime-TimeZone-ver)))
 
 $(db-ver):
-	# $(call SOURCEWGET,"db","http://download.oracle.com/otn/berkeley-"$(db-ver))
+	# (call SOURCEWGET,"db","http://download.oracle.com/otn/berkeley-"$(db-ver))
 	$(call SOURCEWGET,"db","http://download.oracle.com/berkeley-"$(db-ver))
 
 $(Devel-GlobalDestruction-ver):
@@ -6699,6 +6872,15 @@ $(expect-ver):
 $(Exporter-Tiny-ver):
 	$(call SOURCEWGET,"Exporter-Tiny","http://search.cpan.org/CPAN/authors/id/T/TO/TOBYINK/"$(notdir $(Exporter-Tiny-ver)))
 
+$(ExtUtils-Config-ver):
+	$(call SOURCEWGET,"ExtUtils-Config","http://search.cpan.org/CPAN/authors/id/L/LE/LEONT/"$(notdir $(ExtUtils-Config-ver)))
+
+$(ExtUtils-Helpers-ver):
+	$(call SOURCEWGET,"ExtUtils-Helpers","http://search.cpan.org/CPAN/authors/id/L/LE/LEONT/"$(notdir $(ExtUtils-Helpers-ver)))
+
+$(ExtUtils-InstallPaths-ver):
+	$(call SOURCEWGET,"ExtUtils-InstallPaths","http://search.cpan.org/CPAN/authors/id/L/LE/LEONT/"$(notdir $(ExtUtils-InstallPaths-ver)))
+
 $(fdk-aac-ver):
 	$(call SOURCEWGET,"fdk-aac","http://downloads.sourceforge.net/opencore-amr/"$(notdir $(fdk-aac-ver)))
 
@@ -6710,6 +6892,12 @@ $(File-pushd-ver):
 
 $(File-Copy-Recursive-ver):
 	$(call SOURCEWGET,"File-Copy-Recursive","http://search.cpan.org/CPAN/authors/id/D/DM/DMUEY/"$(notdir $(File-Copy-Recursive-ver)))
+
+$(File-Path-ver):
+	$(call SOURCEWGET,"File-Path","http://search.cpan.org/CPAN/authors/id/J/JK/JKEENAN/"$(notdir $(File-Path-ver)))
+
+$(File-Remove-ver):
+	$(call SOURCEWGET,"File-Remove","http://search.cpan.org/CPAN/authors/id/S/SH/SHLOMIF/"$(notdir $(File-Remove-ver)))
 
 $(File-ShareDir-ver):
 	$(call SOURCEWGET,"File-ShareDir","http://search.cpan.org/CPAN/authors/id/R/RE/REHSACK/"$(notdir $(File-ShareDir-ver)))
@@ -6821,7 +7009,7 @@ $(HTTP-Date-ver):
 	$(call SOURCEWGET,"HTTP-Date","http://search.cpan.org/CPAN/authors/id/G/GA/GAAS/"$(notdir $(HTTP-Date-ver)))
 
 $(HTTP-Message-ver):
-	$(call SOURCEWGET,"HTTP-Message","http://search.cpan.org/CPAN/authors/id/E/ET/ETHER/"$(notdir $(HTTP-Message-ver)))
+	$(call SOURCEWGET,"HTTP-Message","http://search.cpan.org/CPAN/authors/id/O/OA/OALDERS/"$(notdir $(HTTP-Message-ver)))
 
 $(HTTP-Negotiate-ver):
 	$(call SOURCEWGET,"HTTP-Negotiate","http://search.cpan.org/CPAN/authors/id/G/GA/GAAS/"$(notdir $(HTTP-Negotiate-ver)))
@@ -7022,7 +7210,7 @@ $(Math-Random-ISAAC-ver):
 	$(call SOURCEWGET,"Math-Random-ISAAC","http://search.cpan.org/CPAN/authors/id/J/JA/JAWNSY/"$(notdir $(Math-Random-ISAAC-ver)))
 
 $(Math-Random-Secure-ver):
-	$(call SOURCEWGET,"Math-Random-Secure","http://search.cpan.org/CPAN/authors/id/M/MK/MKANAT/"$(notdir $(Math-Random-Secure-ver)))
+	$(call SOURCEWGET,"Math-Random-Secure","http://search.cpan.org/CPAN/authors/id/F/FR/FREW/"$(notdir $(Math-Random-Secure-ver)))
 
 # http://jnettop.kubs.info/dist/jnettop-0.13.0.tar.gz
 $(jnettop-ver):
@@ -7046,6 +7234,9 @@ $(mercurial-ver):
 $(Module-Build-ver):
 	$(call SOURCEWGET,"Module-Build","http://search.cpan.org/CPAN/authors/id/L/LE/LEONT/"$(notdir $(Module-Build-ver)))
 
+$(Module-Build-Tiny-ver):
+	$(call SOURCEWGET,"Module-Build-Tiny","http://search.cpan.org/CPAN/authors/id/L/LE/LEONT/"$(notdir $(Module-Build-Tiny-ver)))
+
 $(MoarVM-ver):
 	$(call SOURCEWGET,"MoarVM","https://www.moarvm.org/releases/"$(notdir $(MoarVM-ver)))
 
@@ -7058,11 +7249,17 @@ $(Module-Find-ver):
 $(Module-Implementation-ver):
 	$(call SOURCEWGET,"Module-Implementation","http://search.cpan.org/CPAN/authors/id/D/DR/DROLSKY/"$(notdir $(Module-Implementation-ver)))
 
+$(Module-Install-ver):
+	$(call SOURCEWGET,"Module-Install","http://search.cpan.org/CPAN/authors/id/E/ET/ETHER/"$(notdir $(Module-Install-ver)))
+
 $(Module-Runtime-ver):
 	$(call SOURCEWGET,"Module-Runtime","http://search.cpan.org/CPAN/authors/id/Z/ZE/ZEFRAM/"$(notdir $(Module-Runtime-ver)))
 
 $(Module-Runtime-Conflicts-ver):
 	$(call SOURCEWGET,"Module-Runtime-Conflicts","http://search.cpan.org/CPAN/authors/id/E/ET/ETHER/"$(notdir $(Module-Runtime-Conflicts-ver)))
+
+$(Module-ScanDeps-ver):
+	$(call SOURCEWGET,"Module-ScanDeps","http://search.cpan.org/CPAN/authors/id/R/RS/RSCHUPP/"$(notdir $(Module-ScanDeps-ver)))
 
 $(Moo-ver):
 	$(call SOURCEWGET,"Moo","http://search.cpan.org/CPAN/authors/id/H/HA/HAARG/"$(notdir $(Moo-ver)))
@@ -7074,7 +7271,7 @@ $(Moose-ver):
 	$(call SOURCEWGET,"Moose","http://search.cpan.org/CPAN/authors/id/E/ET/ETHER/"$(notdir $(Moose-ver)))
 
 $(Mouse-ver):
-	$(call SOURCEWGET,"Mouse","http://search.cpan.org/CPAN/authors/id/S/SY/SYOHEX/"$(notdir $(Mouse-ver)))
+	$(call SOURCEWGET,"Mouse","http://search.cpan.org/CPAN/authors/id/S/SK/SKAJI/"$(notdir $(Mouse-ver)))
 
 $(MouseX-Types-ver):
 	$(call SOURCEWGET,"MouseX-Types","http://search.cpan.org/CPAN/authors/id/G/GF/GFUJI/"$(notdir $(MouseX-Types-ver)))
@@ -7179,7 +7376,7 @@ $(pari-ver):
 	$(call SOURCEWGET,"pari","http://pari.math.u-bordeaux.fr/pub/pari/unix/OLD/2.3/"$(notdir $(pari-ver)))
 
 $(PAR-Dist-ver):
-	$(call SOURCEWGET,"PAR-Dist","http://search.cpan.org/CPAN/authors/id/A/AU/AUDREYT/"$(notdir $(PAR-Dist-ver)))
+	$(call SOURCEWGET,"PAR-Dist","http://search.cpan.org/CPAN/authors/id/R/RS/RSCHUPP/"$(notdir $(PAR-Dist-ver)))
 
 $(Params-ValidationCompiler-ver):
 	$(call SOURCEWGET,"Params-ValidationCompiler","http://search.cpan.org/CPAN/authors/id/D/DR/DROLSKY/"$(notdir $(Params-ValidationCompiler-ver)))
@@ -7198,6 +7395,9 @@ $(patch-ver):
 
 $(Path-Tiny-ver):
 	$(call SOURCEWGET,"Path-Tiny","http://search.cpan.org/CPAN/authors/id/D/DA/DAGOLDEN/"$(notdir $(Path-Tiny-ver)))
+
+$(PathTools-ver):
+	$(call SOURCEWGET,"PathTools","http://search.cpan.org/CPAN/authors/id/X/XS/XSAWYERX/"$(notdir $(PathTools-ver)))
 
 $(pcre-ver):
 	$(call SOURCEWGET,"pcre","ftp://ftp.csx.cam.ac.uk/pub/software/programming/"$(pcre-ver))
@@ -7422,6 +7622,9 @@ $(Test-RequiresInternet-ver):
 $(Test-Simple-ver):
 	$(call SOURCEWGET,"Test-Simple","http://search.cpan.org/CPAN/authors/id/E/EX/EXODIST/"$(notdir $(Test-Simple-ver)))
 
+$(Test-SharedFork-ver):
+	$(call SOURCEWGET,"Test-SharedFork","http://search.cpan.org/CPAN/authors/id/E/EX/EXODIST/"$(notdir $(Test-SharedFork-ver)))
+
 $(Test-Warnings-ver):
 	$(call SOURCEWGET,"Test-Warnings","http://search.cpan.org/CPAN/authors/id/E/ET/ETHER/"$(notdir $(Test-Warnings-ver)))
 
@@ -7510,6 +7713,9 @@ $(x265-ver):
 $(XML-Parser-ver):
 	# (call SOURCEWGET,"XML-Parser","http://search.cpan.org/CPAN/authors/id/M/MS/MSERGEANT/"$(notdir $(XML-Parser-ver)))
 	$(call SOURCEWGET,"XML-Parser","http://search.cpan.org/CPAN/authors/id/T/TO/TODDR/"$(notdir $(XML-Parser-ver)))
+
+$(YAML-Tiny-ver):
+	$(call SOURCEWGET,"YAML-Tiny","http://search.cpan.org/CPAN/authors/id/E/ET/ETHER/"$(notdir $(YAML-Tiny-ver)))
 
 $(yasm-ver):
 	$(call SOURCEWGET,"yasm","http://www.tortall.net/projects/yasm/releases/"$(notdir $(yasm-ver)))
