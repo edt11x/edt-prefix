@@ -2514,11 +2514,17 @@ afternethttp: \
     Importer \
     Sub-Info \
     Term-Table \
-    Test2-Plugin-NoWarnings \
+    IPC-Run3 \
+    Scope-Guard \
+    Module-Pluggable \
+    aftermodulepluggable
+
+aftermodulepluggable: \
     Test2-Suite \
+    Test2-Plugin-NoWarnings \
     Test-Without-Module \
-    Exception-Class \
     Class-Data-Inheritable \
+    Exception-Class \
     Params-ValidationCompiler \
     Algorithm-Diff \
     Text-Diff \
@@ -2527,8 +2533,9 @@ afternethttp: \
     Class-Singleton \
     Class-Inspector \
     Class-Tiny \
-    Scope-Guard \
     Path-Tiny \
+    Test-utf8 \
+    Test-File \
     File-Copy-Recursive \
     File-ShareDir-Install \
     File-ShareDir \
@@ -2538,11 +2545,12 @@ afternethttp: \
     DateTime \
     JSON-MaybeXS \
     Test-RequiresInternet \
+    libwww-perl \
+    IO-Socket-SSL \
     LWP-Protocol-https \
     Log-Log4perl \
     Mojolicious \
     Digest-HMAC \
-    libwww-perl \
     bison \
     afterbison
 
@@ -2792,6 +2800,33 @@ afterlibsecret: \
 # Libgcrypt - https://www.gnupg.org/download/index.html#libgcrypt
 # ==============================================================
 #
+# IO-Socket-SSL-ver  = IO-Socket-SSL/IO-Socket-SSL-2.012.tar.gz
+# 2018-03-18
+IO-Socket-SSL-ver  = IO-Socket-SSL/IO-Socket-SSL-2.056.tar.gz
+# libwww-perl-ver    = libwww-perl/libwww-perl-6.15.tar.gz
+# 2018-03-18
+libwww-perl-ver    = libwww-perl/libwww-perl-6.33.tar.gz
+# 2018-03-18
+Test-utf8-ver = Test-utf8/Test-utf8-1.01.tar.gz
+# 2018-03-18
+Test-File-ver = Test-File/Test-File-1.443.tar.gz
+# 2017-03-05
+# 2018-03-18
+Exception-Class-ver = Exception-Class/Exception-Class-1.44.tar.gz
+# 2018-03-18
+Module-Pluggable-ver = Module-Pluggable/Module-Pluggable-5.2.tar.gz
+# 2017-03-04
+# Test2-Suite-ver = Test2-Suite/Test2-Suite-0.000067.tar.gz
+# 2018-03-11
+# Test2-Suite-ver = Test2-Suite/Test2-Suite-0.000108.tar.gz
+# 2018-03-18
+Test2-Suite-ver = Test2-Suite/Test2-Suite-0.000111.tar.gz
+# 2018-03-18
+IPC-Run3-ver = IPC-Run3/IPC-Run3-0.048.tar.gz
+# 2017-03-05
+# Test2-Plugin-NoWarnings-ver = Test2-Plugin-NoWarnings/Test2-Plugin-NoWarnings-0.05.tar.gz
+# 2018-03-18
+Test2-Plugin-NoWarnings-ver = Test2-Plugin-NoWarnings/Test2-Plugin-NoWarnings-0.06.tar.gz
 # 2018-03-18
 Test-SharedFork-ver = Test-SharedFork/Test-SharedFork-0.35.tar.gz
 # 2016-06-04
@@ -2880,10 +2915,6 @@ Try-Tiny-ver      = Try-Tiny/Try-Tiny-0.30.tar.gz
 # Text-Diff-ver = Text-Diff/Text-Diff-1.44.tar.gz
 # 2018-03-11
 Text-Diff-ver = Text-Diff/Text-Diff-1.45.tar.gz
-# 2017-03-04
-# Test2-Suite-ver = Test2-Suite/Test2-Suite-0.000067.tar.gz
-# 2018-03-11
-Test2-Suite-ver = Test2-Suite/Test2-Suite-0.000108.tar.gz
 # 2017-03-05
 # Test-Simple-ver = Test-Simple/Test-Simple-1.302075.tar.gz
 # 2018-03-11
@@ -3218,11 +3249,7 @@ DateTime-Locale-ver = DataTime-Locale/DateTime-Locale-1.16.tar.gz
 # 2017-03-05
 Class-Data-Inheritable-ver = Class-Data-Inheritable/Class-Data-Inheritable-0.08.tar.gz
 # 2017-03-05
-Exception-Class-ver = Exception-Class/Exception-Class-1.42.tar.gz
-# 2017-03-05
 Test-Without-Module-ver = Test-Without-Module/Test-Without-Module-0.18.tar.gz
-# 2017-03-05
-Test2-Plugin-NoWarnings-ver = Test2-Plugin-NoWarnings/Test2-Plugin-NoWarnings-0.05.tar.gz
 # 2017-03-05
 Sub-Info-ver = Sub-Info/Sub-Info-0.002.tar.gz
 # 2017-03-05
@@ -3581,7 +3608,6 @@ hwloc-ver          = hwloc/hwloc-1.11.0.tar.gz
 inetutils-ver      = inetutils/inetutils-1.9.tar.gz
 intltool-ver       = intltool/intltool-0.51.0.tar.gz
 IO-HTML-ver        = IO-HTML/IO-HTML-1.001.tar.gz
-IO-Socket-SSL-ver  = IO-Socket-SSL/IO-Socket-SSL-2.012.tar.gz
 iptraf-ng-ver      = iptraf-ng/iptraf-ng-1.1.4.tar.gz
 iwyu-ver           = include-what-you-use/include-what-you-use-3.4.src.tar.gz
 jnettop-ver        = jnettop/jnettop-0.13.0.tar.gz
@@ -3595,7 +3621,6 @@ libpcap-ver        = libpcap/libpcap-1.4.0.tar.gz
 libsecret-ver      = libsecret/libsecret-0.18.3.tar.xz
 libtasn1-ver       = libtasn1/libtasn1-4.3.tar.gz
 libusb-ver         = libusb/libusb-1.0.19.tar.bz2
-libwww-perl-ver    = libwww-perl/libwww-perl-6.15.tar.gz
 llvm-ver           = llvm/llvm-3.4.src.tar.gz
 LWP-MediaTypes-ver = LWP-MediaTypes/LWP-MediaTypes-6.02.tar.gz
 lzma-ver           = lzma/lzma-4.32.7.tar.gz
@@ -4144,8 +4169,8 @@ bcrypt libcap multitail symlinks unrar lxsplit password-store: $(bcrypt-ver) $(m
 .PHONY: HTTP-Message
 .PHONY: HTTP-Negotiate
 .PHONY: IO-HTML
-.PHONY: IO-Socket-SSL
 .PHONY: Importer
+.PHONY: IPC-Run3
 .PHONY: JSON-MaybeXS
 .PHONY: LWP-MediaTypes
 .PHONY: LWP-Protocol-https
@@ -4158,6 +4183,7 @@ bcrypt libcap multitail symlinks unrar lxsplit password-store: $(bcrypt-ver) $(m
 .PHONY: Module-Find
 .PHONY: Module-Implementation
 .PHONY: Module-Install
+.PHONY: Module-Pluggable
 .PHONY: Module-Runtime
 .PHONY: Module-Runtime-Conflicts
 .PHONY: Module-ScanDeps
@@ -4194,6 +4220,7 @@ bcrypt libcap multitail symlinks unrar lxsplit password-store: $(bcrypt-ver) $(m
 .PHONY: Test-Deep
 .PHONY: Test-Differences
 .PHONY: Test-Fatal
+.PHONY: Test-File
 .PHONY: Test-File-ShareDir
 .PHONY: Test-Inter
 .PHONY: Test-LeakTrace
@@ -4204,6 +4231,7 @@ bcrypt libcap multitail symlinks unrar lxsplit password-store: $(bcrypt-ver) $(m
 .PHONY: Test-RequiresInternet
 .PHONY: Test-Simple
 .PHONY: Test-SharedFork
+.PHONY: Test-utf8
 .PHONY: Test-Warn
 .PHONY: Test-Warnings
 .PHONY: Tests-Warnings
@@ -4221,7 +4249,7 @@ bcrypt libcap multitail symlinks unrar lxsplit password-store: $(bcrypt-ver) $(m
 .PHONY: libwww-perl
 .PHONY: namespace-autoclean
 .PHONY: namespace-clean
-Sub-Name Class-Load Class-Load-XS Test-Warnings Package-DeprecationManager Devel-OverloadInfo Test-Deep File-pushd Test-CleanNamespaces Module-Runtime-Conflicts Moose MouseX-Types Any-Moose Archive-Zip Capture-Tiny B-Hooks-EndOfScope Class-Loader Class-Method-Modifiers Crypt-Random Crypt-Random-Source Data-OptList Devel-GlobalDestruction Digest-SHA1 Dist-CheckConflicts Encode-Locale Exporter-Tiny ExtUtils-Config ExtUtils-Helpers ExtUtils-InstallPaths File-Listing Scalar-MoreUtils URI HTML-Tagset HTML-Parser HTTP-Daemon HTTP-Cookies HTTP-Date WWW-RobotRules HTTP-Message HTTP-Negotiate inc-latest IO-HTML IO-Socket-SSL LWP-MediaTypes Module-Find Module-Implementation Module-Runtime Math-Random-ISAAC Math-Random-Secure File-Path PathTools File-Remove YAML-Tiny Module-ScanDeps Module-Build Module-Install Moo Net-HTTP Devel-Symdump namespace-clean Package-Stash Package-Stash-XS PAR-Dist Params-Util Pod-Coverage Role-Tiny Sub-Exporter Sub-Exporter-Progressive Sub-Install Sub-Uplevel Test-Fatal Test-LeakTrace Test-NoWarnings Test-Pod Test-Pod-Coverage Test-Requires Test-SharedFork Test-Warn Try-Tiny Variable-Magic libwww-perl XML-Parser Test-Inter Sub-Identify namespace-autoclean Eval-Closure MRO-Compat Devel-StackTrace Specio Test-Simple Importer Sub-Info Term-Table Test-Without-Module Test2-Plugin-NoWarnings Test2-Suite Exception-Class Class-Data-Inheritable Params-ValidationCompiler Class-Inspector Class-Tiny Scope-Guard Path-Tiny File-Copy-Recursive File-ShareDir-Install File-ShareDir Test-File-ShareDir DateTime-Locale Algorithm-Diff Text-Diff Test-Differences Scalar-List-Utils CPAN-Meta-Check Class-Singleton DateTime DateTime-TimeZone JSON-MaybeXS Test-RequiresInternet LWP-Protocol-https Log-Log4perl Mojolicious Digest-HMAC Net-DNS : \
+Sub-Name Class-Load Class-Load-XS Test-Warnings Package-DeprecationManager Devel-OverloadInfo Test-Deep File-pushd Test-CleanNamespaces Module-Runtime-Conflicts Moose MouseX-Types Any-Moose Archive-Zip Capture-Tiny B-Hooks-EndOfScope Class-Loader Class-Method-Modifiers Crypt-Random Crypt-Random-Source Data-OptList Devel-GlobalDestruction Digest-SHA1 Dist-CheckConflicts Encode-Locale Exporter-Tiny ExtUtils-Config ExtUtils-Helpers ExtUtils-InstallPaths File-Listing Scalar-MoreUtils URI HTML-Tagset HTML-Parser HTTP-Daemon HTTP-Cookies HTTP-Date WWW-RobotRules HTTP-Message HTTP-Negotiate inc-latest IO-HTML IPC-Run3 LWP-MediaTypes Module-Find Module-Implementation Module-Runtime Math-Random-ISAAC Math-Random-Secure File-Path PathTools File-Remove YAML-Tiny Module-Pluggable Module-ScanDeps Module-Build Module-Install Moo Net-HTTP Devel-Symdump namespace-clean Package-Stash Package-Stash-XS PAR-Dist Params-Util Pod-Coverage Role-Tiny Sub-Exporter Sub-Exporter-Progressive Sub-Install Sub-Uplevel Test-Fatal Test-LeakTrace Test-NoWarnings Test-Pod Test-Pod-Coverage Test-Requires Test-SharedFork Test-Warn Try-Tiny Variable-Magic libwww-perl XML-Parser Test-Inter Sub-Identify namespace-autoclean Eval-Closure MRO-Compat Devel-StackTrace Specio Test-Simple Importer Sub-Info Term-Table Test-Without-Module Test2-Plugin-NoWarnings Test2-Suite Exception-Class Class-Data-Inheritable Params-ValidationCompiler Class-Inspector Class-Tiny Scope-Guard Path-Tiny File-Copy-Recursive File-ShareDir-Install File-ShareDir Test-File Test-File-ShareDir Test-utf8 DateTime-Locale Algorithm-Diff Text-Diff Test-Differences Scalar-List-Utils CPAN-Meta-Check Class-Singleton DateTime DateTime-TimeZone JSON-MaybeXS Test-RequiresInternet LWP-Protocol-https Log-Log4perl Mojolicious Digest-HMAC Net-DNS : \
     $(Algorithm-Diff-ver) \
     $(Any-Moose-ver) \
     $(Archive-Zip-ver) \
@@ -4272,6 +4300,7 @@ Sub-Name Class-Load Class-Load-XS Test-Warnings Package-DeprecationManager Devel
     $(HTTP-Negotiate-ver) \
     $(IO-HTML-ver) \
     $(Importer-ver) \
+    $(IPC-Run3-ver) \
     $(JSON-MaybeXS-ver) \
     $(LWP-MediaTypes-ver) \
     $(LWP-Protocol-https-ver) \
@@ -4283,6 +4312,7 @@ Sub-Name Class-Load Class-Load-XS Test-Warnings Package-DeprecationManager Devel
     $(Module-Find-ver) \
     $(Module-Implementation-ver) \
     $(Module-Install-ver) \
+    $(Module-Pluggable-ver) \
     $(Module-Runtime-ver) \
     $(Module-Runtime-Conflicts-ver) \
     $(Module-ScanDeps-ver) \
@@ -4318,6 +4348,7 @@ Sub-Name Class-Load Class-Load-XS Test-Warnings Package-DeprecationManager Devel
     $(Test-Deep-ver) \
     $(Test-Differences-ver) \
     $(Test-Fatal-ver) \
+    $(Test-File-ver) \
     $(Test-File-ShareDir-ver) \
     $(Test-Inter-ver) \
     $(Test-LeakTrace-ver) \
@@ -4328,6 +4359,7 @@ Sub-Name Class-Load Class-Load-XS Test-Warnings Package-DeprecationManager Devel
     $(Test-RequiresInternet-ver) \
     $(Test-SharedFork-ver) \
     $(Test-Simple-ver) \
+    $(Test-utf8-ver) \
     $(Test-Warn-ver) \
     $(Test-Warnings-ver) \
     $(Test-Without-Module-ver) \
@@ -4348,6 +4380,18 @@ Sub-Name Class-Load Class-Load-XS Test-Warnings Package-DeprecationManager Devel
 	cd $@/`cat $@/untar.dir`/; perl Makefile.PL LIBS='-L/usr/local/lib -L/usr/lib -L/lib' INC='-I/usr/local/include -I/usr/include'
 	cd $@/`cat $@/untar.dir`/; make
 	cd $@/`cat $@/untar.dir`/; OPENSSL_DIR=/usr/local OPENSSL_PREFIX=/usr/local LD_LIBRARY_PATH=:/usr/local/lib:/usr/lib make test || make check
+	$(call PKGINSTALL,$@)
+
+# IO-Socket-SSL wants to interactively ask for permission to test external network sites
+# The tests for external network sites work, but the only way to avoid the interactive
+# question is to disable the external network tests with an environment variable, so we
+# will disable the external network tests to avoid a user interaction.
+.PHONY: IO-Socket-SSL
+IO-Socket-SSL: $(IO-Socket-SSL-ver)
+	$(call SOURCEDIR,$@,xfz)
+	cd $@/`cat $@/untar.dir`/; NO_NETWORK_TESTING=1 perl Makefile.PL LIBS='-L/usr/local/lib -L/usr/lib -L/lib' INC='-I/usr/local/include -I/usr/include'
+	cd $@/`cat $@/untar.dir`/; NO_NETWORK_TESTING=1 make
+	cd $@/`cat $@/untar.dir`/; NO_NETWORK_TESTING=1 OPENSSL_DIR=/usr/local OPENSSL_PREFIX=/usr/local LD_LIBRARY_PATH=:/usr/local/lib:/usr/lib make test || make check
 	$(call PKGINSTALL,$@)
 
 # Perl has taken out the ability to automatically include . in the INC, include, path. This makes
@@ -6346,6 +6390,7 @@ wget-all: \
     $(IO-Socket-SSL-ver) \
     $(ImageMagick-ver) \
     $(Importer-ver) \
+    $(IPC-Run3-ver) \
     $(JSON-MaybeXS-ver) \
     $(LMDB-ver) \
     $(LWP-MediaTypes-ver) \
@@ -6364,6 +6409,7 @@ wget-all: \
     $(Module-Find-ver) \
     $(Module-Implementation-ver) \
     $(Module-Install-ver) \
+    $(Module-Pluggable-ver) \
     $(Module-Runtime-ver) \
     $(Module-Runtime-Conflicts-ver) \
     $(Module-ScanDeps-ver) \
@@ -6402,6 +6448,7 @@ wget-all: \
     $(Test-Deep-ver) \
     $(Test-Exception-ver) \
     $(Test-Fatal-ver) \
+    $(Test-File-ver) \
     $(Test-File-ShareDir-ver) \
     $(Test-Inter-ver) \
     $(Test-LeakTrace-ver) \
@@ -6413,6 +6460,7 @@ wget-all: \
     $(Test-RequiresInternet-ver) \
     $(Test-SharedFork-ver) \
     $(Test-Simple-ver) \
+    $(Test-utf8-ver) \
     $(Test-Warn-ver) \
     $(Test-Warnings-ver) \
     $(Test-Without-Module-ver) \
@@ -7059,6 +7107,9 @@ $(iwyu-ver):
 $(IO-Socket-SSL-ver):
 	$(call SOURCEWGET,"IO-Socket-SSL","http://search.cpan.org/CPAN/authors/id/S/SU/SULLR/"$(notdir $(IO-Socket-SSL-ver)))
 
+$(IPC-Run3-ver):
+	$(call SOURCEWGET,"IPC-Run3","http://search.cpan.org/CPAN/authors/id/R/RJ/RJBS/"$(notdir $(IPC-Run3-ver)))
+
 $(JSON-MaybeXS-ver):
 	$(call SOURCEWGET,"JSON-MaybeXS","http://search.cpan.org/CPAN/authors/id/E/ET/ETHER/"$(notdir $(JSON-MaybeXS-ver)))
 
@@ -7159,7 +7210,7 @@ $(libvpx-ver):
 	$(call SOURCEWGET,"libvpx","http://storage.googleapis.com/downloads.webmproject.org/releases/webm/"$(notdir $(libvpx-ver)))
 
 $(libwww-perl-ver):
-	$(call SOURCEWGET,"libwww-perl","http://search.cpan.org/CPAN/authors/id/E/ET/ETHER/"$(notdir $(libwww-perl-ver)))
+	$(call SOURCEWGET,"libwww-perl","http://search.cpan.org/CPAN/authors/id/O/OA/OALDERS/"$(notdir $(libwww-perl-ver)))
 
 $(libutempter-ver):
 	$(call SOURCEWGET,"libutempter","http://slackware.cs.utah.edu/pub/slackware/slackware-current/source/a/utempter/"$(notdir $(libutempter-ver)))
@@ -7251,6 +7302,9 @@ $(Module-Implementation-ver):
 
 $(Module-Install-ver):
 	$(call SOURCEWGET,"Module-Install","http://search.cpan.org/CPAN/authors/id/E/ET/ETHER/"$(notdir $(Module-Install-ver)))
+
+$(Module-Pluggable-ver):
+	$(call SOURCEWGET,"Module-Pluggable","http://search.cpan.org/CPAN/authors/id/S/SI/SIMONW/"$(notdir $(Module-Pluggable-ver)))
 
 $(Module-Runtime-ver):
 	$(call SOURCEWGET,"Module-Runtime","http://search.cpan.org/CPAN/authors/id/Z/ZE/ZEFRAM/"$(notdir $(Module-Runtime-ver)))
@@ -7589,6 +7643,9 @@ $(Test-Differences-ver):
 $(Test-Fatal-ver):
 	$(call SOURCEWGET,"Test-Fatal","http://search.cpan.org/CPAN/authors/id/R/RJ/RJBS/"$(notdir $(Test-Fatal-ver)))
 
+$(Test-File-ver):
+	$(call SOURCEWGET,"Test-File","http://search.cpan.org/CPAN/authors/id/B/BD/BDFOY/"$(notdir $(Test-File-ver)))
+
 $(Test-File-ShareDir-ver):
 	$(call SOURCEWGET,"Test-File-ShareDir","http://search.cpan.org/CPAN/authors/id/K/KE/KENTNL/"$(notdir $(Test-File-ShareDir-ver)))
 
@@ -7624,6 +7681,9 @@ $(Test-Simple-ver):
 
 $(Test-SharedFork-ver):
 	$(call SOURCEWGET,"Test-SharedFork","http://search.cpan.org/CPAN/authors/id/E/EX/EXODIST/"$(notdir $(Test-SharedFork-ver)))
+
+$(Test-utf8-ver):
+	$(call SOURCEWGET,"Test-utf8","http://search.cpan.org/CPAN/authors/id/M/MA/MARKF/"$(notdir $(Test-utf8-ver)))
 
 $(Test-Warnings-ver):
 	$(call SOURCEWGET,"Test-Warnings","http://search.cpan.org/CPAN/authors/id/E/ET/ETHER/"$(notdir $(Test-Warnings-ver)))
