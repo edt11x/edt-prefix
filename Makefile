@@ -1,7 +1,7 @@
 #"$(notdir $(lynis-ver)))
 # Things I should work on:
 # * Alot of these packages fall into some pretty generic patterns,
-#  - tar xf; configure; make; make check; sudo make install
+#  - tar xf; configure; make; make check; /usr/bin/sudo make install
 #  - or tar xf; make; make check; make install
 #  - I need to build more generic templates to match these patterns
 # * One major hurdle is not having a good pthreads library.
@@ -2117,13 +2117,14 @@ define SOURCEBASE
 	$(call MKVRFYDIR,$1)
 	cd $1; find . -maxdepth 1 -type d -name $1-\* -print -exec /bin/rm -rf {} \;
 	cd $1; find . -maxdepth 1 -type d -name $1_\* -print -exec /bin/rm -rf {} \;
+	cd $1; /usr/bin/sudo /bin/rm -rf *-build
 endef
 
 # 1 - name of the project
 # 2 - expected partial name of the directory that was untarred, the untar name
 define MAKEUNTARDIR
 	-cd $1; /bin/rm -f untar.dir
-	cd $1; find . -maxdepth 1 -type d -name $2\* -print > untar.dir
+	cd $1; find . -maxdepth 1 -type d -name $2\* -print | egrep -v '.-build' > untar.dir
 	cd $1/`cat $1/untar.dir`/; readlink -f . | grep `cat ../untar.dir`
 endef
 
@@ -2162,8 +2163,8 @@ endef
 define SOURCECLEAN
 	$(call SOURCEBASE,$1)
 	-cd $1; mkdir -p $$HOME/files/backups/oldpackages
-	-cd $1; sudo mkdir -p $$HOME/files/backups/oldpackages
-	-cd $1; sudo chown $(USERNAME) $$HOME/files/backups/oldpackages
+	-cd $1; /usr/bin/sudo mkdir -p $$HOME/files/backups/oldpackages
+	-cd $1; /usr/bin/sudo chown $(USERNAME) $$HOME/files/backups/oldpackages
 	-cd $1; /bin/rm -rf `basename $1`
 	-cd $1; /bin/rm -f `basename $2`
 	-cd $1; test ! -e $1-*.tar || /bin/mv $1-*.tar $$HOME/files/backups/oldpackages/.
@@ -2193,11 +2194,11 @@ define PATCHWGET
 endef
 
 define CPLIB
-	cd /usr/local/lib; for FILE in $1; do if test -e /usr/local/lib/$$FILE ; then test -f /lib/$$FILE || test -L /lib/$$FILE || /usr/bin/sudo ln -sf /usr/local/lib/$$FILE /lib/. ; fi ; done ; sudo /bin/rm -f /lib/*.scm /lib/*.py ; sudo /sbin/ldconfig
+	cd /usr/local/lib; for FILE in $1; do if test -e /usr/local/lib/$$FILE ; then test -f /lib/$$FILE || test -L /lib/$$FILE || /usr/bin/sudo ln -sf /usr/local/lib/$$FILE /lib/. ; fi ; done ; /usr/bin/sudo /bin/rm -f /lib/*.scm /lib/*.py ; /usr/bin/sudo /sbin/ldconfig
 endef
 
 define RENEXE
-	cd /usr/local/bin; for FILE in $1; do if test -e /usr/local/bin/$$FILE; then export n=0; while test -e /usr/local/bin/$$FILE.old.$$n ; do export n=$$((n+1)); done ; sudo mv $$FILE $$FILE.old.$$n ; fi ; done
+	cd /usr/local/bin; for FILE in $1; do if test -e /usr/local/bin/$$FILE; then export n=0; while test -e /usr/local/bin/$$FILE.old.$$n ; do export n=$$((n+1)); done ; /usr/bin/sudo mv $$FILE $$FILE.old.$$n ; fi ; done
 endef
 
 define PKGFROMSTAGE
@@ -2559,6 +2560,7 @@ aftermodulepluggable: \
 afterbison: \
     check_sudo \
     autogen \
+    automake \
     rng-tools \
     tcl \
     tclx \
@@ -2577,7 +2579,6 @@ afterbison: \
     libutempter \
     intltool \
     glib \
-    libsecret \
     ncurses \
     readline \
     pth \
@@ -2591,6 +2592,7 @@ afterbison: \
 
 .PHONY: afterlua
 afterlua: \
+    check_sudo \
     ruby \
     vim \
     aftervim
@@ -2657,6 +2659,7 @@ afterllvm: \
 
 .PHONY: aftersubversion
 aftersubversion: \
+    check_sudo \
     psmisc \
     tcp_wrappers \
     doxygen \
@@ -2689,7 +2692,6 @@ afterfreetype: \
 .PHONY: aftersharutils
 aftersharutils: \
     check_sudo \
-    automake \
     hashdeep \
     par2cmdline \
     iptraf-ng \
@@ -2749,6 +2751,7 @@ afterpatch: \
     octave \
     tcpdump \
     pixman \
+    libsecret \
     afterlibsecret
 
 # Problem children
@@ -2800,6 +2803,19 @@ afterlibsecret: \
 # Libgcrypt - https://www.gnupg.org/download/index.html#libgcrypt
 # ==============================================================
 #
+# 2018-03-18
+libsecret-ver      = libsecret/libsecret-0.18.5.tar.xz
+# 2016-09-23
+# XML-Parser-ver     = XML-Parser/XML-Parser-2.36.tar.gz
+# 2018-03-18
+XML-Parser-ver     = XML-Parser/XML-Parser-2.44.tar.gz
+# 2018-03-18
+intltool-ver       = intltool/intltool-0.51.0.tar.gz
+# 2017-10-10
+# automake-ver       = automake/automake-1.15.tar.xz
+# automake-ver       = automake/automake-1.15.1.tar.xz
+# 2018-03-18
+automake-ver       = automake/automake-1.16.1.tar.xz
 # IO-Socket-SSL-ver  = IO-Socket-SSL/IO-Socket-SSL-2.012.tar.gz
 # 2018-03-18
 IO-Socket-SSL-ver  = IO-Socket-SSL/IO-Socket-SSL-2.056.tar.gz
@@ -3145,9 +3161,6 @@ libuv-ver          = libuv/v1.15.0.tar.gz
 cmake-ver          = cmake/cmake-3.4.3.tar.gz
 # 2017-10-10
 # cmake-ver          = cmake/cmake-3.9.4.tar.gz
-# 2017-10-10
-# automake-ver       = automake/automake-1.15.tar.xz
-automake-ver       = automake/automake-1.15.1.tar.xz
 # 2017-10-04
 pcre-ver           = pcre/pcre-8.41.tar.bz2
 # 2017-01-27
@@ -3384,9 +3397,6 @@ which-ver          = which/which-2.21.tar.gz
 wipe-ver           = wipe/wipe-2.3.1.tar.bz2
 # 2016-09-23, Checked WWW-RobotRules is still 6.02 in CPAN
 WWW-RobotRules-ver = WWW-RobotRules/WWW-RobotRules-6.02.tar.gz
-# 2016-09-23
-# XML-Parser-ver     = XML-Parser/XML-Parser-2.36.tar.gz
-XML-Parser-ver     = XML-Parser/XML-Parser-2.44.tar.gz
 # 2016-09-23, Checked, Info-Zip is still 3.0 2008-09-24
 zip-ver            = zip/zip30.tgz
 # 2016-09-21
@@ -3606,7 +3616,6 @@ HTTP-Date-ver      = HTTP-Date/HTTP-Date-6.02.tar.gz
 HTTP-Negotiate-ver = HTTP-Negotiate/HTTP-Negotiate-6.01.tar.gz
 hwloc-ver          = hwloc/hwloc-1.11.0.tar.gz
 inetutils-ver      = inetutils/inetutils-1.9.tar.gz
-intltool-ver       = intltool/intltool-0.51.0.tar.gz
 IO-HTML-ver        = IO-HTML/IO-HTML-1.001.tar.gz
 iptraf-ng-ver      = iptraf-ng/iptraf-ng-1.1.4.tar.gz
 iwyu-ver           = include-what-you-use/include-what-you-use-3.4.src.tar.gz
@@ -3618,7 +3627,6 @@ libevent-ver       = libevent/libevent-2.0.21-stable.tar.gz
 libffi-ver         = libffi/libffi-3.2.1.tar.gz
 jpeg-ver           = jpeg/jpegsrc.v9b.tar.gz
 libpcap-ver        = libpcap/libpcap-1.4.0.tar.gz
-libsecret-ver      = libsecret/libsecret-0.18.3.tar.xz
 libtasn1-ver       = libtasn1/libtasn1-4.3.tar.gz
 libusb-ver         = libusb/libusb-1.0.19.tar.bz2
 llvm-ver           = llvm/llvm-3.4.src.tar.gz
@@ -3670,23 +3678,23 @@ target_test:
 
 .PHONY: target_dirs
 target_dirs:
-	sudo mkdir -p /usr/local/bin
-	sudo mkdir -p /usr/local/etc
-	sudo mkdir -p /usr/local/lib
-	sudo mkdir -p /usr/local/lib/lib64
-	sudo mkdir -p /usr/local/lib64
-	sudo mkdir -p /usr/local/share/man
-	sudo mkdir -p /usr/local/share/man/man1
-	sudo mkdir -p /usr/local/share/man/man2
-	sudo mkdir -p /usr/local/share/man/man3
-	sudo mkdir -p /usr/local/share/man/man4
-	sudo mkdir -p /usr/local/share/man/man5
-	sudo mkdir -p /usr/local/share/man/man6
-	sudo mkdir -p /usr/local/share/man/man7
-	sudo mkdir -p /usr/local/share/man/man8
-	sudo mkdir -p /usr/local/share/man/mann
-	sudo mkdir -p /usr/local/share/man/web
-	sudo mkdir -p /usr/local/sbin
+	/usr/bin/sudo mkdir -p /usr/local/bin
+	/usr/bin/sudo mkdir -p /usr/local/etc
+	/usr/bin/sudo mkdir -p /usr/local/lib
+	/usr/bin/sudo mkdir -p /usr/local/lib/lib64
+	/usr/bin/sudo mkdir -p /usr/local/lib64
+	/usr/bin/sudo mkdir -p /usr/local/share/man
+	/usr/bin/sudo mkdir -p /usr/local/share/man/man1
+	/usr/bin/sudo mkdir -p /usr/local/share/man/man2
+	/usr/bin/sudo mkdir -p /usr/local/share/man/man3
+	/usr/bin/sudo mkdir -p /usr/local/share/man/man4
+	/usr/bin/sudo mkdir -p /usr/local/share/man/man5
+	/usr/bin/sudo mkdir -p /usr/local/share/man/man6
+	/usr/bin/sudo mkdir -p /usr/local/share/man/man7
+	/usr/bin/sudo mkdir -p /usr/local/share/man/man8
+	/usr/bin/sudo mkdir -p /usr/local/share/man/mann
+	/usr/bin/sudo mkdir -p /usr/local/share/man/web
+	/usr/bin/sudo mkdir -p /usr/local/sbin
 	# Create a link from /usr/local/usr back to /usr/local
 	# This allows us to specify --sysroot=/usr/local and when
 	# GCC appends usr/lib, which gives /usr/local/usr/lib, this
@@ -3694,8 +3702,8 @@ target_dirs:
 	# sysroot/usr/bin, this will give /usr/local/usr/bin which
 	# will resolve to /usr/local/bin.
 	#
-	test -e /usr/local/src || sudo ln -sf /usr/local /usr/local/usr
-	test -e /usr/local/man || sudo ln -sf /usr/local/share/man /usr/local/man
+	test -e /usr/local/src || /usr/bin/sudo ln -sf /usr/local /usr/local/usr
+	test -e /usr/local/man || /usr/bin/sudo ln -sf /usr/local/share/man /usr/local/man
 
 # These will mess themselves up in the build process when they try to install, because
 # the shared libraries are being used for the install
@@ -3722,24 +3730,24 @@ scripts:
 	mkdir -p scripts
 	cd scripts; tar xfz scripts-1.0.tar.gz
 	cd scripts/scripts-1.0; chmod a+x *
-	cd scripts/scripts-1.0; sudo cp * /usr/local/bin/.
+	cd scripts/scripts-1.0; /usr/bin/sudo cp * /usr/local/bin/.
 
 .PHONY: devices
 devices:
-	cd /dev; test -c /dev/random || sudo /sbin/MAKEDEV random
-	cd /dev; test -c /dev/urandom || sudo /sbin/MAKEDEV urandom
+	cd /dev; test -c /dev/random || /usr/bin/sudo /sbin/MAKEDEV random
+	cd /dev; test -c /dev/urandom || /usr/bin/sudo /sbin/MAKEDEV urandom
 
 .PHONY: nameservers
 nameservers:
-	egrep 8.8.8.8 /etc/resolv.conf || sudo bash -c "echo nameserver 8.8.8.8 >> /etc/resolv.conf"
-	egrep 8.8.4.4 /etc/resolv.conf || sudo bash -c "echo nameserver 8.8.4.4 >> /etc/resolv.conf"
+	egrep 8.8.8.8 /etc/resolv.conf || /usr/bin/sudo bash -c "echo nameserver 8.8.8.8 >> /etc/resolv.conf"
+	egrep 8.8.4.4 /etc/resolv.conf || /usr/bin/sudo bash -c "echo nameserver 8.8.4.4 >> /etc/resolv.conf"
 
 .PHONY: save_ld
 save_ld:
 ifneq ($(subst $(space),-,$(PHASE1_NOCHECK)),)
 	@/bin/echo "Saving /usr/local/bin/ld"
 	/bin/rm -rf /usr/local/bin/ld.$(THIS_RUN)
-	-cd /usr/local/bin; test ! -e ld || sudo /bin/mv ld ld.$(THIS_RUN)
+	-cd /usr/local/bin; test ! -e ld || /usr/bin/sudo /bin/mv ld ld.$(THIS_RUN)
 else
 	@/bin/echo ""
 endif
@@ -3747,7 +3755,7 @@ endif
 .PHONE: restore_ld
 restore_ld:
 	@/bin/echo "Restoring /usr/local/bin/ld"
-	-cd /usr/local/bin; test ! -e ld.$(THIS_RUN) || sudo /bin/mv ld.$(THIS_RUN) ld
+	-cd /usr/local/bin; test ! -e ld.$(THIS_RUN) || /usr/bin/sudo /bin/mv ld.$(THIS_RUN) ld
 
 .PHONY: check_sudo
 .PHONY: sudo
@@ -4429,7 +4437,7 @@ Module-Build-Tiny Module-Build-XSUtil Mouse :\
 	cd $@/`cat $@/untar.dir`/; perl Build.PL LIBS='-L/usr/local/lib -L/usr/lib -L/lib' INC='-I/usr/local/include -I/usr/include'
 	cd $@/`cat $@/untar.dir`/; ./Build
 	cd $@/`cat $@/untar.dir`/; OPENSSL_DIR=/usr/local OPENSSL_PREFIX=/usr/local LD_LIBRARY_PATH=:/usr/local/lib:/usr/lib ./Build test
-	cd $@/`cat $@/untar.dir`/; sudo ./Build install
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo ./Build install
 
 # Perl Rule, no test
 # Net-SSLeay seems to be failing because of thread problems
@@ -4463,7 +4471,7 @@ Date-Manip List-MoreUtils Net-SSLeay Test-Exception Test-Needs Type-Tiny : \
 .PHONY: ack
 ack: $(ack-ver)
 	cd $@; cp $(notdir $(ack-ver)) ack
-	cd $@; sudo /usr/local/bin/install -m 755 -D ack /usr/local/bin
+	cd $@; /usr/bin/sudo /usr/local/bin/install -m 755 -D ack /usr/local/bin
 
 .PHONY: acl
 acl: $(acl-ver)
@@ -4577,21 +4585,21 @@ boost: $(boost-ver)
 	$(call SOURCEDIR,$@,xf)
 	cd $@/`cat $@/untar.dir`/; ./bootstrap.sh --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/; ./b2 stage
-	cd $@/`cat $@/untar.dir`/; sudo ./b2 install
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo ./b2 install
 
 .PHONY: bzip
 bzip: $(bzip-ver)
 	$(call SOURCEDIR,$@,xfz)
 	cd $@/`cat $@/untar.dir`/; make clean
 	cd $@/`cat $@/untar.dir`/; make -f Makefile-libbz2_so
-	cd $@/`cat $@/untar.dir`/; sudo cp -av libbz2.so* /usr/local/lib
-	cd $@/`cat $@/untar.dir`/; sudo cp -av libbz2.so.1.0 /usr/local/lib/libbz2.so
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo cp -av libbz2.so* /usr/local/lib
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo cp -av libbz2.so.1.0 /usr/local/lib/libbz2.so
 	$(call PKGINSTALL,$@)
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
 	cd $@/`cat $@/untar.dir`/; make clean
 	cd $@/`cat $@/untar.dir`/; make
-	cd $@/`cat $@/untar.dir`/; sudo make install
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo make install
 	$(call PKGINSTALL,$@)
 	$(call CPLIB,libbz*)
 	$(call CPLIB,lib$@*)
@@ -4632,9 +4640,9 @@ cmake: $(cmake-ver)
 .PHONY: crosextrafonts-carlito
 crosextrafonts-carlito crosextrafonts: $(crosextrafonts-ver) $(crosextrafonts-carlito-ver)
 	$(call SOURCEDIR,$@,xf)
-	cd $@/`cat $@/untar.dir`/; sudo /usr/local/bin/install -d /usr/local/share/fonts/truetype
-	cd $@/`cat $@/untar.dir`/; sudo /usr/local/bin/install -m 644 -D *.ttf /usr/local/share/fonts/truetype
-	cd $@/`cat $@/untar.dir`/; sudo /usr/local/bin/fc-cache -f -v /usr/local/share/fonts
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo /usr/local/bin/install -d /usr/local/share/fonts/truetype
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo /usr/local/bin/install -m 644 -D *.ttf /usr/local/share/fonts/truetype
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo /usr/local/bin/fc-cache -f -v /usr/local/share/fonts
 
 # curl needs valgrind to run its tests
 # If it finds the system valgrind, that might not be compatible with
@@ -4659,7 +4667,7 @@ db: $(db-ver)
 	cd $@/`cat $@/untar.dir`/build_unix; readlink -f . | grep `cat ../../untar.dir`
 	cd $@/`cat $@/untar.dir`/build_unix; ../dist/configure --enable-compat185 --enable-dbm --enable-cxx
 	cd $@/`cat $@/untar.dir`/build_unix; make
-	cd $@/`cat $@/untar.dir`/build_unix; sudo make install
+	cd $@/`cat $@/untar.dir`/build_unix; /usr/bin/sudo make install
 	@echo "======= Build of $@ Successful ======="
 
 # binutils check needs more memory
@@ -4743,7 +4751,7 @@ dbus : $(dbus-ver)
 dejagnu: $(dejagnu-ver)
 	$(call SOURCEDIR,$@,xf)
 	cd $@/`cat $@/untar.dir`/; mkdir dejagnu
-	-cd $@/`cat $@/untar.dir`/; sudo mkdir -p /usr/local/share/doc/dejagnu
+	-cd $@/`cat $@/untar.dir`/; /usr/bin/sudo mkdir -p /usr/local/share/doc/dejagnu
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/; make
 	cd $@/`cat $@/untar.dir`/; makeinfo --html --no-split -o doc/dejagnu.html doc/dejagnu.texi
@@ -4780,15 +4788,15 @@ e2fsprogs: $(e2fsprogs-ver)
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/; make
 	-cd $@/`cat $@/untar.dir`/; make check
-	cd $@/`cat $@/untar.dir`/; sudo make install-libs
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo make install-libs
 	$(call PKGINSTALL,$@)
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
 
 .PHONY: ecj
 ecj: $(ecj-ver)
-	cd $@; sudo mkdir -pv /usr/local/share/java
-	cd $@; sudo cp -v *.jar /usr/local/share/java/ecj.jar
+	cd $@; /usr/bin/sudo mkdir -pv /usr/local/share/java
+	cd $@; /usr/bin/sudo cp -v *.jar /usr/local/share/java/ecj.jar
 
 .PHONY: expat
 expat: $(expat-ver)
@@ -5012,9 +5020,9 @@ global: $(global-ver)
 go: $(go-ver)
 	$(call SOURCEDIR,$@,xf)
 	cd $@/`cat $@/untar.dir`/src; patch < ../../../patches/go.patch
-	-cd $@; sudo /bin/rm -rf /usr/local/go
-	cd $@; sudo cp -r go /usr/local/.
-	cd /usr/local/go/src; sudo ./all.bash
+	-cd $@; /usr/bin/sudo /bin/rm -rf /usr/local/go
+	cd $@; /usr/bin/sudo cp -r go /usr/local/.
+	cd /usr/local/go/src; /usr/bin/sudo ./all.bash
 
 # I think gnupg will not find the scdaemon during the first test.
 # I think it has to be installed and then re-run the test.
@@ -5025,8 +5033,8 @@ gnupg : \
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --enable-shared
 	cd $@/`cat $@/untar.dir`/; make
 	-cd $@/`cat $@/untar.dir`/; make check || make test
-	sudo /bin/rm -f /usr/local/bin/gpg
-	sudo /bin/ln /usr/local/bin/gpg2 /usr/local/bin/gpg
+	/usr/bin/sudo /bin/rm -f /usr/local/bin/gpg
+	/usr/bin/sudo /bin/ln /usr/local/bin/gpg2 /usr/local/bin/gpg
 	$(call PKGINSTALL,$@)
 	$(call CPLIB,libproto*)
 	$(call CPLIB,lib$@*)
@@ -5256,7 +5264,8 @@ libpthread: \
 libsecret : \
     $(libsecret-ver)
 	$(call SOURCEDIR,$@,xf)
-	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --disable-manpages
+	cd $@/`cat $@/untar.dir`/; ./autogen.sh --prefix=/usr/local --disable-manpages --disable-gtk-doc
+	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --disable-manpages --disable-gtk-doc
 	cd $@/`cat $@/untar.dir`/; make
 	-cd $@/`cat $@/untar.dir`/; make check || make test
 	$(call PKGINSTALL,$@)
@@ -5331,10 +5340,10 @@ libutempter : \
     $(libutempter-ver)
 	$(call SOURCEDIR,$@,xf)
 	cd $@/`cat $@/untar.dir`/; make
-	cd $@/`cat $@/untar.dir`/; sudo cp -av utempter.h /usr/local/include
-	cd $@/`cat $@/untar.dir`/; sudo cp -av libutempter.a /usr/local/lib
-	cd $@/`cat $@/untar.dir`/; sudo cp -av libutempter.so* /usr/local/lib
-	cd $@/`cat $@/untar.dir`/; sudo cp -av utempter /usr/local/bin
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo cp -av utempter.h /usr/local/include
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo cp -av libutempter.a /usr/local/lib
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo cp -av libutempter.so* /usr/local/lib
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo cp -av utempter /usr/local/bin
 	$(call CPLIB,libutempter*)
 	$(call CPLIB,$@*)
 
@@ -5343,11 +5352,11 @@ libutempter : \
 lynis : \
     $(lynis-ver)
 	$(call SOURCEDIR,$@,xf)
-	sudo cp -av $@/`cat $@/untar.dir` /usr/local/.
-	sudo /bin/rm -f /usr/local/bin/lynis
-	sudo bash -c "echo 'cd /usr/local/lynis; ./lynis $$''*' > /usr/local/bin/lynis"
-	sudo chown -R 0:0 /usr/local/lynis/include/*
-	sudo chmod a+x /usr/local/bin/lynis
+	/usr/bin/sudo cp -av $@/`cat $@/untar.dir` /usr/local/.
+	/usr/bin/sudo /bin/rm -f /usr/local/bin/lynis
+	/usr/bin/sudo bash -c "echo 'cd /usr/local/lynis; ./lynis $$''*' > /usr/local/bin/lynis"
+	/usr/bin/sudo chown -R 0:0 /usr/local/lynis/include/*
+	/usr/bin/sudo chmod a+x /usr/local/bin/lynis
 
 .PHONY: lua
 lua: $(lua-ver) patches/lua-5.3.2-shared_library-1.patch
@@ -5356,9 +5365,9 @@ lua: $(lua-ver) patches/lua-5.3.2-shared_library-1.patch
 	cd $@/`cat $@/untar.dir`/; patch -Np1 -i ../../patches/lua-5.3.2-shared_library-1.patch
 	cd $@/`cat $@/untar.dir`/; make linux MYLIBS=-lncursesw
 	cd $@/`cat $@/untar.dir`/; make check || make test
-	cd $@/`cat $@/untar.dir`/; sudo make INSTALL_TOP=/usr/local TO_LIB="liblua.a" \
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo make INSTALL_TOP=/usr/local TO_LIB="liblua.a" \
 	     INSTALL_DATA="cp -d" INSTALL_MAN=/usr/share/man/man1 install
-	cd $@/`cat $@/untar.dir`/src; sudo cp -av liblua.so* /usr/local/lib
+	cd $@/`cat $@/untar.dir`/src; /usr/bin/sudo cp -av liblua.so* /usr/local/lib
 	@echo "======= Build of $@ Successful ======="
 
 .PHONY: lzo
@@ -5380,19 +5389,19 @@ lzo: \
 export NETPBMCONFIG
 .PHONY: netpbm
 netpbm: $(netpbm-ver)
-	sudo /bin/rm -rf /tmp/netpbm
+	/usr/bin/sudo /bin/rm -rf /tmp/netpbm
 	$(call SOURCEDIR,$@,xf)
 	cd $@/`cat $@/untar.dir`/; cp Makefile.config.in Makefile.config
 	cd $@/`cat $@/untar.dir`/; echo "$$NETPBMCONFIG" >> Makefile.config
 	cd $@/`cat $@/untar.dir`/; make
 	cd $@/`cat $@/untar.dir`/; make package
 	$(call PKGFROMSTAGE,$@,`cat $@/untar.dir`,netpbm)
-	cd $@/`cat $@/untar.dir`/; sudo mkdir -pv /usr/local/share/netpbm
-	cd $@/`cat $@/untar.dir`/; sudo cp -a -v /tmp/netpbm/bin/* /usr/local/bin/.
-	cd $@/`cat $@/untar.dir`/; sudo cp -a -v /tmp/netpbm/include/* /usr/local/include/.
-	cd $@/`cat $@/untar.dir`/; sudo cp -a -v /tmp/netpbm/link/* /usr/local/lib/.
-	cd $@/`cat $@/untar.dir`/; sudo cp -a -v /tmp/netpbm/man/* /usr/local/man/.
-	cd $@/`cat $@/untar.dir`/; sudo cp -a -v /tmp/netpbm/misc/* /usr/local/share/netpbm/.
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo mkdir -pv /usr/local/share/netpbm
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo cp -a -v /tmp/netpbm/bin/* /usr/local/bin/.
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo cp -a -v /tmp/netpbm/include/* /usr/local/include/.
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo cp -a -v /tmp/netpbm/link/* /usr/local/lib/.
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo cp -a -v /tmp/netpbm/man/* /usr/local/man/.
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo cp -a -v /tmp/netpbm/misc/* /usr/local/share/netpbm/.
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
 
@@ -5471,10 +5480,10 @@ git: $(git-ver)
 	cd $@/`cat $@/untar.dir`/; PYTHON_PATH=/usr/local/bin/python SHELL_PATH=/usr/local/bin/bash SANE_TOOL_PATH="/usr/local/bin:/usr/local/sbin" ./configure --prefix=/usr/local --with-gitconfig=/usr/local/etc/gitconfig --with-libpcre
 	cd $@/`cat $@/untar.dir`/; PYTHON_PATH=/usr/local/bin/python SHELL_PATH=/usr/local/bin/bash SANE_TOOL_PATH="/usr/local/bin:/usr/local/sbin" make
 	cd $@/`cat $@/untar.dir`/; TEST_NO_MALLOC_CHECK=1 PYTHON_PATH=/usr/local/bin/python SHELL_PATH=/usr/local/bin/bash SANE_TOOL_PATH="/usr/local/bin:/usr/local/sbin" make test
-	cd $@/`cat $@/untar.dir`/; sudo /bin/rm -f /usr/local/etc/gitconfig
-	cd $@/`cat $@/untar.dir`/; sudo /bin/rm -f /tmp/gitconfig
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo /bin/rm -f /usr/local/etc/gitconfig
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo /bin/rm -f /tmp/gitconfig
 	cd $@/`cat $@/untar.dir`/; echo "$$GITCONFIG" >> /tmp/gitconfig
-	cd $@/`cat $@/untar.dir`/; sudo cp /tmp/gitconfig /usr/local/etc/gitconfig
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo cp /tmp/gitconfig /usr/local/etc/gitconfig
 	$(call PKGINSTALL,$@)
 	$(call CPLIB,libz.*)
 
@@ -5507,8 +5516,8 @@ glibc: $(glibc-ver)
 	    -enable-obsolete-rpc
 	cd $@/$@-build/; make
 	-cd $@/$@-build/; make check || make test
-	-sudo mkdir -p /usr/local/glibc/etc
-	sudo touch /usr/local/glibc/etc/ld.so.conf
+	-/usr/bin/sudo mkdir -p /usr/local/glibc/etc
+	/usr/bin/sudo touch /usr/local/glibc/etc/ld.so.conf
 	$(call PKGINSTALLBUILD,$@)
 
 .PHONY: gmp
@@ -5524,7 +5533,7 @@ gmp: $(gmp-ver)
 # guile is needed by autogen
 .PHONY: guile
 guile: $(guile-ver)
-	sudo /bin/rm -rf /usr/local/include/libguile
+	/usr/bin/sudo /bin/rm -rf /usr/local/include/libguile
 	$(call SOURCEDIR,$@,xf)
 	cd $@; mkdir $@-build
 	cd $@/$@-build/; readlink -f . | grep $@-build
@@ -5616,7 +5625,7 @@ patches/compiler-rt.patch:
 	echo "$$COMPILERRTPATCH" >> $@
 
 # If the install generates a unable to infer compiler target triple for gcc,
-# the sudo needs a ./SETUP.bash before running it.
+# the /usr/bin/sudo needs a ./SETUP.bash before running it.
 .PHONY: llvm
 llvm: $(llvm-ver) $(clang-ver) $(compiler-rt-ver) patches/compiler-rt.patch
 	$(call SOURCEDIR,$@,xf)
@@ -5655,12 +5664,12 @@ Math-Pari : \
 maldetect : \
     $(maldetect-ver)
 	$(call SOURCEDIR,$@,xfz)
-	cd $@/`cat $@/untar.dir`/; sudo ./install.sh
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo ./install.sh
 
 .PHONY: mercurial
 mercurial: $(mercurial-ver)
 	cd $@/`cat $@/untar.dir`/; make build
-	cd $@/`cat $@/untar.dir`/; sudo make PREFIX=/usr/local install-bin
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo make PREFIX=/usr/local install-bin
 
 .PHONY: mpc
 mpc: $(mpc-ver)
@@ -5719,16 +5728,16 @@ ncurses: $(ncurses-ver)
 	cd $@/$@-build/; make check || make test
 	$(call PKGINSTALLBUILD,$@)
 	cd $@/$@-build/; for lib in ncurses form panel menu; do \
-	    sudo /bin/rm -vf /usr/local/lib/$${lib}.so ; \
-	    sudo /bin/rm -f /tmp/lib$${lib}.so ; \
+	    /usr/bin/sudo /bin/rm -vf /usr/local/lib/$${lib}.so ; \
+	    /usr/bin/sudo /bin/rm -f /tmp/lib$${lib}.so ; \
 	    echo "INPUT(-l$${lib}w)" > /tmp/lib$${lib}.so ; \
-	    sudo /bin/cp /tmp/lib$${lib}.so /usr/local/lib/lib$${lib}.so ; \
+	    /usr/bin/sudo /bin/cp /tmp/lib$${lib}.so /usr/local/lib/lib$${lib}.so ; \
 	done
 	cd $@/$@-build/; for lib in curses ; do \
-	    sudo /bin/rm -vf /usr/local/lib/$${lib}.so ; \
-	    sudo /bin/rm -f /tmp/lib$${lib}.so ; \
+	    /usr/bin/sudo /bin/rm -vf /usr/local/lib/$${lib}.so ; \
+	    /usr/bin/sudo /bin/rm -f /tmp/lib$${lib}.so ; \
 	    echo "INPUT(-ln$${lib}w)" > /tmp/lib$${lib}.so ; \
-	    sudo /bin/cp /tmp/lib$${lib}.so /usr/local/lib/lib$${lib}.so ; \
+	    /usr/bin/sudo /bin/cp /tmp/lib$${lib}.so /usr/local/lib/lib$${lib}.so ; \
 	done
 	$(call CPLIB,lib$@*)
 	if test -d /usr/local/include/ncursesw ; then test -d /usr/include/ncursesw || test -L /usr/include/ncursesw || /usr/bin/sudo ln -sf /usr/local/include/ncursesw /usr/include/. ; fi 
@@ -5742,7 +5751,7 @@ nettle: \
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --libdir=/usr/local/lib
 	cd $@/`cat $@/untar.dir`/; make
 	cd $@/`cat $@/untar.dir`/; make check || make test
-	cd $@/`cat $@/untar.dir`/; sudo make install-here
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo make install-here
 	$(call PKGINSTALL,$@)
 	$(call CPLIB,libproto*)
 	$(call CPLIB,libnettle*)
@@ -5807,14 +5816,14 @@ pari : \
 	cd $@/`cat $@/untar.dir`/; PERL_USE_UNSAFE_INC=1 make all
 	cd $@/`cat $@/untar.dir`/; PERL_USE_UNSAFE_INC=1 make gp
 	cd $@/`cat $@/untar.dir`/; PERL_USE_UNSAFE_INC=1 make bench
-	cd $@/`cat $@/untar.dir`/; sudo cp misc/gprc.dft /etc/gprc
-	cd $@/`cat $@/untar.dir`/; sudo ln -sf /usr/local/include/pari/* /usr/local/include/
-	cd $@/`cat $@/untar.dir`/; sudo mkdir -p /usr/local/include/gp
-	cd $@/`cat $@/untar.dir`/; sudo mkdir -p /usr/local/include/graph
-	cd $@/`cat $@/untar.dir`/; sudo mkdir -p /usr/local/include/language
-	cd $@/`cat $@/untar.dir`/; sudo cp src/gp/*.h /usr/local/include/gp/.
-	cd $@/`cat $@/untar.dir`/; sudo cp src/graph/*.h /usr/local/include/graph/.
-	cd $@/`cat $@/untar.dir`/; sudo cp src/language/*.h /usr/local/include/language/.
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo cp misc/gprc.dft /etc/gprc
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo ln -sf /usr/local/include/pari/* /usr/local/include/
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo mkdir -p /usr/local/include/gp
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo mkdir -p /usr/local/include/graph
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo mkdir -p /usr/local/include/language
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo cp src/gp/*.h /usr/local/include/gp/.
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo cp src/graph/*.h /usr/local/include/graph/.
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo cp src/language/*.h /usr/local/include/language/.
 	$(call PKGINSTALL,$@)
 	$(call CPLIB,libproto*)
 	$(call CPLIB,lib$@*)
@@ -5953,19 +5962,19 @@ perl: $(perl-ver) patches/perl5.patch
 	cd $@/`cat $@/untar.dir`/; make
 	-cd $@/`cat $@/untar.dir`/; $(PHASE1_NOCHECK) make test
 	/usr/bin/sudo /bin/rm -f /usr/local/lib/libperl.so
-	cd $@/`cat $@/untar.dir`/; sudo cp libperl.so /usr/local/lib/.
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo cp libperl.so /usr/local/lib/.
 	/usr/bin/sudo /bin/rm -f /usr/local/bin/perl
-	cd $@/`cat $@/untar.dir`/; sudo make install PERLNAME=perl
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo make install PERLNAME=perl
 	$(call PKGINSTALL,$@)
 	/usr/bin/sudo /bin/rm -f /usr/local/perl
-	cd /usr/local/bin; /usr/sbin/sudo ln -s "perl"$(word 2,$(subst -, ,$(basename $(basename $(notdir $(perl-ver))))))
+	cd /usr/local/bin; /usr/bin/sudo ln -s "perl"$(word 2,$(subst -, ,$(basename $(basename $(notdir $(perl-ver))))))
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
 
 .PHONY: pkg-config
 pkg-config: $(pkg-config-ver)
 	$(call SOURCEDIR,$@,xf)
-	sudo /bin/rm -f /usr/local/bin/i686-pc-linux-gnu-pkg-config
+	/usr/bin/sudo /bin/rm -f /usr/local/bin/i686-pc-linux-gnu-pkg-config
 	-cd $@/`cat $@/untar.dir`/; sed -i -e '/GNU libiconv not in use but included iconv.h/d' ./glib/glib/gconvert.c
 	-cd $@/`cat $@/untar.dir`/; sed -i -e '/prctl (PR_SET_NAME, name, 0, 0, 0, 0);/d' ./glib/glib/gthread-posix.c
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --with-internal-glib --with-libiconv=gnu
@@ -6007,7 +6016,7 @@ random : \
     $(random-ver)
 	$(call SOURCEFLATZIPDIR,$@,xf)
 	cd $@/`cat $@/untar.dir`/; make
-	cd $@/`cat $@/untar.dir`/; sudo cp -a -v ./ent /usr/local/bin/.
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo cp -a -v ./ent /usr/local/bin/.
 
 .PHONY: rakudo-star
 rakudo-star: $(rakudo-star-ver)
@@ -6081,7 +6090,7 @@ serf: $(serf-ver)
 	# https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=862027
 	# I suspect an updated version of serf will fix this
 	-cd $@/`cat $@/untar.dir`/; scons check
-	cd $@/`cat $@/untar.dir`/; sudo scons PREFIX=/usr/local install
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo scons PREFIX=/usr/local install
 	@echo "======= Build of $@ Successful ======="
 
 .PHONY: scons
@@ -6098,7 +6107,7 @@ slang: $(slang-ver)
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/; make -j1
 	cd $@/`cat $@/untar.dir`/; make check || make test
-	cd $@/`cat $@/untar.dir`/; sudo make install-all
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo make install-all
 	$(call PKGINSTALL,$@)
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
@@ -6328,7 +6337,7 @@ zip: $(zip-ver)
 .PHONY: zlib
 zlib: $(zlib-ver)
 	$(call SOURCEDIR,$@,xfz)
-	sudo /bin/rm -f /usr/local/lib/libz.a /usr/local/lib/libz.so /usr/local/lib/libz.so.1*
+	/usr/bin/sudo /bin/rm -f /usr/local/lib/libz.a /usr/local/lib/libz.so /usr/local/lib/libz.so.1*
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local
 	cd $@/`cat $@/untar.dir`/; make
 	cd $@/`cat $@/untar.dir`/; make check || make test
@@ -7183,7 +7192,7 @@ $(libpthread-ver):
 	$(call SOURCEWGET,"libpthread","http://git.savannah.gnu.org/cgit/hurd/libpthread.git/snapshot/"$(notdir $(libpthread-ver)))
 
 $(libsecret-ver):
-	$(call SOURCEWGET,"libsecret","http://ftp.gnome.org/pub/gnome/sources/libsecret/0.18/"$(notdir $(libsecret-ver)))
+	$(call SOURCEWGET,"libsecret","https://git.gnome.org/browse/libsecret/snapshot/"$(notdir $(libsecret-ver)))
 
 $(libsndfile-ver):
 	$(call SOURCEWGET,"libsndfile","http://www.mega-nerd.com/libsndfile/files/"$(notdir $(libsndfile-ver)))
@@ -7600,7 +7609,6 @@ $(srm-ver):
 	$(call SOURCEWGET,"srm","http://sourceforge.net/projects/srm/files/1.2.15/"$(notdir $(srm-ver)))
 
 $(swig-ver):
-	# (call SOURCEWGET,"swig","http://downloads.sourceforge.net/swig/swig-2.0.11.tar.gz")
 	$(call SOURCEWGET,"swig","http://prdownloads.sourceforge.net/swig/swig-3.0.0.tar.gz")
 
 $(tar-ver):
@@ -7771,7 +7779,6 @@ $(x265-ver):
 	$(call SOURCEWGET,"x265","https://bitbucket.org/multicoreware/x265/downloads/"$(notdir $(x265-ver)))
 
 $(XML-Parser-ver):
-	# (call SOURCEWGET,"XML-Parser","http://search.cpan.org/CPAN/authors/id/M/MS/MSERGEANT/"$(notdir $(XML-Parser-ver)))
 	$(call SOURCEWGET,"XML-Parser","http://search.cpan.org/CPAN/authors/id/T/TO/TODDR/"$(notdir $(XML-Parser-ver)))
 
 $(YAML-Tiny-ver):
