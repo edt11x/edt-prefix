@@ -2853,6 +2853,11 @@ afterlibsecret: \
 # Libgcrypt - https://www.gnupg.org/download/index.html#libgcrypt
 # ==============================================================
 #
+# 2016-01-17
+# cppcheck-ver       = cppcheck/cppcheck-1.71.tar.bz2
+# cppcheck-ver       = cppcheck/cppcheck-1.72.tar.bz2
+# 2018-03-24
+cppcheck-ver       = cppcheck/1.82.tar.gz
 # p11-kit-ver        = p11-kit/p11-kit-0.23.2.tar.gz
 # 2018-03-24
 p11-kit-ver        = p11-kit/p11-kit-0.23.10.tar.gz
@@ -3616,9 +3621,6 @@ cairo-ver          = cairo/cairo-1.14.6.tar.xz
 # cmake-ver          = cmake/cmake-3.4.1.tar.gz
 # 2016-01-17
 vera++-ver         = vera++/vera++-1.3.0.tar.gz
-# 2016-01-17
-# cppcheck-ver       = cppcheck/cppcheck-1.71.tar.bz2
-cppcheck-ver       = cppcheck/cppcheck-1.72.tar.bz2
 # 2016-01-11
 # whois-ver          = whois/whois_5.2.10.tar.xz
 whois-ver          = whois/whois_5.2.11.tar.xz
@@ -6894,7 +6896,7 @@ $(CPAN-Meta-Check-ver):
 	$(call SOURCEWGET,"CPAN-Meta-Check","http://search.cpan.org/CPAN/authors/id/L/LE/LEONT/"$(notdir $(CPAN-Meta-Check-ver)))
 
 $(cppcheck-ver):
-	$(call SOURCEWGET,"cppcheck","http://downloads.sourceforge.net/project/cppcheck/cppcheck/1.72/"$(notdir $(cppcheck-ver)))
+	$(call SOURCEWGET,"cppcheck","https://github.com/danmar/cppcheck/archive/"$(notdir $(cppcheck-ver)))
 
 $(crosextrafonts-ver):
 	$(call SOURCEWGET,"crosextrafonts","http://commondatastorage.googleapis.com/chromeos-localmirror/distfiles/"$(notdir $(crosextrafonts-ver)))
