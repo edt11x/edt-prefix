@@ -2853,6 +2853,12 @@ afterlibsecret: \
 # Libgcrypt - https://www.gnupg.org/download/index.html#libgcrypt
 # ==============================================================
 #
+# p11-kit-ver        = p11-kit/p11-kit-0.23.2.tar.gz
+# 2018-03-24
+p11-kit-ver        = p11-kit/p11-kit-0.23.10.tar.gz
+# libtasn1-ver       = libtasn1/libtasn1-4.3.tar.gz
+# 2018-03-24
+libtasn1-ver       = libtasn1/libtasn1-4.13.tar.gz
 # 2017-07-22
 # gnupg-ver          = gnupg/gnupg-2.0.29.tar.bz2
 # gnupg-ver          = gnupg/gnupg-2.0.30.tar.bz2
@@ -3680,7 +3686,6 @@ libevent-ver       = libevent/libevent-2.0.21-stable.tar.gz
 libffi-ver         = libffi/libffi-3.2.1.tar.gz
 jpeg-ver           = jpeg/jpegsrc.v9b.tar.gz
 libpcap-ver        = libpcap/libpcap-1.4.0.tar.gz
-libtasn1-ver       = libtasn1/libtasn1-4.3.tar.gz
 libusb-ver         = libusb/libusb-1.0.19.tar.bz2
 llvm-ver           = llvm/llvm-3.4.src.tar.gz
 LWP-MediaTypes-ver = LWP-MediaTypes/LWP-MediaTypes-6.02.tar.gz
@@ -3694,7 +3699,6 @@ ncurses-ver        = ncurses/ncurses-6.0.tar.gz
 Net-HTTP-ver       = Net-HTTP/Net-HTTP-6.09.tar.gz
 netpbm-ver         = netpbm/netpbm-10.35.95.tgz
 ntfs-3g-ver        = ntfs-3g/ntfs-3g_ntfsprogs-2013.1.13.tgz
-p11-kit-ver        = p11-kit/p11-kit-0.23.2.tar.gz
 pango-ver          = pango/pango-1.36.8.tar.xz
 patch-ver          = patch/patch-2.7.tar.gz
 pkg-config-ver     = pkg-config/pkg-config-0.29.tar.gz
@@ -3978,6 +3982,7 @@ libffi : \
 .PHONY: libogg
 .PHONY: libdnet
 .PHONY: libmpeg2
+.PHONY: libtasn1
 .PHONY: libvorbis
 .PHONY: libxml2
 .PHONY: libxslt
@@ -7483,7 +7488,7 @@ $(opus-ver):
 	$(call SOURCEWGET,"opus","http://downloads.xiph.org/releases/"$(opus-ver))
 
 $(p11-kit-ver):
-	$(call SOURCEWGET,"p11-kit","http://p11-glue.freedesktop.org/releases/"$(notdir $(p11-kit-ver)))
+	$(call SOURCEWGET,"p11-kit","https://github.com/p11-glue/p11-kit/releases/download/0.23.10/"$(notdir $(p11-kit-ver)))
 
 $(Package-DeprecationManager-ver):
 	$(call SOURCEWGET,"Package-DeprecationManager","http://search.cpan.org/CPAN/authors/id/D/DR/DROLSKY/"$(notdir $(Package-DeprecationManager-ver)))
