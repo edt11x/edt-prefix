@@ -2685,6 +2685,7 @@ afterlibxml2: \
 .PHONY: afterscons
 afterscons: \
     check_sudo \
+    six \
     serf \
     protobuf \
     mosh \
@@ -2852,6 +2853,19 @@ afterlibsecret: \
 # Libgcrypt - https://www.gnupg.org/download/index.html#libgcrypt
 # ==============================================================
 #
+# 2017-07-22
+# gnupg-ver          = gnupg/gnupg-2.0.29.tar.bz2
+# gnupg-ver          = gnupg/gnupg-2.0.30.tar.bz2
+# gnupg-ver          = gnupg/gnupg-2.1.21.tar.bz2
+# 2018-03-23
+gnupg-ver          = gnupg/gnupg-2.2.5.tar.bz2
+# libxml2-ver        = libxml2/libxml2-2.9.3.tar.gz
+# 2018-01-27
+# libxml2-ver        = libxml2/libxml2-2.9.7.tar.gz
+# 2018-03-23
+libxml2-ver        = libxml2/libxml2-2.9.8.tar.gz
+# 2018-03-23
+six-ver = six/six-1.11.0.tar.gz
 # autogen-ver        = autogen/autogen-5.18.7.tar.xz
 # 2018-03-21
 autogen-ver        = autogen/autogen-5.18.12.tar.xz
@@ -3098,9 +3112,6 @@ vim-ver            = vim/v8.0.1493.tar.gz
 busybox-ver = busybox/busybox-1.28.0.tar.bz2
 # 2018-02-03 
 musl-ver = musl/musl-1.1.18.tar.gz
-# libxml2-ver        = libxml2/libxml2-2.9.3.tar.gz
-# 2018-01-27
-libxml2-ver        = libxml2/libxml2-2.9.7.tar.gz
 # libxslt-ver        = libxslt/libxslt-1.1.28.tar.gz
 # 2018-01-27
 libxslt-ver        = libxslt/libxslt-1.1.32.tar.gz
@@ -3178,11 +3189,6 @@ subversion-ver     = subversion/subversion-1.9.7.tar.bz2
 # ntbtls-ver         = ntbtls/ntbtls-0.1.1.tar.bz2
 # 2017-12-02
 ntbtls-ver         = ntbtls/ntbtls-0.1.2.tar.bz2
-# 2016-08-20
-# libassuan-ver      = libassuan/libassuan-2.3.0.tar.bz2
-# libassuan-ver      = libassuan/libassuan-2.4.3.tar.bz2
-# 2017-12-02
-libassuan-ver      = libassuan/libassuan-2.4.5.tar.bz2
 # 2017-12-02
 MoarVM-ver = MoarVM/MoarVM-2017.09.1.tar.gz
 # 2016-07-24
@@ -3253,10 +3259,6 @@ npth-ver      = npth/npth-1.5.tar.bz2
 # libksba-ver        = libksba/libksba-1.3.3.tar.bz2
 # libksba-ver        = libksba/libksba-1.3.4.tar.bz2
 libksba-ver        = libksba/libksba-1.3.5.tar.bz2
-# 2017-07-22
-# gnupg-ver          = gnupg/gnupg-2.0.29.tar.bz2
-# gnupg-ver          = gnupg/gnupg-2.0.30.tar.bz2
-gnupg-ver          = gnupg/gnupg-2.1.21.tar.bz2
 # 2017-07-22
 # libgpg-error-ver   = libgpg-error/libgpg-error-1.20.tar.bz2
 # libgpg-error-ver   = libgpg-error/libgpg-error-1.24.tar.bz2
@@ -5075,17 +5077,17 @@ go: $(go-ver)
 	cd $@; /usr/bin/sudo cp -r go /usr/local/.
 	cd /usr/local/go/src; /usr/bin/sudo ./all.bash
 
-# I think gnupg will not find the scdaemon during the first test.
-# I think it has to be installed and then re-run the test.
+# 
+# During testing, it does not like a really old ssh config file in /etc/ssh
 .PHONY: gnupg
 gnupg : \
     $(gnupg-ver)
 	$(call SOURCEDIR,$@,xf)
-	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --enable-shared
+	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --enable-shared \
+	    --enable-symcryptrun --enable-maintainer-mode --enable-g13 LDFLAGS=-lrt
 	cd $@/`cat $@/untar.dir`/; make
-	-cd $@/`cat $@/untar.dir`/; make check || make test
-	/usr/bin/sudo /bin/rm -f /usr/local/bin/gpg
-	/usr/bin/sudo /bin/ln /usr/local/bin/gpg2 /usr/local/bin/gpg
+	- cd $@/`cat $@/untar.dir`/; make check || make test
+	/usr/bin/sudo /bin/rm -f /usr/local/bin/gpg /usr/local/gpg2
 	$(call PKGINSTALL,$@)
 	$(call CPLIB,libproto*)
 	$(call CPLIB,lib$@*)
@@ -6145,10 +6147,18 @@ serf: $(serf-ver)
 	@echo "======= Build of $@ Successful ======="
 
 .PHONY: scons
-scons: $(scons-ver)
+scons : $(scons-ver)
 	$(call SOURCEDIR,$@,xf)
 	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo python setup.py install \
 	    --prefix=/usr/local  --standard-lib --optimize=1 --install-data=/usr/share
+	@echo "======= Build of $@ Successful ======="
+
+.PHONY: six
+six : $(six-ver)
+	$(call SOURCEDIR,$@,xf)
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo python setup.py build
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo python setup.py install \
+	    --prefix=/usr/local --optimize=1 --install-data=/usr/share
 	@echo "======= Build of $@ Successful ======="
 
 # slang does not like the parallel build
@@ -6718,6 +6728,7 @@ wget-all: \
     $(sed-ver) \
     $(serf-ver) \
     $(sharutils-ver) \
+    $(six-ver) \
     $(slang-ver) \
     $(snort-ver) \
     $(socat-ver) \
@@ -7610,6 +7621,9 @@ $(serf-ver):
 # sharutils needed for cryptsetup
 $(sharutils-ver):
 	$(call SOURCEWGET, "sharutils", "http://ftp.gnu.org/gnu/sharutils/sharutils-4.15.1.tar.xz")
+
+$(six-ver):
+	$(call SOURCEWGET, "six", "https://pypi.io/packages/source/s/"$(six-ver))
 
 $(slang-ver):
 	$(call SOURCEWGET,"slang","http://www.jedsoft.org/releases/"$(slang-ver))
