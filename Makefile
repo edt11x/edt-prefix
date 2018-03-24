@@ -1,4 +1,34 @@
-#"$(notdir $(lynis-ver)))
+#
+# edt-prefix
+# ==========
+# 
+###################################################################################
+###################################################################################
+#
+# My Linux Prefix Project
+# 
+# Main goals:
+# 
+# * I run into old, sometimes very old, versions of Linux at client sites. I
+#   want to be able to use some modern tools. This is not uncommon in avionics
+#   development, where tools are qualified and may live for more than a decade.
+#
+# * Build a set of tools that sit outside of the normal /bin, /sbin, /usr/bin,
+#   /usr/sbin, etc.
+# 
+# * Build a set of tools that won't interfere with the pre-existing installed
+#   tools
+# 
+# * Don't require additional users be added to the Linux box
+#
+# * Build a reasonable set of new tools on the old distribution
+#
+# * Give myself a platform and a methodology for building complex Linux source
+#   packages.
+# 
+###################################################################################
+###################################################################################
+# 
 # Things I should work on:
 # * Alot of these packages fall into some pretty generic patterns,
 #  - tar xf; configure; make; make check; /usr/bin/sudo make install
@@ -10,12 +40,28 @@
 #   build with just a straight C compiler, then I need to build a more
 #   recent version of GCC, like GCC 6 to build the rest of the packages.
 #
+###################################################################################
+###################################################################################
+#
 # We need a new version of Make to handle this Makefile. Probably
 # need to compile Make by hand so this will work or package install
 # from somewhere else.
 #
+###################################################################################
+###################################################################################
+#
+# Since we are building coreutils and other fundemental linux packages, we need
+# this Makefile to use the original linux install of many basic utilities like
+# rm, find, sudo, cp, etc.
+#
+###################################################################################
+###################################################################################
+#
 # The machine needs at least 1Gbyte of RAM or binutils will not
 # pass the tests.
+#
+###################################################################################
+###################################################################################
 #
 # texinfo needs a newer version of gzip to pass its tests
 # texinfo is used by many programs to install the info files
@@ -2113,10 +2159,13 @@ define SOURCEBANNER
 endef
 
 # tcp_wrappers uses underscore in front of the version number
+# Unfortunately, the make install for some of these packages corrupt the
+# build directories with some amount of root owned files, so we need
+# to use sudo to remove them
 define SOURCEBASE
 	$(call MKVRFYDIR,$1)
-	cd $1; find . -maxdepth 1 -type d -name $1-\* -print -exec /bin/rm -rf {} \;
-	cd $1; find . -maxdepth 1 -type d -name $1_\* -print -exec /bin/rm -rf {} \;
+	cd $1; find . -maxdepth 1 -type d -name $1-\* -print -exec /usr/bin/sudo /bin/rm -rf {} \;
+	cd $1; find . -maxdepth 1 -type d -name $1_\* -print -exec /usr/bin/sudo /bin/rm -rf {} \;
 	cd $1; /usr/bin/sudo /bin/rm -rf *-build
 endef
 
@@ -2561,7 +2610,6 @@ afterbison: \
     check_sudo \
     autogen \
     automake \
-    rng-tools \
     tcl \
     tclx \
     expect \
@@ -2570,8 +2618,8 @@ afterbison: \
     libgpg-error \
     libgcrypt \
     libassuan \
-    ntbtls \
     libksba \
+    ntbtls \
     npth \
     libcap \
     libxml2 \
@@ -2751,6 +2799,7 @@ afterpatch: \
     octave \
     tcpdump \
     pixman \
+    rng-tools \
     libsecret \
     afterlibsecret
 
@@ -2803,6 +2852,9 @@ afterlibsecret: \
 # Libgcrypt - https://www.gnupg.org/download/index.html#libgcrypt
 # ==============================================================
 #
+# autogen-ver        = autogen/autogen-5.18.7.tar.xz
+# 2018-03-21
+autogen-ver        = autogen/autogen-5.18.12.tar.xz
 # 2018-03-18
 libsecret-ver      = libsecret/libsecret-0.18.5.tar.xz
 # 2016-09-23
@@ -3576,7 +3628,6 @@ apr-ver            = apr/apr-1.5.2.tar.bz2
 Archive-Zip-ver    = Archive-Zip/Archive-Zip-1.51.tar.gz
 attr-ver           = attr/attr-2.4.47.src.tar.gz
 autoconf-ver       = autoconf/autoconf-2.69.tar.xz
-autogen-ver        = autogen/autogen-5.18.7.tar.xz
 bash-ver           = bash/bash-4.3.30.tar.gz
 bcrypt-ver         = bcrypt/bcrypt-1.1.tar.gz
 bison-ver          = bison/bison-3.0.tar.gz
@@ -5967,7 +6018,7 @@ perl: $(perl-ver) patches/perl5.patch
 	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo make install PERLNAME=perl
 	$(call PKGINSTALL,$@)
 	/usr/bin/sudo /bin/rm -f /usr/local/perl
-	cd /usr/local/bin; /usr/bin/sudo ln -s "perl"$(word 2,$(subst -, ,$(basename $(basename $(notdir $(perl-ver))))))
+	cd /usr/local/bin; /usr/bin/sudo ln -s "perl"$(word 2,$(subst -, ,$(basename $(basename $(notdir $(perl-ver)))))) perl
 	$(call CPLIB,lib$@*)
 	$(call CPLIB,$@*)
 
@@ -6734,7 +6785,7 @@ $(autoconf-ver):
 	$(call SOURCEWGET,"autoconf","https://ftp.gnu.org/gnu/"$(autoconf-ver))
 
 $(autogen-ver):
-	$(call SOURCEWGET,"autogen","https://ftp.gnu.org/gnu/"$(autogen-ver))
+	$(call SOURCEWGET,"autogen","https://ftp.gnu.org/gnu/autogen/rel"$(word 2,$(subst -, ,$(basename $(basename $(notdir $(autogen-ver))))))"/"$(notdir $(autogen-ver)))
 
 $(automake-ver):
 	$(call SOURCEWGET,"automake","https://ftp.gnu.org/gnu/"$(automake-ver))
