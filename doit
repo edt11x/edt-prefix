@@ -2,6 +2,24 @@
 # glibc warns that you should not include the current directory in LD_LIBRARY_PATH when
 # building glibc
 # export LD_LIBRARY_PATH="/usr/local/lib:/lib:."
+###################################################################################
+###################################################################################
+# So we want to do this progression
+# - Build enough with the existing compiler that we can get a good build environment
+#   going. Some fundemental packages are going to be problematic to transition
+#   from the old compiler to our new build environment. Some packages are
+#   are more problematic to replace.
+# - Build everything up, so we can build a reasonably modern C/C++ compiler.
+#   GCC 4.7.4 is the last GCC you can build with just a C compiler. The newer
+#   builds need a C++ compiler. One certified environment I am involved with only
+#   comes with a C compiler, no C++ support.
+# - Build the reasonably recent C/C++ compiler.
+# - Now go back and rebuild everything you have done to this point with the C/C++
+#   compiler you just built.
+# - Now you should have enough tools to start divorcing yourself from the existing
+#   tools in the native Linux system.
+###################################################################################
+###################################################################################
 set -o pipefail
 ulimit -s 16384
 unset DISPLAY
@@ -26,6 +44,7 @@ then
     echo "Old Compiler build failed."
     exit 1
 fi
+# Now start building all the packages we will need to build the C/C++ compiler.
 PATH=/usr/sbin:/usr/bin:/bin:/usr/local/sbin:/usr/local/bin:/usr/local/qt5/bin make GCC_LANGS="c,c++" SHELL=/bin/bash PHASE1_NOCHECK="echo Not going to -- " phase1 2>&1 | /usr/bin/tee make1.out
 export RETVAL=$?
 echo Look Here XXX XXX XXX - $RETVAL
@@ -35,6 +54,8 @@ then
     exit 1
 fi
 unset CFLAGS
+# Using the C/C++ compiler we just built go rebuild everything and the start
+# building all the follow on packages.
 PATH=/usr/local/bin:/usr/local/sbin:/usr/sbin:/usr/bin:/bin:/usr/local/qt5/bin /usr/local/bin/make SHELL=/bin/bash all 2>&1 | /usr/bin/tee make2.out
 export RETVAL=$?
 echo Look Here XXX XXX XXX - $RETVAL

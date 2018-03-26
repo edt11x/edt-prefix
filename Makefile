@@ -5694,10 +5694,13 @@ llvm: $(llvm-ver) $(clang-ver) $(compiler-rt-ver) patches/compiler-rt.patch
 	cd $@/`cat $@/untar.dir`/; mv tools/clang-3.4 tools/clang
 	cd $@/`cat $@/untar.dir`/; mv projects/compiler-rt-3.4 projects/compiler-rt
 	cd $@/`cat $@/untar.dir`/projects/compiler-rt/lib/sanitizer_common; patch < ../../../../../../patches/compiler-rt.patch
-	cd $@/`cat $@/untar.dir`/; CC=gcc CXX=g++ CPPFLAGS="-I/usr/local/include -I/usr/include" LDFLAGS="-L/usr/local/lib" ./configure --prefix=/usr/local \
+	cd $@/`cat $@/untar.dir`/; CC=gcc CXX=g++ \
+	    CPPFLAGS="-I/usr/local/include -I/usr/include -I/usr/include/x86_64-linux-gnu" \
+	    LDFLAGS="-L/usr/local/lib" ./configure --prefix=/usr/local \
 	    --sysconfdir=/usr/local/etc --enable-libffi --enable-optimized --enable-shared \
 	    --enable-targets=all \
-	    --with-c-include-dirs="/usr/local/include:/usr/include" --with-gcc-toolchain=/usr/local
+	    --with-c-include-dirs="/usr/local/include:/usr/include:/usr/include/x86_64-linux-gnu" \
+	    --with-gcc-toolchain=/usr/local
 	    # --with-c-include-dirs="/usr/include/linux-2.6.32/include:/usr/include:/usr/local/include"
 	cd $@/`cat $@/untar.dir`/; make
 	cd $@/`cat $@/untar.dir`/; make check || make test
@@ -7796,7 +7799,7 @@ $(Type-Tiny-ver):
 	$(call SOURCEWGET,"Type-Tiny","http://search.cpan.org/CPAN/authors/id/T/TO/TOBYINK/"$(notdir $(Type-Tiny-ver)))
 
 $(util-linux-ver):
-	$(call SOURCEWGET,"util-linux","https://www.kernel.org/pub/linux/utils/util-linux/v2.28/"$(notdir $(util-linux-ver)))
+	$(call SOURCEWGET,"util-linux-ng","https://mirrors.edge.kernel.org/pub/linux/utils/util-linux/v2.18/"$(not      dir $(util-linux-ng-ver)))
 
 $(util-linux-ng-ver):
 	$(call SOURCEWGET,"util-linux-ng","ftp://ftp.kernel.org/pub/linux/utils/util-linux/v2.18/util-linux-ng-2.18.tar.xz")
