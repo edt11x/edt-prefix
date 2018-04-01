@@ -2854,6 +2854,9 @@ afterlibsecret: \
 # Libgcrypt - https://www.gnupg.org/download/index.html#libgcrypt
 # ==============================================================
 #
+# pkg-config-ver     = pkg-config/pkg-config-0.29.tar.gz
+# 2018-04-01
+pkg-config-ver     = pkg-config/pkg-config-0.29.2.tar.gz
 # flex-ver           = flex/flex-2.5.39.tar.gz
 # 2018-02-23
 # flex-ver           = flex/flex-2.6.4.tar.gz
@@ -2861,6 +2864,7 @@ afterlibsecret: \
 # So if we compile PHASE1 with a host with a modern GCC, we might
 # have problems.
 # A fix is probably coming soon.
+# Resolved 2.6.4 with a fix from Linux from Scratch
 # 2018-03-29
 # flex-ver           = flex/flex-2.6.3.tar.gz
 flex-ver           = flex/flex-2.6.4.tar.gz
@@ -3722,7 +3726,6 @@ netpbm-ver         = netpbm/netpbm-10.35.95.tgz
 ntfs-3g-ver        = ntfs-3g/ntfs-3g_ntfsprogs-2013.1.13.tgz
 pango-ver          = pango/pango-1.36.8.tar.xz
 patch-ver          = patch/patch-2.7.tar.gz
-pkg-config-ver     = pkg-config/pkg-config-0.29.tar.gz
 Pod-Coverage-ver   = Pod-Coverage/Pod-Coverage-0.23.tar.gz
 popt-ver           = popt/popt-1.16.tar.gz
 psmisc-ver         = psmisc/psmisc-22.21.tar.gz
