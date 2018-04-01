@@ -2387,6 +2387,7 @@ phase1: \
      mpfr \
      mpc \
      libelf \
+     bison \
      flex \
      gawk \
      libtool \
@@ -2853,6 +2854,30 @@ afterlibsecret: \
 # Libgcrypt - https://www.gnupg.org/download/index.html#libgcrypt
 # ==============================================================
 #
+# flex-ver           = flex/flex-2.5.39.tar.gz
+# 2018-02-23
+# flex-ver           = flex/flex-2.6.4.tar.gz
+# Backing off to flex 2.6.3, 2.6.4 fights with newer versions of GCC
+# So if we compile PHASE1 with a host with a modern GCC, we might
+# have problems.
+# A fix is probably coming soon.
+# 2018-03-29
+# flex-ver           = flex/flex-2.6.3.tar.gz
+flex-ver           = flex/flex-2.6.4.tar.gz
+bison-ver          = bison/bison-3.0.tar.gz
+# 2018-03-29
+# bison-ver          = bison/bison-3.0.4.tar.gz
+# 2016-08-27
+# diffutils-ver      = diffutils/diffutils-3.3.tar.xz
+# diffutils-ver      = diffutils/diffutils-3.5.tar.xz
+# 2018-03-28
+diffutils-ver      = diffutils/diffutils-3.6.tar.xz
+# scrypt-ver         = scrypt/scrypt-1.1.6.tgz
+# 2018-03-28
+scrypt-ver         = scrypt/scrypt-1.2.1.tgz
+# dejagnu-ver        = dejagnu/dejagnu-1.5.3.tar.gz
+# 2018-03-27
+dejagnu-ver        = dejagnu/dejagnu-1.6.tar.gz
 # 2016-01-17
 # cppcheck-ver       = cppcheck/cppcheck-1.71.tar.bz2
 # cppcheck-ver       = cppcheck/cppcheck-1.72.tar.bz2
@@ -3097,9 +3122,6 @@ fribidi-ver        = fribidi/v1.0.1.tar.gz
 symlinks-ver       = symlinks/v1.4.3.tar.gz
 # tcl-ver            = tcl/tcl8.6.3-src.tar.gz
 tcl-ver            = tcl/tcl8.6.8-src.tar.gz
-# flex-ver           = flex/flex-2.5.39.tar.gz
-# 2018-02-23
-flex-ver           = flex/flex-2.6.4.tar.gz
 # binutils-ver       = binutils/binutils-2.24.tar.gz
 # 2017-10-07
 # binutils-ver       = binutils/binutils-2.29.1.tar.gz
@@ -3470,9 +3492,6 @@ db-ver             = db/db-6.2.23.tar.gz
 # 2016-09-09
 # openvpn-ver        = openvpn/openvpn-2.3.8.tar.xz
 openvpn-ver        = openvpn/openvpn-2.3.12.tar.xz
-# 2016-08-27
-# diffutils-ver      = diffutils/diffutils-3.3.tar.xz
-diffutils-ver      = diffutils/diffutils-3.5.tar.xz
 # 2016-05-15
 # ImageMagick-ver   = ImageMagick/ImageMagick-7.0.1-3.tar.xz
 # 2016-08-26
@@ -3617,8 +3636,6 @@ libidn-ver         = libidn/libidn-1.32.tar.gz
 # 2016-01-21
 # cairo-ver          = cairo/cairo-1.14.2.tar.xz
 cairo-ver          = cairo/cairo-1.14.6.tar.xz
-# 2016-01-20
-# cmake-ver          = cmake/cmake-3.4.1.tar.gz
 # 2016-01-17
 vera++-ver         = vera++/vera++-1.3.0.tar.gz
 # 2016-01-11
@@ -3632,15 +3649,18 @@ hashdeep-ver       = hashdeep/hashdeep-4.4.tar.gz
 httpd-ver          = httpd/httpd-2.4.18.tar.bz2
 # 2016-01-09 Lua
 lua-ver            = lua/lua-5.3.2.tar.gz
+# attr was last updated 19-May-2013 14:16, checked 2018-03-28
+attr-ver           = attr/attr-2.4.47.src.tar.gz
+# acl was last updated 19-May-2013 06:10, checked 2018-03-28
 acl-ver            = acl/acl-2.2.52.src.tar.gz
+# bcrypte was last updated 2002-09-13, checked 2018-03-28
+bcrypt-ver         = bcrypt/bcrypt-1.1.tar.gz
+# The rest of these, I should check
 apr-util-ver       = apr-util/apr-util-1.5.4.tar.bz2
 apr-ver            = apr/apr-1.5.2.tar.bz2
 Archive-Zip-ver    = Archive-Zip/Archive-Zip-1.51.tar.gz
-attr-ver           = attr/attr-2.4.47.src.tar.gz
 autoconf-ver       = autoconf/autoconf-2.69.tar.xz
 bash-ver           = bash/bash-4.3.30.tar.gz
-bcrypt-ver         = bcrypt/bcrypt-1.1.tar.gz
-bison-ver          = bison/bison-3.0.tar.gz
 bzip-ver           = bzip/bzip2-1.0.6.tar.gz
 ca-cert-ver        = ca-cert/ca-cert-1.0
 check-ver          = check/check-0.9.12.tar.gz
@@ -3648,7 +3668,6 @@ clang-ver          = clang/clang-3.4.src.tar.gz
 clisp-ver          = clisp/clisp-2.49.tar.gz
 compiler-rt-ver    = compiler-rt/compiler-rt-3.4.src.tar.gz
 coreutils-ver      = coreutils/coreutils-8.22.tar.xz
-dejagnu-ver        = dejagnu/dejagnu-1.5.3.tar.gz
 Digest-SHA1-ver    = Digest-SHA1/Digest-SHA1-2.13.tar.gz
 e2fsprogs-ver      = e2fsprogs/master.zip
 ecj-ver            = ecj/ecj-latest.jar
@@ -3711,7 +3730,6 @@ pth-ver            = pth/pth-2.0.7.tar.gz
 pygobject-ver      = pygobject/pygobject-2.28.6.tar.xz
 readline-ver       = readline/readline-6.3.tar.gz
 Scalar-MoreUtils-ver = Scalar-MoreUtils/Scalar-MoreUtils-0.02.tar.gz
-scrypt-ver         = scrypt/scrypt-1.1.6.tgz
 sed-ver            = sed/sed-4.2.2.tar.gz
 sharutils-ver      = sharutils/sharutils-4.15.1.tar.xz
 sparse-ver         = sparse/sparse-0.5.0.tar.gz
@@ -3876,7 +3894,7 @@ scrypt: $(scrypt-ver)
 .PHONY: ntbtls
 .PHONY: npth
 .PHONY: which
-apr findutils gdbm jpeg libgpg-error libassuan libksba libpng ntbtls npth which: $(which-ver) $(libpng-ver) $(libgpg-error-ver) $(libassuan-ver) $(libksba-ver) $(apr-ver) $(gdbm-ver) $(findutils-ver) $(jpeg-ver) $(npth-ver) $(ntbtls-ver)
+apr findutils gdbm jpeg libgpg-error libassuan libksba libpng ntbtls npth which: $(which-ver) $(libpng-ver) $(libgpg-error-ver) $(libassuan-ver) $(libksba-ver) $(apr-ver) $(gdbm-ver) $(findutils-ver) $(jpeg-ver) $(npth-ver) $(ntbtls-ver) 
 	$(call SOURCEDIR,$@,xf)
 	cd $@; mkdir $@-build
 	cd $@/$@-build/; readlink -f . | grep $@-build
@@ -3915,7 +3933,7 @@ libvpx oath-toolkit : \
 	$(call CPLIB,$@*)
 
 # Standard build, post tar rule, separate build directory,
-# broken copyright
+# broken copyright or fails tests
 #
 # We should have a good version of tar that automatically detects
 # file type
@@ -3923,6 +3941,9 @@ libvpx oath-toolkit : \
 # patch hardcodes /bin/vi and fails tests because the installed vi
 # is too old to handle the command line arguments that are passed.
 # skip tests for texinfo needs a newer version of gzip to pass
+# diffutils is failing one test where the date string doesn't insert
+# the UTC hour offset, strftime is in glibc, which my goal is to
+# avoid replacing on an existing system.
 .PHONY: diffutils
 .PHONY: grep
 .PHONY: m4
@@ -3977,7 +3998,6 @@ libffi : \
 .PHONY: daq
 .PHONY: file
 .PHONY: flac
-.PHONY: flex
 .PHONY: jnettop
 .PHONY: lame
 .PHONY: libarchive
@@ -3996,13 +4016,12 @@ libffi : \
 .PHONY: tcc
 .PHONY: xmlsec1
 .PHONY: yasm
-jnettop libxml2 check file protobuf libtasn1 popt sharutils libxslt libidn daq libdnet alsa-lib libogg flac libvorbis octave lame yasm opus libmpeg2 xmlsec1 tcc flex libarchive : \
+jnettop libxml2 check file protobuf libtasn1 popt sharutils libxslt libidn daq libdnet alsa-lib libogg flac libvorbis octave lame yasm opus libmpeg2 xmlsec1 tcc libarchive : \
     $(alsa-lib-ver) \
     $(check-ver) \
     $(daq-ver) \
     $(file-ver) \
     $(flac-ver) \
-    $(flex-ver) \
     $(jnettop-ver) \
     $(lame-ver) \
     $(libarchive-ver) \
@@ -4138,6 +4157,8 @@ srm wipe mosh socat tmux psmisc libusb htop cairo iptraf-ng hwloc nano libass fd
 
 # No make check || make test, no test
 # bison fails the glibc version test, we have too old of a GLIBC
+# bison will also fail before flex is installed. bison and flex
+# have circular dependancies
 # gobject-introspection wants cairo installed for testing
 # lmza fails the glibc version test, we have too old of a GLIBC
 #  we are linking to an old librt in GLIBC
@@ -4899,6 +4920,19 @@ ffmpeg : \
             --enable-libx264     \
             --enable-libx265
 	cd $@/`cat $@/untar.dir`/; make
+	$(call PKGINSTALL,$@)
+	$(call CPLIB,libproto*)
+	$(call CPLIB,lib$@*)
+	$(call CPLIB,$@*)
+
+.PHONY: flex
+flex : \
+    $(flex-ver)
+	$(call SOURCEDIR,$@,xf)
+	cd $@/`cat $@/untar.dir`/; sed -i "/math.h/a #include <malloc.h>" src/flexdef.h
+	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --enable-shared
+	cd $@/`cat $@/untar.dir`/; make
+	cd $@/`cat $@/untar.dir`/; make check || make test
 	$(call PKGINSTALL,$@)
 	$(call CPLIB,libproto*)
 	$(call CPLIB,lib$@*)
@@ -7041,7 +7075,7 @@ $(flac-ver):
 	$(call SOURCEWGET,"flac","http://downloads.xiph.org/releases/flac/"$(notdir $(flac-ver)))
 
 $(flex-ver):
-	$(call SOURCEWGET,"flex","https://github.com/westes/flex/releases/download/v2.6.4/"$(notdir $(flex-ver)))
+	$(call SOURCEWGET,"flex","https://github.com/westes/flex/releases/download/v"$(word 2,$(subst -, ,$(basename $(basename $(notdir $(flex-ver))))))"/"$(notdir $(flex-ver)))
 
 $(ffmpeg-ver):
 	$(call SOURCEWGET,"ffmpeg","http://ffmpeg.org/releases/"$(notdir $(ffmpeg-ver)))
