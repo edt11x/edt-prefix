@@ -2854,6 +2854,66 @@ afterlibsecret: \
 # Libgcrypt - https://www.gnupg.org/download/index.html#libgcrypt
 # ==============================================================
 #
+# openssl-ver        = openssl/openssl-1.0.2e.tar.gz
+# 2016-03-11
+# openssl-ver        = openssl/openssl-1.0.2g.tar.gz
+# 2016-05-06
+#
+# Need pthreads.
+# 2016-08-26
+# openssl-ver        = openssl/openssl-1.1.0.tar.gz
+# New version of apr, apr-util
+# openssl-ver        = openssl/openssl-1.0.2h.tar.gz
+# 2017-05-20
+# openssl-ver        = openssl/openssl-1.0.2k.tar.gz
+# 2017-10-11
+# openssl-ver        = openssl/openssl-1.0.2l.tar.gz
+# 2017-11-05
+# openssl-ver        = openssl/openssl-1.0.2m.tar.gz
+# 2018-01-12
+# openssl-ver        = openssl/openssl-1.0.2n.tar.gz
+# 2018-06-24
+openssl-ver        = openssl/openssl-1.0.2o.tar.gz
+# 2016-08-26
+# perl-ver           = perl/perl-5.22.1.tar.gz
+# perl-ver           = perl/perl-5.24.0.tar.gz
+# 2017-11-05
+# perl-ver           = perl/perl-5.26.0.tar.gz
+# 2017-12-02
+# perl-ver           = perl/perl-5.26.1.tar.gz
+# 2018-03-08
+# perl-ver           = perl/perl-5.27.9.tar.gz
+# 2018-03-17 moving back to the stable version
+# perl-ver           = perl/perl-5.26.1.tar.gz
+# 2018-06-24
+perl-ver           = perl/perl-5.26.2.tar.gz
+# 2018-03-18
+# libsecret-ver      = libsecret/libsecret-0.18.5.tar.xz
+# 2018-06-23
+libsecret-ver      = libsecret/libsecret-0.18.6.tar.xz
+# 2017-10-10
+boost-ver          = boost/boost_1_63_0.tar.bz2
+# 2018-06-23
+# boost-ver          = boost/boost_1_67_0.tar.bz2
+# 2016-05-15
+# valgrind-ver      = valgrind/valgrind-3.11.0.tar.bz2
+# 2016-12-29
+# Hey, valgrind seems to be sort of working!
+# valgrind-ver      = valgrind/valgrind-3.12.0.tar.bz2
+# 2018-06-23
+valgrind-ver      = valgrind/valgrind-3.13.0.tar.bz2
+# 2017-01-27
+# pcre-ver           = pcre/pcre-8.38.tar.bz2
+# pcre-ver           = pcre/pcre-8.40.tar.bz2
+# 2017-10-04
+# pcre-ver           = pcre/pcre-8.41.tar.bz2
+# 2018-06-23
+pcre-ver           = pcre/pcre-8.42.tar.bz2
+# bison-ver          = bison/bison-3.0.tar.gz
+# 2018-03-29
+# bison-ver          = bison/bison-3.0.4.tar.gz
+# 2018-06-16
+bison-ver          = bison/bison-3.0.5.tar.gz
 # pkg-config-ver     = pkg-config/pkg-config-0.29.tar.gz
 # 2018-04-01
 pkg-config-ver     = pkg-config/pkg-config-0.29.2.tar.gz
@@ -2868,9 +2928,6 @@ pkg-config-ver     = pkg-config/pkg-config-0.29.2.tar.gz
 # 2018-03-29
 # flex-ver           = flex/flex-2.6.3.tar.gz
 flex-ver           = flex/flex-2.6.4.tar.gz
-bison-ver          = bison/bison-3.0.tar.gz
-# 2018-03-29
-# bison-ver          = bison/bison-3.0.4.tar.gz
 # 2016-08-27
 # diffutils-ver      = diffutils/diffutils-3.3.tar.xz
 # diffutils-ver      = diffutils/diffutils-3.5.tar.xz
@@ -2909,8 +2966,6 @@ six-ver = six/six-1.11.0.tar.gz
 # autogen-ver        = autogen/autogen-5.18.7.tar.xz
 # 2018-03-21
 autogen-ver        = autogen/autogen-5.18.12.tar.xz
-# 2018-03-18
-libsecret-ver      = libsecret/libsecret-0.18.5.tar.xz
 # 2016-09-23
 # XML-Parser-ver     = XML-Parser/XML-Parser-2.36.tar.gz
 # 2018-03-18
@@ -2980,17 +3035,6 @@ HTTP-Message-ver   = HTTP-Message/HTTP-Message-6.15.tar.gz
 File-Path-ver = File-Path/File-Path-2.15.tar.gz
 # 2018-03-17
 PathTools-ver = PathTools/PathTools-3.74.tar.gz
-# 2016-08-26
-# perl-ver           = perl/perl-5.22.1.tar.gz
-# perl-ver           = perl/perl-5.24.0.tar.gz
-# 2017-11-05
-# perl-ver           = perl/perl-5.26.0.tar.gz
-# 2017-12-02
-# perl-ver           = perl/perl-5.26.1.tar.gz
-# 2018-03-08
-# perl-ver           = perl/perl-5.27.9.tar.gz
-# 2018-03-17 moving back to the stable version
-perl-ver           = perl/perl-5.26.1.tar.gz
 # 2016-06-05
 # List-MoreUtils-ver = List-MoreUtils/List-MoreUtils-0.413.tar.gz
 # List-MoreUtils-ver = List-MoreUtils/List-MoreUtils-0.415.tar.gz
@@ -3159,24 +3203,6 @@ oath-toolkit-ver = oath-toolkit/oath-toolkit-2.6.2.tar.gz
 # par2cmdline-ver    = par2cmdline/master.zip
 # 2018-01-27
 par2cmdline-ver    = par2cmdline/v0.8.0.tar.gz
-# openssl-ver        = openssl/openssl-1.0.2e.tar.gz
-# 2016-03-11
-# openssl-ver        = openssl/openssl-1.0.2g.tar.gz
-# 2016-05-06
-#
-# Need pthreads.
-# 2016-08-26
-# openssl-ver        = openssl/openssl-1.1.0.tar.gz
-# New version of apr, apr-util
-# openssl-ver        = openssl/openssl-1.0.2h.tar.gz
-# 2017-05-20
-# openssl-ver        = openssl/openssl-1.0.2k.tar.gz
-# 2017-10-11
-# openssl-ver        = openssl/openssl-1.0.2l.tar.gz
-# 2017-11-05
-# openssl-ver        = openssl/openssl-1.0.2m.tar.gz
-# 2018-01-12
-openssl-ver        = openssl/openssl-1.0.2n.tar.gz
 # doxygen-ver        = doxygen/doxygen-1.8.9.1.src.tar.gz
 # 2017-12-31
 doxygen-ver        = doxygen/Release_1_8_14.tar.gz
@@ -3248,19 +3274,12 @@ libtool-ver        = libtool/libtool-2.4.6.tar.gz
 # 2017-10-11
 Python-ver         = Python/Python-2.7.14.tar.xz
 # 2017-10-10
-boost-ver          = boost/boost_1_63_0.tar.bz2
-# 2017-10-10
 libuv-ver          = libuv/v1.15.0.tar.gz
 # 2017-10-10
 # 2016-02-27
 cmake-ver          = cmake/cmake-3.4.3.tar.gz
 # 2017-10-10
 # cmake-ver          = cmake/cmake-3.9.4.tar.gz
-# 2017-10-04
-pcre-ver           = pcre/pcre-8.41.tar.bz2
-# 2017-01-27
-# pcre-ver           = pcre/pcre-8.38.tar.bz2
-# pcre-ver           = pcre/pcre-8.40.tar.bz2
 # 2016-04-08
 # git-ver            = git/git-2.2.1.tar.xz
 # git-ver            = git/git-2.8.1.tar.xz
@@ -3453,11 +3472,6 @@ LMDB-ver           = LMDB/LMDB_0.9.19.tar.gz
 maldetect-ver       = maldetect/maldetect-current.tar.gz
 # 2017-01-08
 random-ver          = random/random.zip
-# 2016-05-15
-# valgrind-ver      = valgrind/valgrind-3.11.0.tar.bz2
-# 2016-12-29
-# Hey, valgrind seems to be sort of working!
-valgrind-ver      = valgrind/valgrind-3.12.0.tar.bz2
 # 2016-05-15
 # gdb-ver            = gdb/gdb-7.9.tar.xz
 # gdb-ver           = gdb/gdb-7.11.tar.xz
@@ -5361,7 +5375,7 @@ libpthread: \
 libsecret : \
     $(libsecret-ver)
 	$(call SOURCEDIR,$@,xf)
-	cd $@/`cat $@/untar.dir`/; ./autogen.sh --prefix=/usr/local --disable-manpages --disable-gtk-doc
+	# cd $@/`cat $@/untar.dir`/; ./autogen.sh --prefix=/usr/local --disable-manpages --disable-gtk-doc
 	cd $@/`cat $@/untar.dir`/; ./configure --prefix=/usr/local --disable-manpages --disable-gtk-doc
 	cd $@/`cat $@/untar.dir`/; make
 	-cd $@/`cat $@/untar.dir`/; make check || make test
@@ -6867,7 +6881,7 @@ $(bison-ver):
 	$(call SOURCEWGET,"bison","http://ftp.gnu.org/gnu/"$(bison-ver))
 
 $(boost-ver):
-	$(call SOURCEWGET,"boost","http://downloads.sourceforge.net/project/boost/boost/1.63.0/"$(notdir $(boost-ver)))
+	$(call SOURCEWGET,"boost","https://dl.bintray.com/boostorg/release/1.63.0/source/"$(notdir $(boost-ver)))
 
 $(busybox-ver):
 	$(call SOURCEWGET,"busybox","http://busybox.net/downloads/"$(notdir $(busybox-ver)))
@@ -7301,7 +7315,7 @@ $(libpthread-ver):
 	$(call SOURCEWGET,"libpthread","http://git.savannah.gnu.org/cgit/hurd/libpthread.git/snapshot/"$(notdir $(libpthread-ver)))
 
 $(libsecret-ver):
-	$(call SOURCEWGET,"libsecret","https://git.gnome.org/browse/libsecret/snapshot/"$(notdir $(libsecret-ver)))
+	$(call SOURCEWGET,"libsecret","http://ftp.gnome.org/pub/gnome/sources/libsecret/0.18/"$(notdir $(libsecret-ver)))
 
 $(libsndfile-ver):
 	$(call SOURCEWGET,"libsndfile","http://www.mega-nerd.com/libsndfile/files/"$(notdir $(libsndfile-ver)))
@@ -7854,7 +7868,7 @@ $(vala-ver):
 	$(call SOURCEWGET,"vala","http://ftp.gnome.org/pub/gnome/sources/vala/0.34/"$(notdir $(vala-ver)))
 
 $(valgrind-ver):
-	$(call SOURCEWGET,"valgrind","http://valgrind.org/downloads/"$(notdir $(valgrind-ver)))
+	$(call SOURCEWGET,"valgrind","http://sourceware.org/ftp/valgrind/"$(notdir $(valgrind-ver)))
 
 $(Variable-Magic-ver):
 	$(call SOURCEWGET,"Variable-Magic","http://search.cpan.org/CPAN/authors/id/V/VP/VPIT/"$(notdir $(Variable-Magic-ver)))
