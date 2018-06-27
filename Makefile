@@ -2475,6 +2475,7 @@ afterpython: \
     LWP-MediaTypes \
     HTTP-Date \
     Encode-Locale \
+    Try-Tiny \
     HTTP-Message \
     HTTP-Daemon \
     WWW-RobotRules \
@@ -2499,7 +2500,6 @@ afternethttp: \
     Module-Build-XSUtil \
     Test-Exception \
     Sub-Uplevel \
-    Try-Tiny \
     Test-Fatal \
     Test-LeakTrace \
     Class-Loader \
@@ -2854,6 +2854,13 @@ afterlibsecret: \
 # Libgcrypt - https://www.gnupg.org/download/index.html#libgcrypt
 # ==============================================================
 #
+# libunistring-ver   = libunistring/libunistring-0.9.6.tar.xz
+# 2018-02-10
+# libunistring-ver   = libunistring/libunistring-0.9.8.tar.xz
+# 2018-02-28
+# libunistring-ver   = libunistring/libunistring-0.9.9.tar.xz
+# 2018-06-27
+libunistring-ver   = libunistring/libunistring-0.9.10.tar.xz
 # openssl-ver        = openssl/openssl-1.0.2e.tar.gz
 # 2016-03-11
 # openssl-ver        = openssl/openssl-1.0.2g.tar.gz
@@ -3142,11 +3149,6 @@ libarchive-ver     = libarchive/libarchive-3.3.2.tar.gz
 # libiconv-ver       = libiconv/libiconv-1.14.tar.gz
 # 2018-02-10
 libiconv-ver       = libiconv/libiconv-1.15.tar.gz
-# libunistring-ver   = libunistring/libunistring-0.9.6.tar.xz
-# 2018-02-10
-# libunistring-ver   = libunistring/libunistring-0.9.8.tar.xz
-# 2018-02-28
-libunistring-ver   = libunistring/libunistring-0.9.9.tar.xz
 # pixman-ver         = pixman/pixman-0.32.6.tar.gz
 # 2018-02-27
 pixman-ver         = pixman/pixman-0.34.0.tar.gz
