@@ -2802,6 +2802,7 @@ afterpatch: \
     tcpdump \
     pixman \
     rng-tools \
+    gpgme \
     libsecret \
     afterlibsecret
 
@@ -2854,6 +2855,34 @@ afterlibsecret: \
 # Libgcrypt - https://www.gnupg.org/download/index.html#libgcrypt
 # ==============================================================
 #
+# 2017-07-22
+# gnupg-ver          = gnupg/gnupg-2.0.29.tar.bz2
+# gnupg-ver          = gnupg/gnupg-2.0.30.tar.bz2
+# gnupg-ver          = gnupg/gnupg-2.1.21.tar.bz2
+# 2018-03-23
+# gnupg-ver          = gnupg/gnupg-2.2.5.tar.bz2
+# 2018-07-04
+gnupg-ver          = gnupg/gnupg-2.2.8.tar.bz2
+# 2017-07-22
+# libgpg-error-ver   = libgpg-error/libgpg-error-1.20.tar.bz2
+# libgpg-error-ver   = libgpg-error/libgpg-error-1.24.tar.bz2
+# libgpg-error-ver   = libgpg-error/libgpg-error-1.27.tar.bz2
+# 2018-07-04
+libgpg-error-ver   = libgpg-error/libgpg-error-1.31.tar.bz2
+# 2017-07-22
+# libgcrypt-ver      = libgcrypt/libgcrypt-1.6.4.tar.bz2
+# libgcrypt-ver      = libgcrypt/libgcrypt-1.7.0.tar.bz2
+# libgcrypt-ver      = libgcrypt/libgcrypt-1.7.3.tar.bz2
+# libgcrypt-ver      = libgcrypt/libgcrypt-1.7.3.tar.bz2
+# libgcrypt-ver      = libgcrypt/libgcrypt-1.8.0.tar.bz2
+# 2017-12-02
+# libgcrypt-ver      = libgcrypt/libgcrypt-1.8.1.tar.bz2
+# 2017-12-15
+# libgcrypt-ver      = libgcrypt/libgcrypt-1.8.2.tar.bz2
+# 2018-07-04
+libgcrypt-ver      = libgcrypt/libgcrypt-1.8.3.tar.bz2
+# 2018-07-04
+gpgme-ver = gpgme/gpgme-1.11.1.tar.bz2
 # libunistring-ver   = libunistring/libunistring-0.9.6.tar.xz
 # 2018-02-10
 # libunistring-ver   = libunistring/libunistring-0.9.8.tar.xz
@@ -2957,12 +2986,6 @@ p11-kit-ver        = p11-kit/p11-kit-0.23.10.tar.gz
 # libtasn1-ver       = libtasn1/libtasn1-4.3.tar.gz
 # 2018-03-24
 libtasn1-ver       = libtasn1/libtasn1-4.13.tar.gz
-# 2017-07-22
-# gnupg-ver          = gnupg/gnupg-2.0.29.tar.bz2
-# gnupg-ver          = gnupg/gnupg-2.0.30.tar.bz2
-# gnupg-ver          = gnupg/gnupg-2.1.21.tar.bz2
-# 2018-03-23
-gnupg-ver          = gnupg/gnupg-2.2.5.tar.bz2
 # libxml2-ver        = libxml2/libxml2-2.9.3.tar.gz
 # 2018-01-27
 # libxml2-ver        = libxml2/libxml2-2.9.7.tar.gz
@@ -3210,16 +3233,6 @@ par2cmdline-ver    = par2cmdline/v0.8.0.tar.gz
 doxygen-ver        = doxygen/Release_1_8_14.tar.gz
 # 2017-12-15
 global-ver        = global/global-6.6.tar.gz
-# 2017-07-22
-# libgcrypt-ver      = libgcrypt/libgcrypt-1.6.4.tar.bz2
-# libgcrypt-ver      = libgcrypt/libgcrypt-1.7.0.tar.bz2
-# libgcrypt-ver      = libgcrypt/libgcrypt-1.7.3.tar.bz2
-# libgcrypt-ver      = libgcrypt/libgcrypt-1.7.3.tar.bz2
-# libgcrypt-ver      = libgcrypt/libgcrypt-1.8.0.tar.bz2
-# 2017-12-02
-# libgcrypt-ver      = libgcrypt/libgcrypt-1.8.1.tar.bz2
-# 2017-12-15
-libgcrypt-ver      = libgcrypt/libgcrypt-1.8.2.tar.bz2
 # screen-ver         = screen/screen-4.3.1.tar.gz
 # 2017-12-15
 screen-ver         = screen/screen-4.6.2.tar.gz
@@ -3317,10 +3330,6 @@ npth-ver      = npth/npth-1.5.tar.bz2
 # libksba-ver        = libksba/libksba-1.3.3.tar.bz2
 # libksba-ver        = libksba/libksba-1.3.4.tar.bz2
 libksba-ver        = libksba/libksba-1.3.5.tar.bz2
-# 2017-07-22
-# libgpg-error-ver   = libgpg-error/libgpg-error-1.20.tar.bz2
-# libgpg-error-ver   = libgpg-error/libgpg-error-1.24.tar.bz2
-libgpg-error-ver   = libgpg-error/libgpg-error-1.27.tar.bz2
 # serf-ver           = serf/serf-1.3.5.tar.bz2
 # 2017-05-20 serf is failing to build, trying a new version
 # Nope, it fails due to certificates that are now expired
@@ -3905,6 +3914,7 @@ scrypt: $(scrypt-ver)
 .PHONY: apr
 .PHONY: findutils
 .PHONY: gdbm
+.PHONY: gpgme
 .PHONY: jpeg
 .PHONY: libassuan
 .PHONY: libgpg-error
@@ -3913,7 +3923,7 @@ scrypt: $(scrypt-ver)
 .PHONY: ntbtls
 .PHONY: npth
 .PHONY: which
-apr findutils gdbm jpeg libgpg-error libassuan libksba libpng ntbtls npth which: $(which-ver) $(libpng-ver) $(libgpg-error-ver) $(libassuan-ver) $(libksba-ver) $(apr-ver) $(gdbm-ver) $(findutils-ver) $(jpeg-ver) $(npth-ver) $(ntbtls-ver) 
+apr findutils gdbm gpgme jpeg libgpg-error libassuan libksba libpng ntbtls npth which: $(which-ver) $(libpng-ver) $(libgpg-error-ver) $(libassuan-ver) $(libksba-ver) $(apr-ver) $(gdbm-ver) $(findutils-ver) $(jpeg-ver) $(npth-ver) $(ntbtls-ver) $(gpgme-ver)
 	$(call SOURCEDIR,$@,xf)
 	cd $@; mkdir $@-build
 	cd $@/$@-build/; readlink -f . | grep $@-build
@@ -6675,7 +6685,8 @@ wget-all: \
     $(gnupg-ver) \
     $(gnuplot-ver) \
     $(go-ver) \
-    $(gobject-introspection) \
+    $(gobject-introspection-ver) \
+    $(gpgme-ver) \
     $(grep-ver) \
     $(guile-ver) \
     $(gzip-ver) \
@@ -7164,6 +7175,9 @@ $(go-ver):
 
 $(gobject-introspection-ver):
 	$(call SOURCEWGET, "gobject-introspection", "http://ftp.gnome.org/pub/gnome/sources/gobject-introspection/1.46/"$(notdir $(gobject-introspection-ver)))
+
+$(gpgme-ver):
+	$(call SOURCEWGET,"gpgme","https://www.gnupg.org/ftp/gcrypt/"$(gpgme-ver))
 
 $(grep-ver):
 	$(call SOURCEWGET,"grep","https://ftp.gnu.org/gnu/"$(grep-ver))
