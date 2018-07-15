@@ -2600,6 +2600,7 @@ aftermodulepluggable: \
     IO-Socket-SSL \
     LWP-Protocol-https \
     Log-Log4perl \
+    IO-BufferedSelect \
     Mojolicious \
     Digest-HMAC \
     bison \
@@ -2817,6 +2818,7 @@ afterpatch: \
 #
 .PHONY: afterlibsecret
 afterlibsecret: \
+    tenshi \
     busybox \
     tcc \
     cairo \
@@ -2855,6 +2857,23 @@ afterlibsecret: \
 # Libgcrypt - https://www.gnupg.org/download/index.html#libgcrypt
 # ==============================================================
 #
+sed-ver            = sed/sed-4.2.2.tar.gz
+# 2018-07-15
+# sed-ver            = sed/sed-4.5.tar.xz
+# lzo-ver            = lzo/lzo-2.08.tar.gz
+# 2018-07-15
+lzo-ver            = lzo/lzo-2.10.tar.gz
+# 2016-09-17
+# xz-ver             = xz/xz-5.0.5.tar.gz
+# xz-ver             = xz/xz-5.2.2.tar.gz
+# 2017-12-10
+# xz-ver             = xz/xz-5.2.3.tar.gz
+# 2018-07-15
+xz-ver             = xz/xz-5.2.4.tar.gz
+# 2018-07-07
+IO-BufferedSelect-ver = IO-BufferedSelect/IO-BufferedSelect-1.0.tar.gz
+# 2018-07-07
+tenshi-ver = tenshi/0.17.tar.gz
 # 2017-07-22
 # gnupg-ver          = gnupg/gnupg-2.0.29.tar.bz2
 # gnupg-ver          = gnupg/gnupg-2.0.30.tar.bz2
@@ -3253,11 +3272,6 @@ pinentry-ver       = pinentry/pinentry-0.9.7.tar.bz2
 # p7zip-ver         = p7zip/p7zip_15.14.1_src_all.tar.bz2
 # 2017-12-10
 p7zip-ver         = p7zip/p7zip_16.02_src_all.tar.bz2
-# 2016-09-17
-# xz-ver             = xz/xz-5.0.5.tar.gz
-# xz-ver             = xz/xz-5.2.2.tar.gz
-# 2017-12-10
-xz-ver             = xz/xz-5.2.3.tar.gz
 # 2016-01-10
 # subversion-ver     = subversion/subversion-1.8.9.tar.bz2
 # subversion-ver     = subversion/subversion-1.9.3.tar.bz2
@@ -3740,7 +3754,6 @@ libusb-ver         = libusb/libusb-1.0.19.tar.bz2
 llvm-ver           = llvm/llvm-3.4.src.tar.gz
 LWP-MediaTypes-ver = LWP-MediaTypes/LWP-MediaTypes-6.02.tar.gz
 lzma-ver           = lzma/lzma-4.32.7.tar.gz
-lzo-ver            = lzo/lzo-2.08.tar.gz
 mosh-ver           = mosh/mosh-1.2.5.tar.gz
 mpc-ver            = mpc/mpc-1.0.1.tar.gz
 mpfr-ver           = mpfr/mpfr-3.1.2.tar.gz
@@ -3758,7 +3771,6 @@ pth-ver            = pth/pth-2.0.7.tar.gz
 pygobject-ver      = pygobject/pygobject-2.28.6.tar.xz
 readline-ver       = readline/readline-6.3.tar.gz
 Scalar-MoreUtils-ver = Scalar-MoreUtils/Scalar-MoreUtils-0.02.tar.gz
-sed-ver            = sed/sed-4.2.2.tar.gz
 sharutils-ver      = sharutils/sharutils-4.15.1.tar.xz
 sparse-ver         = sparse/sparse-0.5.0.tar.gz
 srm-ver            = srm/srm-1.2.15.tar.gz
@@ -4229,7 +4241,8 @@ make libpcap sqlite lzma bison pango tcpdump gobject-introspection : \
 .PHONY: unrar
 .PHONY: lxsplit
 .PHONY: password-store
-bcrypt libcap multitail symlinks unrar lxsplit password-store: $(bcrypt-ver) $(multitail-ver) $(symlinks-ver) $(unrar-ver) $(libcap-ver) $(lxsplit-ver) $(password-store-ver)
+.PHONY: tenshi
+bcrypt libcap multitail symlinks unrar lxsplit password-store tenshi: $(bcrypt-ver) $(multitail-ver) $(symlinks-ver) $(unrar-ver) $(libcap-ver) $(lxsplit-ver) $(password-store-ver) $(tenshi-ver)
 	$(call SOURCEDIR,$@,xfz)
 	cd $@/`cat $@/untar.dir`/; make
 	$(call PKGINSTALL,$@)
@@ -4286,6 +4299,7 @@ bcrypt libcap multitail symlinks unrar lxsplit password-store: $(bcrypt-ver) $(m
 .PHONY: HTTP-Date
 .PHONY: HTTP-Message
 .PHONY: HTTP-Negotiate
+.PHONY: IO-BufferedSelect
 .PHONY: IO-HTML
 .PHONY: Importer
 .PHONY: IPC-Run3
@@ -4367,7 +4381,7 @@ bcrypt libcap multitail symlinks unrar lxsplit password-store: $(bcrypt-ver) $(m
 .PHONY: libwww-perl
 .PHONY: namespace-autoclean
 .PHONY: namespace-clean
-Sub-Name Class-Load Class-Load-XS Test-Warnings Package-DeprecationManager Devel-OverloadInfo Test-Deep File-pushd Test-CleanNamespaces Module-Runtime-Conflicts Moose MouseX-Types Any-Moose Archive-Zip Capture-Tiny B-Hooks-EndOfScope Class-Loader Class-Method-Modifiers Crypt-Random Crypt-Random-Source Data-OptList Devel-GlobalDestruction Digest-SHA1 Dist-CheckConflicts Encode-Locale Exporter-Tiny ExtUtils-Config ExtUtils-Helpers ExtUtils-InstallPaths File-Listing Scalar-MoreUtils URI HTML-Tagset HTML-Parser HTTP-Daemon HTTP-Cookies HTTP-Date WWW-RobotRules HTTP-Message HTTP-Negotiate inc-latest IO-HTML IPC-Run3 LWP-MediaTypes Module-Find Module-Implementation Module-Runtime Math-Random-ISAAC Math-Random-Secure File-Path PathTools File-Remove YAML-Tiny Module-Pluggable Module-ScanDeps Module-Build Module-Install Moo Net-HTTP Devel-Symdump namespace-clean Package-Stash Package-Stash-XS PAR-Dist Params-Util Pod-Coverage Role-Tiny Sub-Exporter Sub-Exporter-Progressive Sub-Install Sub-Uplevel Test-Fatal Test-LeakTrace Test-NoWarnings Test-Pod Test-Pod-Coverage Test-Requires Test-SharedFork Test-Warn Try-Tiny Variable-Magic libwww-perl XML-Parser Test-Inter Sub-Identify namespace-autoclean Eval-Closure MRO-Compat Devel-StackTrace Specio Test-Simple Importer Sub-Info Term-Table Test-Without-Module Test2-Plugin-NoWarnings Test2-Suite Exception-Class Class-Data-Inheritable Params-ValidationCompiler Class-Inspector Class-Tiny Scope-Guard Path-Tiny File-Copy-Recursive File-ShareDir-Install File-ShareDir Test-File Test-File-ShareDir Test-utf8 DateTime-Locale Algorithm-Diff Text-Diff Test-Differences Scalar-List-Utils CPAN-Meta-Check Class-Singleton DateTime DateTime-TimeZone JSON-MaybeXS Test-RequiresInternet LWP-Protocol-https Log-Log4perl Mojolicious Digest-HMAC Net-DNS : \
+Sub-Name Class-Load Class-Load-XS Test-Warnings Package-DeprecationManager Devel-OverloadInfo Test-Deep File-pushd Test-CleanNamespaces Module-Runtime-Conflicts Moose MouseX-Types Any-Moose Archive-Zip Capture-Tiny B-Hooks-EndOfScope Class-Loader Class-Method-Modifiers Crypt-Random Crypt-Random-Source Data-OptList Devel-GlobalDestruction Digest-SHA1 Dist-CheckConflicts Encode-Locale Exporter-Tiny ExtUtils-Config ExtUtils-Helpers ExtUtils-InstallPaths File-Listing Scalar-MoreUtils URI HTML-Tagset HTML-Parser HTTP-Daemon HTTP-Cookies HTTP-Date WWW-RobotRules HTTP-Message HTTP-Negotiate inc-latest IO-HTML IPC-Run3 LWP-MediaTypes Module-Find Module-Implementation Module-Runtime Math-Random-ISAAC Math-Random-Secure File-Path PathTools File-Remove YAML-Tiny Module-Pluggable Module-ScanDeps Module-Build Module-Install Moo Net-HTTP Devel-Symdump namespace-clean Package-Stash Package-Stash-XS PAR-Dist Params-Util Pod-Coverage Role-Tiny Sub-Exporter Sub-Exporter-Progressive Sub-Install Sub-Uplevel Test-Fatal Test-LeakTrace Test-NoWarnings Test-Pod Test-Pod-Coverage Test-Requires Test-SharedFork Test-Warn Try-Tiny Variable-Magic libwww-perl XML-Parser Test-Inter Sub-Identify namespace-autoclean Eval-Closure MRO-Compat Devel-StackTrace Specio Test-Simple Importer Sub-Info Term-Table Test-Without-Module Test2-Plugin-NoWarnings Test2-Suite Exception-Class Class-Data-Inheritable Params-ValidationCompiler Class-Inspector Class-Tiny Scope-Guard Path-Tiny File-Copy-Recursive File-ShareDir-Install File-ShareDir Test-File Test-File-ShareDir Test-utf8 DateTime-Locale Algorithm-Diff Text-Diff Test-Differences Scalar-List-Utils CPAN-Meta-Check Class-Singleton DateTime DateTime-TimeZone JSON-MaybeXS Test-RequiresInternet LWP-Protocol-https Log-Log4perl Mojolicious Digest-HMAC Net-DNS IO-BufferedSelect : \
     $(Algorithm-Diff-ver) \
     $(Any-Moose-ver) \
     $(Archive-Zip-ver) \
@@ -4417,6 +4431,7 @@ Sub-Name Class-Load Class-Load-XS Test-Warnings Package-DeprecationManager Devel
     $(HTTP-Message-ver) \
     $(HTTP-Negotiate-ver) \
     $(IO-HTML-ver) \
+    $(IO-BufferedSelect-ver) \
     $(Importer-ver) \
     $(IPC-Run3-ver) \
     $(JSON-MaybeXS-ver) \
@@ -6529,6 +6544,7 @@ wget-all: \
     $(HTTP-Date-ver) \
     $(HTTP-Message-ver) \
     $(HTTP-Negotiate-ver) \
+    $(IO-BufferedSelect-ver) \
     $(IO-HTML-ver) \
     $(IO-Socket-SSL-ver) \
     $(ImageMagick-ver) \
@@ -6818,6 +6834,7 @@ wget-all: \
     $(tclx-ver) \
     $(tcp_wrappers-ver) \
     $(tcpdump-ver) \
+    $(tenshi-ver) \
     $(texinfo-ver) \
     $(tmux-ver) \
     $(truecrypt-ver) \
@@ -7252,6 +7269,9 @@ $(iptraf-ng-ver):
 $(iwyu-ver):
 	$(call SOURCEWGET,"include-what-you-use","http://include-what-you-use.com/downloads/include-what-you-use-3.4.src.tar.gz")
 
+$(IO-BufferedSelect-ver):
+	$(call SOURCEWGET,"IO-BufferedSelect","https://cpan.metacpan.org/authors/id/A/AF/AFN/"$(notdir $(IO-BufferedSelect-ver)))
+
 $(IO-Socket-SSL-ver):
 	$(call SOURCEWGET,"IO-Socket-SSL","http://search.cpan.org/CPAN/authors/id/S/SU/SULLR/"$(notdir $(IO-Socket-SSL-ver)))
 
@@ -7419,7 +7439,7 @@ $(lzma-ver):
 	$(call SOURCEWGET,"lzma","http://tukaani.org/"$(lzma-ver))
 
 $(lzo-ver):
-	$(call SOURCEWGET,"lzo","http://www.oberhumer.com/opensource/lzo/download/lzo-2.08.tar.gz")
+	$(call SOURCEWGET,"lzo","http://www.oberhumer.com/opensource/lzo/download/"$(notdir $(lzo-ver)))
 
 $(m4-ver):
 	$(call SOURCEWGET,"m4","http://ftp.gnu.org/gnu/"$(m4-ver))
@@ -7690,7 +7710,7 @@ $(scrypt-ver):
 	$(call SOURCEWGET, "scrypt","http://www.tarsnap.com/"$(scrypt-ver))
 
 $(sed-ver):
-	$(call SOURCEWGET, "sed", "http://ftp.gnu.org/gnu/sed/sed-4.2.2.tar.gz")
+	$(call SOURCEWGET, "sed", "http://ftp.gnu.org/gnu/"$(sed-ver))
 
 $(serf-ver):
 	$(call SOURCEWGET, "serf", "https://archive.apache.org/dist/"$(serf-ver))
@@ -7777,6 +7797,9 @@ $(tcpdump-ver):
 
 $(Term-Table-ver):
 	$(call SOURCEWGET,"Term-Table","http://search.cpan.org/CPAN/authors/id/E/EX/EXODIST/"$(notdir $(Term-Table-ver)))
+
+$(tenshi-ver):
+	$(call SOURCEWGET,"tenshi","https://github.com/inversepath/tenshi/archive/0.17.tar.gz")
 
 $(Test-Exception-ver):
 	$(call SOURCEWGET,"Test-Exception","http://search.cpan.org/CPAN/authors/id/E/EX/EXODIST/"$(notdir $(Test-Exception-ver)))
