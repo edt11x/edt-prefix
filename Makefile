@@ -2857,6 +2857,30 @@ afterlibsecret: \
 # Libgcrypt - https://www.gnupg.org/download/index.html#libgcrypt
 # ==============================================================
 #
+# freetype-ver       = freetype/freetype-2.6.1.tar.bz2
+# freetype-ver       = freetype/freetype-2.6.3.tar.bz2
+# 2017-01-27
+freetype-ver       = freetype/freetype-2.7.1.tar.bz2
+# 2018-07-29
+# freetype-ver       = freetype/freetype-2.9.1.tar.gz
+# 2017-01-27
+# harfbuzz-ver       = harfbuzz/harfbuzz-0.9.38.tar.bz2
+# harfbuzz-ver       = harfbuzz/harfbuzz-1.4.2.tar.bz2
+# 2018-07-29
+harfbuzz-ver       = harfbuzz/harfbuzz-1.8.4.tar.bz2
+# pango-ver          = pango/pango-1.36.8.tar.xz
+# 2018-07-29
+pango-ver          = pango/pango-1.42.2.tar.xz
+# swig-ver           = swig/swig-3.0.0.tar.gz
+# 2018-07-29
+swig-ver           = swig/swig-3.0.12.tar.gz
+# patch-ver          = patch/patch-2.7.tar.gz
+# 2018-07-29
+patch-ver          = patch/patch-2.7.6.tar.gz
+# mosh-ver           = mosh/mosh-1.2.5.tar.gz
+# 2018-07-29
+mosh-ver           = mosh/mosh-1.3.2.tar.gz
+#
 sed-ver            = sed/sed-4.2.2.tar.gz
 # 2018-07-15
 # sed-ver            = sed/sed-4.5.tar.xz
@@ -3480,14 +3504,7 @@ icu-ver            = icu/icu4c-58_2-src.tgz
 glib-ver           = glib/glib-2.46.1.tar.xz
 # needs libmount and openat
 # glib-ver           = glib/glib-2.50.2.tar.xz
-# 2017-01-27
-# harfbuzz-ver       = harfbuzz/harfbuzz-0.9.38.tar.bz2
-harfbuzz-ver       = harfbuzz/harfbuzz-1.4.2.tar.bz2
 # 2016-04-18
-# freetype-ver       = freetype/freetype-2.6.1.tar.bz2
-# freetype-ver       = freetype/freetype-2.6.3.tar.bz2
-# 2017-01-27
-freetype-ver       = freetype/freetype-2.7.1.tar.bz2
 # 2017-01-27
 # fontconfig-ver     = fontconfig/fontconfig-2.11.1.tar.bz2
 fontconfig-ver     = fontconfig/fontconfig-2.12.1.tar.bz2
@@ -3754,7 +3771,6 @@ libusb-ver         = libusb/libusb-1.0.19.tar.bz2
 llvm-ver           = llvm/llvm-3.4.src.tar.gz
 LWP-MediaTypes-ver = LWP-MediaTypes/LWP-MediaTypes-6.02.tar.gz
 lzma-ver           = lzma/lzma-4.32.7.tar.gz
-mosh-ver           = mosh/mosh-1.2.5.tar.gz
 mpc-ver            = mpc/mpc-1.0.1.tar.gz
 mpfr-ver           = mpfr/mpfr-3.1.2.tar.gz
 multitail-ver      = multitail/multitail-6.4.2.tgz
@@ -3762,8 +3778,6 @@ ncurses-ver        = ncurses/ncurses-6.0.tar.gz
 Net-HTTP-ver       = Net-HTTP/Net-HTTP-6.09.tar.gz
 netpbm-ver         = netpbm/netpbm-10.35.95.tgz
 ntfs-3g-ver        = ntfs-3g/ntfs-3g_ntfsprogs-2013.1.13.tgz
-pango-ver          = pango/pango-1.36.8.tar.xz
-patch-ver          = patch/patch-2.7.tar.gz
 Pod-Coverage-ver   = Pod-Coverage/Pod-Coverage-0.23.tar.gz
 popt-ver           = popt/popt-1.16.tar.gz
 psmisc-ver         = psmisc/psmisc-22.21.tar.gz
@@ -3774,7 +3788,6 @@ Scalar-MoreUtils-ver = Scalar-MoreUtils/Scalar-MoreUtils-0.02.tar.gz
 sharutils-ver      = sharutils/sharutils-4.15.1.tar.xz
 sparse-ver         = sparse/sparse-0.5.0.tar.gz
 srm-ver            = srm/srm-1.2.15.tar.gz
-swig-ver           = swig/swig-3.0.0.tar.gz
 tcc-ver            = tcc/tcc-0.9.26.tar.bz2
 tclx-ver           = tclx/tclx8.4.1.tar.bz2
 tcpdump-ver        = tcpdump/tcpdump-4.5.1.tar.gz
@@ -7131,7 +7144,7 @@ $(fontconfig-ver):
 	$(call SOURCEWGET,"fontconfig","http://www.freedesktop.org/software/fontconfig/release/"$(notdir $(fontconfig-ver)))
 
 $(freetype-ver):
-	$(call SOURCEWGET,"freetype","http://downloads.sourceforge.net/"$(freetype-ver))
+	$(call SOURCEWGET,"freetype","https://download.savannah.gnu.org/releases/"$(freetype-ver))
 
 $(fribidi-ver):
 	$(call SOURCEWGET,"fribidi","https://github.com/fribidi/fribidi/archive/"$(notdir $(fribidi-ver)))
@@ -7206,7 +7219,7 @@ $(gzip-ver):
 	$(call SOURCEWGET,"gzip","https://ftp.gnu.org/gnu/"$(gzip-ver))
 
 $(harfbuzz-ver):
-	$(call SOURCEWGET,"harfbuzz","http://www.freedesktop.org/software/harfbuzz/release/harfbuzz-0.9.38.tar.bz2")
+	$(call SOURCEWGET,"harfbuzz","https://www.freedesktop.org/software/harfbuzz/release/"$(notdir $(harfbuzz-ver)))
 
 $(hashdeep-ver):
 	$(call SOURCEWGET,"hashdeep","https://github.com/jessek/hashdeep/archive/v4.4.tar.gz")
@@ -7420,7 +7433,7 @@ $(lynis-ver):
 	$(call SOURCEWGET,"lynis","https://cisofy.com/files/"$(notdir $(lynis-ver)))
 
 $(make-ver):
-	$(call SOURCEWGET,"make","https://ftp.gnu.org/gnu/make/make-4.1.tar.gz")
+	$(call SOURCEWGET,"make","http://ftp.gnu.org/gnu/"$(make-ver))
 
 $(maldetect-ver):
 	$(call SOURCEWGET,"maldetect","http://www.rfxn.com/downloads/"$(notdir $(maldetect-ver)))
@@ -7499,7 +7512,7 @@ $(MouseX-Types-ver):
 	$(call SOURCEWGET,"MouseX-Types","http://search.cpan.org/CPAN/authors/id/G/GF/GFUJI/"$(notdir $(MouseX-Types-ver)))
 
 $(mosh-ver):
-	$(call SOURCEWGET,"mosh","http://mosh.mit.edu/"$(notdir $(mosh-ver)))
+	$(call SOURCEWGET,"mosh","https://mosh.org/"$(notdir $(mosh-ver)))
 
 $(mpc-ver):
 	$(call SOURCEWGET,"mpc","ftp://ftp.gnu.org/gnu/"$(mpc-ver))
@@ -7592,7 +7605,7 @@ $(Package-Stash-XS-ver):
 	$(call SOURCEWGET,"Package-Stash-XS","http://search.cpan.org/CPAN/authors/id/D/DO/DOY/"$(notdir $(Package-Stash-XS-ver)))
 
 $(pango-ver):
-	$(call SOURCEWGET,"pango","http://ftp.gnome.org/pub/gnome/sources/pango/1.36/"$(notdir $(pango-ver)))
+	$(call SOURCEWGET,"pango","http://ftp.gnome.org/pub/gnome/sources/pango/1.42/"$(notdir $(pango-ver)))
 
 $(pari-ver):
 	$(call SOURCEWGET,"pari","http://pari.math.u-bordeaux.fr/pub/pari/unix/OLD/2.3/"$(notdir $(pari-ver)))
@@ -7771,7 +7784,8 @@ $(srm-ver):
 	$(call SOURCEWGET,"srm","http://sourceforge.net/projects/srm/files/1.2.15/"$(notdir $(srm-ver)))
 
 $(swig-ver):
-	$(call SOURCEWGET,"swig","http://prdownloads.sourceforge.net/swig/swig-3.0.0.tar.gz")
+	# (call SOURCEWGET,"swig","http://prdownloads.sourceforge.net/swig/swig-3.0.0.tar.gz")
+	$(call SOURCEWGET,"swig","http://prdownloads.sourceforge.net/"$(swig-ver))
 
 $(tar-ver):
 	$(call SOURCEWGET,"tar","https://ftp.gnu.org/gnu/"$(tar-ver))

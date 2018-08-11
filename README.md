@@ -11,5 +11,6 @@ Main goals:
 * Don't require additional users be added to the Linux box
 * Build a reasonable set of new tools on the old distribution
 * Give myself a platform and a methodology for building complex Linux source packages.
+* At one point my company needed to build a stripped down Linux and I want to stay capable of doing this.
 
 
