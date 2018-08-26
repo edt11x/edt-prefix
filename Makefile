@@ -2804,7 +2804,10 @@ afterpatch: \
     pixman \
     rng-tools \
     gpgme \
-    libsecret \
+    libmnl \
+    libnftnl \
+    ufw \
+    tenshi \
     afterlibsecret
 
 # Problem children
@@ -2818,7 +2821,8 @@ afterpatch: \
 #
 .PHONY: afterlibsecret
 afterlibsecret: \
-    tenshi \
+    libsecret \
+    nftables \
     busybox \
     tcc \
     cairo \
@@ -2857,6 +2861,14 @@ afterlibsecret: \
 # Libgcrypt - https://www.gnupg.org/download/index.html#libgcrypt
 # ==============================================================
 #
+# 2018-08-26
+libnftnl-ver         = libnftnl/libnftnl-1.1.1.tar.bz2
+# 2018-08-26
+libmnl-ver           = libmnl/libmnl-1.0.4.tar.bz2
+# 2018-08-26
+nftables-ver         = nftables/nftables-0.9.0.tar.bz2
+# 2018-08-25
+ufw-ver              = ufw/ufw-0.35.tar.gz
 # freetype-ver       = freetype/freetype-2.6.1.tar.bz2
 # freetype-ver       = freetype/freetype-2.6.3.tar.bz2
 # 2017-01-27
@@ -4062,6 +4074,7 @@ libffi : \
 .PHONY: libvorbis
 .PHONY: libxml2
 .PHONY: libxslt
+.PHONY: nftables
 .PHONY: octave
 .PHONY: opus
 .PHONY: popt
@@ -4070,7 +4083,7 @@ libffi : \
 .PHONY: tcc
 .PHONY: xmlsec1
 .PHONY: yasm
-jnettop libxml2 check file protobuf libtasn1 popt sharutils libxslt libidn daq libdnet alsa-lib libogg flac libvorbis octave lame yasm opus libmpeg2 xmlsec1 tcc libarchive : \
+jnettop libxml2 check file protobuf libtasn1 popt sharutils libxslt libidn daq libdnet alsa-lib libogg flac libvorbis octave lame yasm opus libmpeg2 xmlsec1 tcc libarchive nftables : \
     $(alsa-lib-ver) \
     $(check-ver) \
     $(daq-ver) \
@@ -4087,6 +4100,7 @@ jnettop libxml2 check file protobuf libtasn1 popt sharutils libxslt libidn daq l
     $(libvorbis-ver) \
     $(libxml2-ver) \
     $(libxslt-ver) \
+    $(nftables-ver) \
     $(octave-ver) \
     $(opus-ver) \
     $(popt-ver) \
@@ -4174,6 +4188,8 @@ dash : $(dash-ver)
 .PHONY: hwloc
 .PHONY: iptraf-ng
 .PHONY: libass
+.PHONY: libmnl
+.PHONY: libnftnl
 .PHONY: libusb
 .PHONY: mosh
 .PHONY: nano
@@ -4184,13 +4200,15 @@ dash : $(dash-ver)
 .PHONY: tmux
 .PHONY: wipe
 .PHONY: x264
-srm wipe mosh socat tmux psmisc libusb htop cairo iptraf-ng hwloc nano libass fdk-aac nasm x264 c-ares : \
+srm wipe mosh socat tmux psmisc libusb htop cairo iptraf-ng hwloc nano libass fdk-aac nasm x264 c-ares libmnl libnftnl : \
 	$(cairo-ver) \
 	$(fdk-aac-ver) \
 	$(htop-ver) \
 	$(hwloc-ver) \
 	$(iptraf-ng-ver) \
 	$(libass-ver) \
+	$(libmnl-ver) \
+	$(libnftnl-ver) \
 	$(libusb-ver) \
 	$(mosh-ver) \
 	$(nano-ver) \
@@ -6262,6 +6280,15 @@ six : $(six-ver)
 	    --prefix=/usr/local --optimize=1 --install-data=/usr/share
 	@echo "======= Build of $@ Successful ======="
 
+# need to start working on a generic python build rule
+.PHONY: ufw
+ufw : $(ufw-ver)
+	$(call SOURCEDIR,$@,xf)
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo python setup.py build
+	cd $@/`cat $@/untar.dir`/; /usr/bin/sudo python setup.py install \
+	    --prefix=/usr/local
+	@echo "======= Build of $@ Successful ======="
+
 # slang does not like the parallel build
 .PHONY: slang
 slang: $(slang-ver)
@@ -6748,7 +6775,9 @@ wget-all: \
     $(libiconv-ver) \
     $(libidn-ver) \
     $(libksba-ver) \
+    $(libmnl-ver) \
     $(libmpeg2-ver) \
+    $(libnftnl-ver) \
     $(libogg-ver) \
     $(libpcap-ver) \
     $(libpng-ver) \
@@ -6789,6 +6818,7 @@ wget-all: \
     $(ncurses-ver) \
     $(netpbm-ver) \
     $(nettle-ver) \
+    $(nftables-ver) \
     $(node-ver) \
     $(ntbtls-ver) \
     $(npth-ver) \
@@ -6851,6 +6881,7 @@ wget-all: \
     $(texinfo-ver) \
     $(tmux-ver) \
     $(truecrypt-ver) \
+    $(ufw-ver) \
     $(unrar-ver) \
     $(unzip-ver) \
     $(util-linux-ver) \
@@ -7342,17 +7373,23 @@ $(libksba-ver):
 $(libiconv-ver):
 	$(call SOURCEWGET,"libiconv","http://ftp.gnu.org/gnu/"$(libiconv-ver))
 
-$(libpcap-ver):
-	$(call SOURCEWGET,"libpcap","http://www.tcpdump.org/release/libpcap-1.4.0.tar.gz")
-
 $(libgpg-error-ver):
 	$(call SOURCEWGET,"libgpg-error","ftp://ftp.gnupg.org/gcrypt/"$(libgpg-error-ver))
+
+$(libmnl-ver):
+	$(call SOURCEWGET,"libmnl","https://netfilter.org/projects/libmnl/files/"$(notdir $(libmnl-ver)))
 
 $(libmpeg2-ver):
 	$(call SOURCEWGET,"libmpeg2","http://libmpeg2.sourceforge.net/files/"$(notdir $(libmpeg2-ver)))
 
+$(libnftnl-ver):
+	$(call SOURCEWGET,"libnftnl","https://netfilter.org/projects/libnftnl/files/"$(notdir $(libnftnl-ver)))
+
 $(libogg-ver):
 	$(call SOURCEWGET,"libogg","http://downloads.xiph.org/releases/ogg/"$(notdir $(libogg-ver)))
+
+$(libpcap-ver):
+	$(call SOURCEWGET,"libpcap","http://www.tcpdump.org/release/libpcap-1.4.0.tar.gz")
 
 $(libpng-ver):
 	$(call SOURCEWGET,"libpng","http://downloads.sourceforge.net/"$(libpng-ver))
@@ -7561,6 +7598,9 @@ $(Net-SSLeay-ver):
 
 $(netpbm-ver):
 	$(call SOURCEWGET,"netpbm","http://downloads.sourceforge.net/project/netpbm/super_stable/10.35.95/netpbm-10.35.95.tgz")
+
+$(nftables-ver):
+	$(call SOURCEWGET,"nftables","https://netfilter.org/projects/nftables/files/"$(notdir $(nftables-ver)))
 
 $(node-ver):
 	$(call SOURCEWGET,"node","https://nodejs.org/dist/v4.4.2/"$(notdir $(node-ver)))
@@ -7901,6 +7941,9 @@ $(Try-Tiny-ver):
 
 $(Type-Tiny-ver):
 	$(call SOURCEWGET,"Type-Tiny","http://search.cpan.org/CPAN/authors/id/T/TO/TOBYINK/"$(notdir $(Type-Tiny-ver)))
+
+$(ufw-ver):
+	$(call SOURCEWGET,"ufw","https://launchpad.net/ufw/0.35/0.35/+download/"$(notdir $(ufw-ver)))
 
 $(util-linux-ver):
 	$(call SOURCEWGET,"util-linux-ng","https://mirrors.edge.kernel.org/pub/linux/utils/util-linux/v2.18/"$(not      dir $(util-linux-ng-ver)))
